@@ -38,6 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social_django',  # for google auth
+    'app',  # our app name
+]
+
+# for google auth
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 MIDDLEWARE = [
@@ -48,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',  # for google auth
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -63,6 +72,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',  # for google auth
             ],
         },
     },
@@ -130,3 +140,13 @@ try:
         django_heroku.settings(locals())
 except ImportError:
     found = False
+
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '1009432591380-82dnqupq4f6t6fjg8nnqk76elrtimm9s.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://127.0.0.1:8000/social-auth/complete/google-oauth2/'
+
+# Redirect URLs
+LOGIN_URL = 'login'  # redirect here for login
+LOGIN_REDIRECT_URL = 'home'  # redirect after login
+LOGOUT_REDIRECT_URL = 'home'  # redirect after logout
