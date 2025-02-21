@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Select Role</title>
+    </head>
+    <body>
+        <h2>Select Role</h2>
+        <form method="post">
+            {% csrf_token %}
+            <label for="role">Role:</label>
+            <select name="role" id="role">
+                <option value="patron">Patron</option>
+                <option value="librarian">Librarian</option>
+            </select>
+            <button type="submit">Select</button>
+        </form>
+    </body>
+</html>
