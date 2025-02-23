@@ -17,3 +17,9 @@ class Equipment(models.Model):
     image = models.ImageField(upload_to='equipment/', blank=True, null=True)
     def __str__(self):
         return self.name
+    
+    @property
+    def image_url(self):
+        if self.image:
+            return f"https://{settings.AWS_S3_CUSTOM_DOMAIN}/{self.image}"
+        return None
