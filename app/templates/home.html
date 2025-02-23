@@ -4,8 +4,8 @@
     <title>Home</title>
 </head>
 <body>
-    <h2>Welcome to Patron Page</h2>
     {% if user.is_authenticated %}
+        <h2>Welcome to Patron Page</h2>
         <p>Hello, {{ user.username }}!</p>
         <p>Role: Patron</p>
         <a href="{% url 'logout' %}">Logout</a>
