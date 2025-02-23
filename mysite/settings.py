@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = 'django-insecure-6svnxqc3noeut0$pu@swux4)engan982d6epyim53+q4h_6d(o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -159,8 +159,8 @@ except ImportError:
     found = False
 
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '1009432591380-82dnqupq4f6t6fjg8nnqk76elrtimm9s.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://127.0.0.1:8000/social-auth/complete/google-oauth2/'
 
 # Redirect URLs
