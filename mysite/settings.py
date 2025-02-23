@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'social_django',  # for google auth
     'whitenoise.runserver_nostatic',  # for db
     'app',  # our app name
+    'django_bootstrap5'  # bootstrap
 ]
 
 # for google auth
