@@ -9,3 +9,11 @@ class UserProfile(models.Model):
     ])
     def __str__(self):
         return f"User: {self.user.username} Role: {self.role}"
+
+class Equipment(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    available = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
