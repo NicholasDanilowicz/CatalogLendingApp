@@ -1,0 +1,114 @@
+{% load django_bootstrap5 %}
+{% load static %}
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}The Site Title{% endblock %}</title>
+  {% bootstrap_css %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+{% block extra_css %}
+{% endblock %}
+</head>
+<body>
+  <header class="navbar">
+    <div class="top-header-container">
+      <div class="header-wrapper">
+        <h1 class="app-title"><a href="{% url 'home' %}">The Cataloging App</a></h1>
+      </div>
+      <div class="search-wrapper">
+        <form action="{% url 'search_results' %}" method="GET">
+          <div id="searchBar" class="search-container">
+            {{form.as_p}}
+            <button type="submit">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          <!-- <input type="text" name="q" placeholder="Search for sports equipment" required> -->
+        </form>
+      </div>
+      {% if user.is_authenticated %}
+        <h2 class="mb-4 text-center" style="color: #5E81AC;">Welcome to Patron Page</h2>
+        <p style="color: #ECEFF4;">Hello, {{ user.username }}!</p>
+        <p style="color: #ECEFF4;">Role: Patron</p>
+        <div class="text-center">
+          <a href="{% url 'logout' %}" class="btn" style="background-color: #81A1C1; border-color: #81A1C1; color: #ECEFF4;">Logout</a>
+        </div>
+
+      {% else %}
+        <div class="text-center">
+          <a id="loginButton" href="{% url 'social:begin' 'google-oauth2' %}" class="btn" style="background-color: #81A1C1; border-color: #81A1C1; color: #ECEFF4;">Login with Google</a>
+        </div>
+      {% endif %}
+    </div>
+    <div class="bottom-header-container">
+      <nav class="menu">
+        <ul class="menu-list">
+          <li class="menu-item">
+            <a href="#">Sports</a>
+            <ul class="dropdown">
+              <li><a href="#">Football</a></li>
+              <li><a href="#">Basketball</a></li>
+              <li><a href="#">Tennis</a></li>
+            </ul>
+          </li>
+          <li class="menu-item">
+            <a href="#">Exercise</a>
+            <ul class="dropdown">
+              <li><a href="#">Yoga</a></li>
+              <li><a href="#">Weights</a></li>
+              <li><a href="#">Cardio</a></li>
+            </ul>
+          </li>
+          <li class="menu-item">
+            <a href="#">Outdoor</a>
+            <ul class="dropdown">
+              <li><a href="#">Camping</a></li>
+              <li><a href="#">Biking</a></li>
+              <li><a href="#">Hiking</a></li>
+            </ul>
+          </li>
+          <li class="menu-item">
+            <a href="#">Male</a>
+            <ul class="dropdown">
+              <li><a href="#">Shoes</a></li>
+              <li><a href="#">Clothing</a></li>
+              <li><a href="#">Accessories</a></li>
+            </ul>
+          </li>
+          <li class="menu-item">
+            <a href="#">Female</a>
+            <ul class="dropdown">
+              <li><a href="#">Shoes</a></li>
+              <li><a href="#">Clothing</a></li>
+              <li><a href="#">Accessories</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div> 
+  </header>
+  <main>
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center py-3 fixed-bottom" style="background-color: #3B4252; color: #ECEFF4;">
+    <div class="container">
+      <small>© 2025 A-19. All rights reserved.</small>
+      <img 
+        src="https://teama19.s3.us-east-2.amazonaws.com/73_UVALogo_800x800.jpg" 
+        alt="UVA Logo" 
+        style="width: 20px; height: 20px; object-fit: contain; margin-left: 10px; vertical-align: middle;"
+      >
+    </div>
+  </footer>
+  <!-- Bootstrap JS Bundle (Include before closing </body>) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

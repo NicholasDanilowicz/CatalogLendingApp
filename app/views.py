@@ -1,7 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
+from django.core.paginator import Paginator
 from .forms import SearchForm
 from .models import UserProfile
+from .models import Equipment
 
 
 def custom_login(request):
@@ -26,8 +28,6 @@ def home(request):
     except UserProfile.DoesNotExist:
         return redirect('select_role')
 
-
-
 def select_role(request):
     try:
         request.user.userprofile
@@ -40,3 +40,23 @@ def select_role(request):
                 return redirect('home')
         
         return render(request, 'select_role.html')
+
+def item_detail(request, item_id):
+    item = get_object_or_404(Equipment, id=item_id)
+    return render(request, 'item_detail.html', {'item': item})
+
+def search_results(req):
+    form = SearchForm(req.GET)
+    query = req.GET.get('q', '')
+    print("here is query: ", query)
+    results = []
+    if form.is_valid():
+        query = form.cleaned_data.get('query', '')
+        print("cleaned query: ", query)
+        if query:
+            results = Equipment.objects.filter(name__icontains=query)
+    paginator = Paginator(results, 5)
+    page_number = req.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    print("whatever page_obj is: ", page_obj)
+    return render(req, 'search_results.html', {'form': form, 'query': query, 'results': results, 'page_obj': page_obj})
