@@ -32,7 +32,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost','127.0.0.1',"sports-cataloging-lending-app-bd1891024175.herokuapp.com"]
 
-
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Application definition
 
 INSTALLED_APPS = [
@@ -83,6 +84,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'social_django.context_processors.backends',  # for google auth
+                'app.context_processors.search_form',
             ],
         },
     },

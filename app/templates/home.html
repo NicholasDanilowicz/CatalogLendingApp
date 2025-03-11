@@ -1,52 +1,29 @@
-{% load django_bootstrap5 %}
-{% load static %}
-
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Home</title>
-  {% bootstrap_css %}
-</head>
-<body style="background-color: #2E3440;">
-  
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
   <!-- Main Content -->
   <div class="container py-4">
     <div class="row justify-content-center">
       <div class="col-md-6">
-        {% if user.is_authenticated %}
-          <h2 class="mb-4 text-center" style="color: #5E81AC;">Welcome to Patron Page</h2>
-          <p style="color: #ECEFF4;">Hello, {{ user.username }}!</p>
-          <p style="color: #ECEFF4;">Role: Patron</p>
-          <div class="text-center">
-            <a href="{% url 'logout' %}" class="btn" style="background-color: #81A1C1; border-color: #81A1C1; color: #ECEFF4;">Logout</a>
-
-            <!-- Searchbar -->
-            <form method="get" action="">
-              {% csrf_token %}
-              {{form}}
-              <button class="btn btn-primary">SEARCH</button>
-            </form>
-          </div>
-
-        {% else %}
-          <div class="text-center">
-            <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn" style="background-color: #81A1C1; border-color: #81A1C1; color: #ECEFF4;">Login with Google</a>
-          </div>
-        {% endif %}
       </div>
     </div>
   </div>
-
-
-
-  <!-- Footer -->
-  <footer class="text-center py-3 fixed-bottom" style="background-color: #3B4252; color: #ECEFF4;">
-    <div class="container">
-      <small>© 2025 A-19. All rights reserved.</small>
-      <img 
-        src="https://teama19.s3.us-east-2.amazonaws.com/73_UVALogo_800x800.jpg" 
-        alt="UVA Logo" 
-        style="width: 20px; height: 20px; object-fit: contain; margin-left: 10px; vertical-align: middle;"
-      >
+  <section class="how-it-works">
+    <h2>How It Works</h2>
+    <div class="steps">
+        <div class="step">
+            <h3>1. List Your Equipment</h3>
+            <p>Lenders upload their sports equipment with details.</p>
+        </div>
+        <div class="step">
+            <h3>2. Browse & Request</h3>
+            <p>Borrowers find equipment and send rental requests.</p>
+        </div>
+        <div class="step">
+            <h3>3. Rent & Return</h3>
+            <p>Complete transactions safely and return the items.</p>
+        </div>
     </div>
-  </footer>
+</section>
+
+{% endblock %}
