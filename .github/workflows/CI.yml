@@ -48,3 +48,15 @@ jobs:
         DATABASE_URL: postgres://user:password@localhost:5432/test_db
       run: |
         python manage.py test
+    - name: Check for Missing Migrations
+      run: |
+        python manage.py makemigrations --check --dry-run
+    - name: Run Security Scan
+      run: |
+        pip install bandit
+        bandit -r .
+    - name: Run Tests with Coverage
+      run: |
+        pip install coverage
+        coverage run manage.py test
+        coverage report -m
