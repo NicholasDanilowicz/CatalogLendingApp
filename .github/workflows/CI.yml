@@ -43,14 +43,14 @@ jobs:
         DATABASE_URL: postgres://user:password@localhost:5432/test_db
       run: |
         python manage.py migrate
+    - name: Check for Missing Migrations
+      run: |
+        python manage.py makemigrations --check --dry-run
     - name: Run Tests
       env:
         DATABASE_URL: postgres://user:password@localhost:5432/test_db
       run: |
         python manage.py test
-    - name: Check for Missing Migrations
-      run: |
-        python manage.py makemigrations --check --dry-run
     - name: Run Security Scan
       run: |
         pip install bandit
