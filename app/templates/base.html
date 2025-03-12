@@ -50,6 +50,9 @@
           <li class="menu-item">
             <a href="#">Sports</a>
             <ul class="dropdown">
+              <li><a href="{% url 'search_results' %}?query=Football">Football</a></li>
+              <li><a href="{% url 'search_results' %}?query=Basketball">Basketball</a></li>
+              <li><a href="{% url 'search_results' %}?query=Tennis">Tennis</a></li>
               <li><a href="#">Football</a></li>
               <li><a href="#">Basketball</a></li>
               <li><a href="#">Tennis</a></li>
@@ -58,33 +61,33 @@
           <li class="menu-item">
             <a href="#">Exercise</a>
             <ul class="dropdown">
-              <li><a href="#">Yoga</a></li>
-              <li><a href="#">Weights</a></li>
-              <li><a href="#">Cardio</a></li>
+              <li><a href="{% url 'search_results' %}?query=Yoga">Yoga</a></li>
+              <li><a href="{% url 'search_results' %}?query=Weights">Weights</a></li>
+              <li><a href="{% url 'search_results' %}?query=Cardio">Cardio</a></li>
             </ul>
           </li>
           <li class="menu-item">
             <a href="#">Outdoor</a>
             <ul class="dropdown">
-              <li><a href="#">Camping</a></li>
-              <li><a href="#">Biking</a></li>
-              <li><a href="#">Hiking</a></li>
+              <li><a href="{% url 'search_results' %}?query=Camping">Camping</a></li>
+              <li><a href="{% url 'search_results' %}?query=Biking">Biking</a></li>
+              <li><a href="{% url 'search_results' %}?query=Hiking">Hiking</a></li>
             </ul>
           </li>
           <li class="menu-item">
             <a href="#">Male</a>
             <ul class="dropdown">
-              <li><a href="#">Shoes</a></li>
-              <li><a href="#">Clothing</a></li>
-              <li><a href="#">Accessories</a></li>
+              <li><a href="{% url 'search_results' %}?query=MaleShoes">Shoes</a></li>
+              <li><a href="{% url 'search_results' %}?query=MaleClothing">Clothing</a></li>
+              <li><a href="{% url 'search_results' %}?query=MaleAccessories">Accessories</a></li>
             </ul>
           </li>
           <li class="menu-item">
             <a href="#">Female</a>
             <ul class="dropdown">
-              <li><a href="#">Shoes</a></li>
-              <li><a href="#">Clothing</a></li>
-              <li><a href="#">Accessories</a></li>
+              <li><a href="{% url 'search_results' %}?query=FemaleShoes">Shoes</a></li>
+              <li><a href="{% url 'search_results' %}?query=FemaleClothing">Clothing</a></li>
+              <li><a href="{% url 'search_results' %}?query=FemaleAccessories">Accessories</a></li>
             </ul>
           </li>
         </ul>
