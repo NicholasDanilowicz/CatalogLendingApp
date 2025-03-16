@@ -26,7 +26,8 @@ def home(request):
         else:
             return render(request, 'librarian_home.html', {"form": form})
     except UserProfile.DoesNotExist:
-        return redirect('select_role')
+        UserProfile.objects.create(user=request.user, role='patron')
+        return render(request, 'home.html', {"form": SearchForm()})
 
 def select_role(request):
     try:
