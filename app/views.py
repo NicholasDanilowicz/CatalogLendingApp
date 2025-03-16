@@ -20,7 +20,7 @@ def home(request):
         if request.method == 'GET':
             form = SearchForm(request.GET)
             if form.is_valid():
-                search_text = form.cleaned_data["search_text"]
+                query = form.cleaned_data["query"]
         if user_profile.role == 'patron':
             return render(request, 'home.html', {"form": form})
         else:
