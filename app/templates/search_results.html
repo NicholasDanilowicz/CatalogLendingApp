@@ -14,40 +14,37 @@
         <h4>Search query: {{ query }}</h4>
     {% endif %}
 
-    <div class="grid-container">
+    <div class="row">
         {% for item in page_obj %}
-            <div class="grid-item-container">
-                <a href="{% url 'item_detail' item.id %}" class="grid-item">
-                    {% if item.image_url %}
-                        <img src="{{ item.image_url }}" alt="{{ item.name }}">
-                    {% elif item.image %}
-                        <img src="{{ item.image.url }}" alt="{{ item.name }}">
-                    {% else %}
-                        <img src="{% static 'images/placeholder.png' %}" alt="{{ item.name }}">
-                    {% endif %}
-                    <p>{{ item.name }} - {{ item.description }}</p>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="{{ item.display_image_url }}" class="card-img-top" alt="{{ item.name }}" style="height: 200px; object-fit: contain;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.name }}</h5>
+                    <a href="{% url 'item_detail' item_id=item.id %}" class="btn btn-primary">View Details</a>
                     <p class="availability-tag {% if item.available %}available{% else %}unavailable{% endif %}">
                         {% if item.available %}Available{% else %}Not Available{% endif %}
                     </p>
-                </a>
+                </div>
             </div>
+        </div>
         {% empty %}
-            <div class="col-12">
-                <p>No equipment items found.</p>
-            </div>
+        <div class="col-12">
+            <p>No equipment items found.</p>
+        </div>
         {% endfor %}
     </div>
 
     <!-- Pagination -->
     <div class="pagination">
         {% if page_obj.has_previous %}
-            <a href="?{% if query %}q={{ query }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page=1">First</a>
-            <a href="?{% if query %}q={{ query }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page={{ page_obj.previous_page_number }}">Previous</a>
+            <a href="?{% if query %}query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page=1">First</a>
+            <a href="?{% if query %}query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page={{ page_obj.previous_page_number }}">Previous</a>
         {% endif %}
         <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
         {% if page_obj.has_next %}
-            <a href="?{% if query %}q={{ query }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page={{ page_obj.next_page_number }}">Next</a>
-            <a href="?{% if query %}q={{ query }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page={{ page_obj.paginator.num_pages }}">Last</a>
+            <a href="?{% if query %}query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page={{ page_obj.next_page_number }}">Next</a>
+            <a href="?{% if query %}query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page={{ page_obj.paginator.num_pages }}">Last</a>
         {% endif %}
     </div>
 </div>

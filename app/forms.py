@@ -1,5 +1,11 @@
+# *************************************************************************************
+# *  REFERENCES
+# *  Title: Django Forms
+# *  URL: https://www.geeksforgeeks.org/django-forms/
+# *************************************************************************************
+
 from django import forms
-from .models import Collection, TAG_CHOICES
+from .models import Collection, TAG_CHOICES, Equipment, EquipmentImage
 
 class SearchForm(forms.Form):
     query = forms.CharField(
@@ -8,6 +14,33 @@ class SearchForm(forms.Form):
         required=False,
         widget=forms.TextInput(attrs={'placeholder': 'Search for equipment...', 'class': 'search-input'})
     )
+
+class EquipmentEditForm(forms.ModelForm):
+    collections = forms.ModelMultipleChoiceField(
+        queryset=Collection.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label='Collections'
+    )
+
+    class Meta:
+        model = Equipment
+        fields = ['name', 'description', 'available', 'collections']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'available': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+        labels = {
+            'name': 'Equipment Name',
+            'description': 'Description',
+            'available': 'Available for Checkout',
+        }
+        help_texts = {
+            'description': 'Provide a detailed description of the equipment.',
+            'available': 'Check this box if the equipment is available for checkout.',
+            'collections': 'Select the collections this equipment belongs to.',
+        }
 
 class CollectionAdminForm(forms.ModelForm):
     tags = forms.MultipleChoiceField(

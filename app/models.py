@@ -25,17 +25,42 @@ class Equipment(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     available = models.BooleanField(default=True)
-    image = models.ImageField(upload_to='equipment/', blank=True, null=True, default='equipment_images/placeholder.jpg')
     collections = models.ManyToManyField('Collection', blank=True, related_name='equipment_items')
 
     def __str__(self):
         return self.name
     
     @property
+    def display_image_url(self):
+        first_image = self.images.first()
+        if first_image and first_image.image:
+            return first_image.image_url
+        return 'https://upload.wikimedia.org/wikipedia/commons/7/7a/Basketball.png'
+    
+    @property
+    def all_images(self):
+        images = list(self.images.all())
+        if not images:
+            return [{'url': 'https://upload.wikimedia.org/wikipedia/commons/7/7a/Basketball.png', 'is_default': False}]
+        return [{'url': img.image_url, 'is_default': False} for img in images]
+
+class EquipmentImage(models.Model):
+    equipment = models.ForeignKey(Equipment, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='equipment/')
+    is_primary = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Image for {self.equipment.name}"
+    
+    @property
     def image_url(self):
         if self.image:
             return f"https://{settings.AWS_S3_CUSTOM_DOMAIN}/{self.image}"
         return None
+
+    class Meta:
+        ordering = ['-is_primary', '-created_at']
 
 class Collection(models.Model):
     title = models.CharField(max_length=200)
