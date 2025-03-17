@@ -5,7 +5,7 @@
 # *************************************************************************************
 
 from django import forms
-from .models import Collection, TAG_CHOICES, Equipment, EquipmentImage
+from .models import Collection, TAG_CHOICES, Equipment, EquipmentImage, UserProfile
 
 class SearchForm(forms.Form):
     query = forms.CharField(
@@ -64,3 +64,20 @@ class CollectionAdminForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['real_name', 'profile_picture']
+        widgets = {
+            'real_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'profile_picture': forms.FileInput(attrs={'class': 'form-control'})
+        }
+        labels = {
+            'real_name': 'Full Name',
+            'profile_picture': 'Profile Picture'
+        }
+        help_texts = {
+            'real_name': 'Enter your full name',
+            'profile_picture': 'Upload a profile picture (optional)'
+        }
