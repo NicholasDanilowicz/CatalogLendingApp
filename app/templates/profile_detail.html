@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+
+{% block title %}Profile - {{ profile.real_name|default:profile.user.username }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <img src="{{ profile.profile_picture_url }}" alt="Profile Picture" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                    </div>
+                    
+                    <h2 class="card-title text-center mb-4">{{ profile.real_name|default:profile.user.username }}</h2>
+                    
+                    <div class="profile-info mb-4">
+                        <p><strong>Role:</strong> {{ profile.role|title }}</p>
+                        <p><strong>Google Account:</strong> {{ google_account }}</p>
+                        <p><strong>Member Since:</strong> {{ profile.join_date|date:"F j, Y" }}</p>
+                    </div>
+
+                    <form method="post" enctype="multipart/form-data" class="mt-4">
+                        {% csrf_token %}
+                        {% bootstrap_form edit_form %}
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

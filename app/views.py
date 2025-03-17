@@ -14,7 +14,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
 from django.core.paginator import Paginator
-from .forms import SearchForm, EquipmentEditForm
+from .forms import SearchForm, EquipmentEditForm, ProfileEditForm
 from .models import UserProfile
 from .models import Equipment
 from .models import Collection
@@ -137,3 +137,23 @@ def search_results(req):
     }
     
     return render(req, 'search_results.html', context)
+
+@login_required
+def profile_detail(request):
+    profile = request.user.userprofile
+    edit_form = None
+
+    if request.method == 'POST':
+        form = ProfileEditForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            profile = form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('profile_detail')
+    else:
+        edit_form = ProfileEditForm(instance=profile)
+
+    return render(request, 'profile_detail.html', {
+        'profile': profile,
+        'edit_form': edit_form,
+        'google_account': request.user.email
+    })

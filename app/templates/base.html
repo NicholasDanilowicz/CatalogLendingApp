@@ -36,9 +36,10 @@
         </form>
       </div>
       {% if user.is_authenticated %}
-        <p style="color: #ECEFF4;">Hello, {{ user.username }}!</p>
-        <p style="color: #ECEFF4;">Role: {% if user.userprofile.role == 'librarian' %}Librarian{% else %}Patron{% endif %}</p>
+        <p style="color: #2E3440;">Hello, {{ user.userprofile.real_name|default:user.username }}!</p>
+        <p style="color: #2E3440;">Role: {% if user.userprofile.role == 'librarian' %}Librarian{% else %}Patron{% endif %}</p>
         <div class="text-center">
+          <a href="{% url 'profile_detail' %}" class="btn" style="background-color: #81A1C1; border-color: #81A1C1; color: #ECEFF4; margin-right: 10px;">Profile</a>
           <a href="{% url 'logout' %}" class="btn" style="background-color: #81A1C1; border-color: #81A1C1; color: #ECEFF4;">Logout</a>
         </div>
 
@@ -118,7 +119,7 @@
       </nav>
     </div> 
   </header>
-  <main>
+  <main style="margin-bottom: 100px;">
     {% block content %}
     {% endblock %}
   </main>

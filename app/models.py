@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
+from django.utils import timezone
 
 TAG_CHOICES = [
     ('sports', 'Sports'),
@@ -18,8 +19,18 @@ class UserProfile(models.Model):
         ('patron', 'Patron'), 
         ('librarian', 'Librarian')
     ])
+    real_name = models.CharField(max_length=100, blank=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
+    join_date = models.DateTimeField(default=timezone.now)
+
     def __str__(self):
         return f"User: {self.user.username} Role: {self.role}"
+
+    @property
+    def profile_picture_url(self):
+        if self.profile_picture:
+            return f"https://{settings.AWS_S3_CUSTOM_DOMAIN}/{self.profile_picture}"
+        return 'https://upload.wikimedia.org/wikipedia/en/b/b1/Portrait_placeholder.png'
 
 class Equipment(models.Model):
     name = models.CharField(max_length=200)
