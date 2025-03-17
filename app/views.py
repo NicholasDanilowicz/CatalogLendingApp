@@ -1,10 +1,25 @@
+# *************************************************************************************
+# *  REFERENCES
+# *  Title: Implementing Multiple File Uploads in Django
+# *  Author: Pwaveino Clarkson
+# *  Date: Jul 18, 2023
+# *  URL: https://medium.com/django-unleashed/implementing-multiple-file-uploads-in-django-e9b1833755ed
+# *
+# *  Title: Django Forms
+# *  URL: https://www.geeksforgeeks.org/django-forms/
+# *
+# *************************************************************************************
+
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 
 from django.core.paginator import Paginator
-from .forms import SearchForm
+from .forms import SearchForm, EquipmentEditForm
 from .models import UserProfile
 from .models import Equipment
 from .models import Collection
+from django.contrib import messages
+from .models import EquipmentImage
 
 
 def custom_login(request):
@@ -22,10 +37,8 @@ def home(request):
             form = SearchForm(request.GET)
             if form.is_valid():
                 query = form.cleaned_data["query"]
-        if user_profile.role == 'patron':
-            return render(request, 'home.html', {"form": form})
-        else:
-            return render(request, 'librarian_home.html', {"form": form})
+        context = {"form": form}
+        return render(request, 'home.html', context)
     except UserProfile.DoesNotExist:
         UserProfile.objects.create(user=request.user, role='patron')
         return render(request, 'home.html', {"form": SearchForm()})
@@ -43,9 +56,39 @@ def select_role(request):
         
         return render(request, 'select_role.html')
 
+@login_required
 def item_detail(request, item_id):
     item = get_object_or_404(Equipment, id=item_id)
-    return render(request, 'item_detail.html', {'item': item})
+    is_librarian = hasattr(request.user, 'userprofile') and request.user.userprofile.role == 'librarian'
+    edit_form = None
+
+    if is_librarian:
+        if request.method == 'POST':
+            form = EquipmentEditForm(request.POST, request.FILES, instance=item)
+            if form.is_valid():
+                equipment = form.save()
+                
+                images = request.FILES.getlist('images')
+                if images:
+                    equipment.images.all().delete()
+                    
+                    for image in images:
+                        EquipmentImage.objects.create(
+                            equipment=equipment,
+                            image=image,
+                            is_primary=not equipment.images.exists()
+                        )
+                
+                messages.success(request, 'Equipment updated successfully!')
+                return redirect('item_detail', item_id=item.id)
+        else:
+            edit_form = EquipmentEditForm(instance=item)
+
+    return render(request, 'item_detail.html', {
+        'item': item,
+        'edit_form': edit_form if is_librarian else None,
+        'is_librarian': is_librarian,
+    })
 
 def collection_detail(request, collection_id):
     collection = get_object_or_404(Collection, id=collection_id)
@@ -53,18 +96,16 @@ def collection_detail(request, collection_id):
         return redirect('home')
     
     equipment_items = collection.equipment_items.all()
-    print(f"Collection: {collection.title}")
-    print(f"Equipment items count: {equipment_items.count()}")
-    print(f"Equipment items: {[item.name for item in equipment_items]}")
     
     return render(request, 'collection_detail.html', {
         'collection': collection,
-        'equipment_items': equipment_items
+        'equipment_items': equipment_items,
+        'collection_id': collection_id
     })
 
 def search_results(req):
     form = SearchForm(req.GET)
-    query = req.GET.get('q', '')
+    query = req.GET.get('query', '')
     collection_id = req.GET.get('collection_id')
     tag = req.GET.get('tag')
     

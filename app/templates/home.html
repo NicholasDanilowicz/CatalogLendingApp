@@ -5,9 +5,15 @@
   <div class="container py-4">
     <div class="row justify-content-center">
       <div class="col-md-6">
+        {% if user.is_authenticated and user.userprofile.role == 'librarian' %}
+          <div class="text-center">
+            <h3>Hi Librarian</h3>
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>
+  {% if not user.is_authenticated or user.userprofile.role == 'patron' %}
   <section class="how-it-works">
     <h2>How It Works</h2>
     <div class="steps">
@@ -24,6 +30,6 @@
             <p>Complete transactions safely and return the items.</p>
         </div>
     </div>
-</section>
-
+  </section>
+  {% endif %}
 {% endblock %}

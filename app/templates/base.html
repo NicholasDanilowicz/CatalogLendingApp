@@ -36,9 +36,8 @@
         </form>
       </div>
       {% if user.is_authenticated %}
-        <h2 class="mb-4 text-center" style="color: #5E81AC;">Welcome to Patron Page</h2>
         <p style="color: #ECEFF4;">Hello, {{ user.username }}!</p>
-        <p style="color: #ECEFF4;">Role: Patron</p>
+        <p style="color: #ECEFF4;">Role: {% if user.userprofile.role == 'librarian' %}Librarian{% else %}Patron{% endif %}</p>
         <div class="text-center">
           <a href="{% url 'logout' %}" class="btn" style="background-color: #81A1C1; border-color: #81A1C1; color: #ECEFF4;">Logout</a>
         </div>
