@@ -9,7 +9,8 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path("", views.home, name='home'),
     path("search/", views.search_results, name='search_results'),
-    path("item/<int:item_id>", views.item_detail, name='item_detail')
+    path("item/<int:item_id>", views.item_detail, name='item_detail'),
+    path("collection/<int:collection_id>/", views.collection_detail, name='collection_detail'),
 ]
 
 # if settings.DEBUG:

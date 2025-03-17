@@ -23,6 +23,11 @@
         <form action="{% url 'search_results' %}" method="GET">
           <div id="searchBar" class="search-container">
             {{form.as_p}}
+            {% if collection_id %}
+                <input type="hidden" name="collection_id" value="{{ collection_id }}">
+            {% elif tag %}
+                <input type="hidden" name="tag" value="{{ tag }}">
+            {% endif %}
             <button type="submit">
               <i class="fas fa-search"></i>
             </button>
@@ -48,46 +53,66 @@
       <nav class="menu">
         <ul class="menu-list">
           <li class="menu-item">
-            <a href="#">Sports</a>
+            <a href="{% url 'search_results' %}?query=">All Equipment</a>
+          </li>
+          <li class="menu-item">
+            <a href="{% url 'search_results' %}?tag=sports">Sports</a>
             <ul class="dropdown">
-              <li><a href="{% url 'search_results' %}?query=Football">Football</a></li>
-              <li><a href="{% url 'search_results' %}?query=Basketball">Basketball</a></li>
-              <li><a href="{% url 'search_results' %}?query=Tennis">Tennis</a></li>
-              <li><a href="#">Football</a></li>
-              <li><a href="#">Basketball</a></li>
-              <li><a href="#">Tennis</a></li>
+              {% for collection in collections %}
+                {% if 'sports' in collection.get_tags_list and collection.is_public %}
+                  <li><a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a></li>
+                {% endif %}
+              {% endfor %}
             </ul>
           </li>
           <li class="menu-item">
-            <a href="#">Exercise</a>
+            <a href="{% url 'search_results' %}?tag=exercise">Exercise</a>
             <ul class="dropdown">
-              <li><a href="{% url 'search_results' %}?query=Yoga">Yoga</a></li>
-              <li><a href="{% url 'search_results' %}?query=Weights">Weights</a></li>
-              <li><a href="{% url 'search_results' %}?query=Cardio">Cardio</a></li>
+              {% for collection in collections %}
+                {% if 'exercise' in collection.get_tags_list and collection.is_public %}
+                  <li><a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a></li>
+                {% endif %}
+              {% endfor %}
             </ul>
           </li>
           <li class="menu-item">
-            <a href="#">Outdoor</a>
+            <a href="{% url 'search_results' %}?tag=outdoor">Outdoor</a>
             <ul class="dropdown">
-              <li><a href="{% url 'search_results' %}?query=Camping">Camping</a></li>
-              <li><a href="{% url 'search_results' %}?query=Biking">Biking</a></li>
-              <li><a href="{% url 'search_results' %}?query=Hiking">Hiking</a></li>
+              {% for collection in collections %}
+                {% if 'outdoor' in collection.get_tags_list and collection.is_public %}
+                  <li><a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a></li>
+                {% endif %}
+              {% endfor %}
             </ul>
           </li>
           <li class="menu-item">
-            <a href="#">Male</a>
+            <a href="{% url 'search_results' %}?tag=male">Male</a>
             <ul class="dropdown">
-              <li><a href="{% url 'search_results' %}?query=MaleShoes">Shoes</a></li>
-              <li><a href="{% url 'search_results' %}?query=MaleClothing">Clothing</a></li>
-              <li><a href="{% url 'search_results' %}?query=MaleAccessories">Accessories</a></li>
+              {% for collection in collections %}
+                {% if 'male' in collection.get_tags_list and collection.is_public %}
+                  <li><a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a></li>
+                {% endif %}
+              {% endfor %}
             </ul>
           </li>
           <li class="menu-item">
-            <a href="#">Female</a>
+            <a href="{% url 'search_results' %}?tag=female">Female</a>
             <ul class="dropdown">
-              <li><a href="{% url 'search_results' %}?query=FemaleShoes">Shoes</a></li>
-              <li><a href="{% url 'search_results' %}?query=FemaleClothing">Clothing</a></li>
-              <li><a href="{% url 'search_results' %}?query=FemaleAccessories">Accessories</a></li>
+              {% for collection in collections %}
+                {% if 'female' in collection.get_tags_list and collection.is_public %}
+                  <li><a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a></li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </li>
+          <li class="menu-item">
+            <a href="{% url 'search_results' %}?tag=other">Other</a>
+            <ul class="dropdown">
+              {% for collection in collections %}
+                {% if 'other' in collection.get_tags_list and collection.is_public %}
+                  <li><a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a></li>
+                {% endif %}
+              {% endfor %}
             </ul>
           </li>
         </ul>

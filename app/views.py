@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from .forms import SearchForm
 from .models import UserProfile
 from .models import Equipment
+from .models import Collection
 
 
 def custom_login(request):
@@ -46,18 +47,52 @@ def item_detail(request, item_id):
     item = get_object_or_404(Equipment, id=item_id)
     return render(request, 'item_detail.html', {'item': item})
 
+def collection_detail(request, collection_id):
+    collection = get_object_or_404(Collection, id=collection_id)
+    if not collection.can_user_access(request.user):
+        return redirect('home')
+    
+    equipment_items = collection.equipment_items.all()
+    print(f"Collection: {collection.title}")
+    print(f"Equipment items count: {equipment_items.count()}")
+    print(f"Equipment items: {[item.name for item in equipment_items]}")
+    
+    return render(request, 'collection_detail.html', {
+        'collection': collection,
+        'equipment_items': equipment_items
+    })
+
 def search_results(req):
     form = SearchForm(req.GET)
     query = req.GET.get('q', '')
-    print("here is query: ", query)
-    results = []
-    if form.is_valid():
-        query = form.cleaned_data.get('query', '')
-        print("cleaned query: ", query)
-        if query:
-            results = Equipment.objects.filter(name__icontains=query)
-    paginator = Paginator(results, 5)
+    collection_id = req.GET.get('collection_id')
+    tag = req.GET.get('tag')
+    
+    base_queryset = Equipment.objects.all()
+
+    if collection_id:
+        try:
+            collection = Collection.objects.get(id=collection_id)
+            base_queryset = base_queryset.filter(collections=collection)
+        except Collection.DoesNotExist:
+            pass
+    elif tag:
+        collections = Collection.objects.filter(tags__contains=tag, is_public=True)
+        base_queryset = base_queryset.filter(collections__in=collections).distinct()
+
+    if query:
+        base_queryset = base_queryset.filter(name__icontains=query)
+
+    paginator = Paginator(base_queryset, 5)
     page_number = req.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    print("whatever page_obj is: ", page_obj)
-    return render(req, 'search_results.html', {'form': form, 'query': query, 'results': results, 'page_obj': page_obj})
+    
+    context = {
+        'form': form, 
+        'query': query,
+        'page_obj': page_obj,
+        'collection_id': collection_id,
+        'tag': tag
+    }
+    
+    return render(req, 'search_results.html', context)
