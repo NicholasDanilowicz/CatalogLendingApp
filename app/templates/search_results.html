@@ -1,9 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
+{% load django_bootstrap5 %}
+
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/searchStyles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/search_styles.css' %}">
 {% endblock %}
-{% block title %}Search Results{% endblock %}
+
+{% block title %}
+Search Results
+{% endblock %}
+
 {% block content %}
 <div class="container mt-4">
     <h2>Search Results</h2>

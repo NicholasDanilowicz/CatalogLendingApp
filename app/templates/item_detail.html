@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load django_bootstrap5 %}
+
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/itemDetailStyles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/item_detail.css' %}">
 {% endblock %}
+
 {% block content %}
 <div class="container mt-4">
     <h1>{{ item.name }}</h1>

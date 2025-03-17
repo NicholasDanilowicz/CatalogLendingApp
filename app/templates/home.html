@@ -1,5 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Home{% endblock %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block extra_css %} <link rel="stylesheet" href="{% static 'css/home.css' %}"> {% endblock %}
+
 {% block content %}
   <!-- Main Content -->
   <div class="container py-4">

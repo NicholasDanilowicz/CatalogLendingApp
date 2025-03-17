@@ -1,18 +1,22 @@
-{% load django_bootstrap5 %}
 {% load static %}
+{% load django_bootstrap5 %}
 
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}The Site Title{% endblock %}</title>
+  <title>
+    {% block title %}
+    The Cataloging App
+    {% endblock %}
+  </title>
   {% bootstrap_css %}
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-{% block extra_css %}
-{% endblock %}
 </head>
+
+
+
 <body>
   <header class="navbar">
     <div class="top-header-container">
