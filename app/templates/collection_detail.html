@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/searchStyles.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>{{ collection.title }}</h2>
+            <div class="mb-3">
+                {% for tag in collection.get_tags_list %}
+                    <a href="{% url 'search_results' %}?tag={{ tag }}" class="badge bg-primary text-decoration-none me-1">{{ tag }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-container">
+        {% for item in equipment_items %}
+            <div class="grid-item-container">
+                <a href="{% url 'item_detail' item.id %}" class="grid-item">
+                    {% if item.image_url %}
+                        <img src="{{ item.image_url }}" alt="{{ item.name }}">
+                    {% elif item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                    {% else %}
+                        <img src="{% static 'images/placeholder.png' %}" alt="{{ item.name }}">
+                    {% endif %}
+                    <p>{{ item.name }} - {{ item.description }}</p>
+                    <p class="availability-tag {% if item.available %}available{% else %}unavailable{% endif %}">
+                        {% if item.available %}Available{% else %}Not Available{% endif %}
+                    </p>
+                </a>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <p>No equipment items in this collection yet.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

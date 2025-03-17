@@ -56,3 +56,21 @@
   padding: 8px 12px;
   font-weight: bold;
 }
+
+.availability-tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    margin-top: 5px;
+}
+
+.available {
+    background-color: #28a745;
+    color: white;
+}
+
+.unavailable {
+    background-color: #dc3545;
+    color: white;
+}

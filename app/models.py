@@ -1,7 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db import models
+from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 
+TAG_CHOICES = [
+    ('sports', 'Sports'),
+    ('exercise', 'Exercise'),
+    ('outdoor', 'Outdoor'),
+    ('male', 'Male'),
+    ('female', 'Female'),
+    ('other', 'Other'),
+]
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -17,6 +26,8 @@ class Equipment(models.Model):
     description = models.TextField(blank=True)
     available = models.BooleanField(default=True)
     image = models.ImageField(upload_to='equipment/', blank=True, null=True, default='equipment_images/placeholder.jpg')
+    collections = models.ManyToManyField('Collection', blank=True, related_name='equipment_items')
+
     def __str__(self):
         return self.name
     
@@ -27,21 +38,10 @@ class Equipment(models.Model):
         return None
 
 class Collection(models.Model):
-    TAG_CHOICES = [
-        ('sports', 'Sports'),
-        ('exercise', 'Exercise'),
-        ('outdoor', 'Outdoor'),
-        ('male', 'Male'),
-        ('female', 'Female'),
-        ('other', 'Other'),
-    ]
-
     title = models.CharField(max_length=200)
-    description = models.TextField()
     is_public = models.BooleanField(default=True)
-    equipment = models.ManyToManyField('Equipment', blank=True, related_name='collections')
     allowed_users = models.ManyToManyField(User, blank=True, related_name='accessible_collections')
-    tag = models.CharField(max_length=10, choices=TAG_CHOICES)
+    tags = models.CharField(max_length=100, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -60,3 +60,6 @@ class Collection(models.Model):
             return not equipment_item.collections.filter(is_public=False).exists()
         else:
             return equipment_item.collections.count() == 0
+
+    def get_tags_list(self):
+        return [tag.strip() for tag in self.tags.split(',') if tag.strip()]
