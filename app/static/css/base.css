@@ -1,39 +1,69 @@
+/* Global Styles */
 body {
-  /* background-color: #2e3440; */
+  background-color: #D8DEE9;
+  margin: 0;
 }
 
 main {
- margin-bottom: 100px;
+  margin-bottom: 100px;
 }
 
-#loginButton {
-  margin-top: 20px;
-}
+/* ----- Top Navbar Layout ----- */
 
-.header-wrapper {
+/* Flex container for the top navbar with three columns */
+.top-navbar-container {
   display: flex;
-  /* align-items: center; */
-  /* justify-content: space-between; */
-  padding: 20px 50px;
-  background-color: #3B4252;
-  margin-bottom: 10px;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
 }
 
-.header-text {
-    color: #2E3440;
+/* Title Wrapper (center) */
+.title-wrapper {
+  order: 2;
+  flex: 1;
+  text-align: center;
+  font-family: "Edu TAS Beginner", cursive;
+  background-color: #4C566A;
+  border: 2px solid #4C566A;
+  margin: 10px;
+  padding: 10px;
+  padding-bottom: 20px;
+  border-radius: 10px;
+  width: auto;
+  box-sizing: border-box;
 }
 
-.spacer {
-  flex-grow: 1;
+.title {
+  margin: 0;
+  font-weight: 400;
 }
 
-.top-header-container {
-  display: flex;
-  width: 100%;
-  flex-direction: row;
-  justify-content: space-evenly;
+.title a {
+  color: #ECEFF4;
 }
-.bottom-header-container {
+
+
+/* Search Wrapper (left) */
+.search-wrapper {
+  position: fixed;
+  left: 0;
+  order: 1;
+  flex: 1;
+  text-align: left;
+}
+
+/* Auth Stuff Wrapper (right) */
+.auth-stuff-wrapper {
+  position: fixed;
+  right: 0;
+  order: 3;
+  flex: 1;
+  text-align: right;
+}
+
+/* ----- Navigation Menu (Bottom Navbar) ----- */
+.bottom-navbar-container {
   width: 100%;
   position: relative;
   z-index: 9999;
@@ -45,11 +75,9 @@ main {
   align-items: center;
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin-top: 10px;
   width: 100%;
-  /* background-color: #3B4252; */
-  /* border-radius: 20px; */
-  border-top: 1px solid rgba(0, 0, 0, .5);
+  border-top: 1px solid rgba(0, 0, 0, 0.5);
   border-bottom: 1px solid rgba(0, 0, 0, 0.5);
 }
 
@@ -65,16 +93,16 @@ main {
 
 .menu-item a {
   text-decoration: none;
-  color: #000000;
+  color: #4C566A;
   font-size: 18px;
   padding: 10px;
   display: block;
 }
 
 .menu-item:hover {
-  display: block;
   background-color: rgba(0, 0, 0, 0.2);
 }
+
 .dropdown {
   position: absolute;
   top: 100%;
@@ -86,7 +114,7 @@ main {
   min-width: 150px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
-  display: none; /* Initially hidden */
+  display: none;
   z-index: 99999;
 }
 
@@ -106,73 +134,48 @@ main {
   color: white;
 }
 
-/* SHOW DROPDOWN ON HOVER */
 .menu-item:hover .dropdown {
   display: block;
 }
 
+/* ----- Navbar Container ----- */
 .navbar {
-  display:flex;
-  flex-direction: column;
-  /* background-color: red; */
-}
-
-.app-title {
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
-  margin: 0;
-}
-
-/* Spacer for additional flexibility (optional) */
-.spacer {
-  flex-grow: 1; /* Takes up available space between elements */
-}
-
-.search-wrapper {
   display: flex;
-  justify-content: flex-end;
-  padding: 0px 40px;
-  margin-top: 20px;
-  margin-right: 40px;
+  flex-direction: column;
 }
 
+/* ----- Search Bar Styling ----- */
 .search-container {
   display: flex;
-  /* margin-right: 10em; */
-}
-
-@media (max-width: 768px) {
-  .search-container {
-    justify-content: center;
-  }
 }
 
 #searchBar input {
   width: 450px;
   padding: 10px;
   font-size: 16px;
-  border: 2px solid #ccc;
+  border: 2px solid #D8DEE9;
+  background-color: #ECEFF4;
+  color: #4C566A;
   border-radius: 25px;
   outline: none;
   transition: border-color 0.3s ease-in-out;
 }
 
 #searchBar input:focus {
-  border-color: #3B4252;
+  border-color: #4C566A;
 }
 
 #searchBar input::placeholder {
-  color: #aaa;
+  color: #4C566A;
 }
 
 .search-container button {
-  padding: 25px;
+  margin-left: 10px;
   font-size: 16px;
   border: none;
-  background-color: #3B4252;
-  color: white;
-  border-radius: 50%;  /* Circular button */
+  background-color: #4C566A;
+  color: #ECEFF4;
+  border-radius: 50%;
   cursor: pointer;
   width: 40px;
   height: 40px;
@@ -187,21 +190,41 @@ main {
 }
 
 .search-container button:hover {
-  background-color: #3B4252;
+  background-color: #4C566A;
 }
 
-.custom-btn {
+/* ----- Button Styling ----- */
+.btn {
   background-color: #81A1C1;
-  border: 1px solid #81A1C1;
   color: #ECEFF4;
+  border: 2px solid #81A1C1;
+  border-radius: 20px;
+  padding: 10px 20px;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #6790B0;
+  border-color: #6790B0;
 }
 
 .profile-btn {
-  margin-right: 10px;
+    display: inline-block;
+    width: 5em;
+    height: 5em;
+    border-radius: 50%;
+    background: url('{{ profile.profile_picture_url }}') no-repeat center center;
+    background-size: cover;
+    /* Optionally add a border or box-shadow for style */
+    border: 2px solid #ccc;
 }
 
+/* ----- Footer Styling ----- */
 .fixed-footer {
-  background-color: #3B4252;
+  background-color: #4C566A;
   color: #ECEFF4;
   position: fixed;
   bottom: 0;
@@ -220,4 +243,20 @@ main {
   width: 20px;
   height: 20px;
   object-fit: contain;
+}
+
+/* ----- Responsive Adjustments ----- */
+@media (max-width: 768px) {
+  .top-navbar-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .search-wrapper,
+  .title-wrapper,
+  .auth-stuff-wrapper {
+    order: unset;
+    width: 100%;
+    margin-bottom: 10px;
+  }
 }

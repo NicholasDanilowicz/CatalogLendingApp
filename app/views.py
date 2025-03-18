@@ -9,7 +9,7 @@
 # *  URL: https://www.geeksforgeeks.org/django-forms/
 # *
 # *************************************************************************************
-
+from django.contrib.auth import logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
@@ -145,7 +145,10 @@ def profile_detail(request):
 
     if request.method == 'POST':
         form = ProfileEditForm(request.POST, request.FILES, instance=profile)
-        if form.is_valid():
+        if request.POST.get('action') == 'logout':
+            logout(request)
+            return redirect('home')
+        else:
             profile = form.save()
             messages.success(request, 'Profile updated successfully!')
             return redirect('profile_detail')
