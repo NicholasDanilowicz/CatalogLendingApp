@@ -1,11 +1,29 @@
-/* Global Styles */
+/* Light Theme */
+:root {
+  --textbg: #ECEFF4;
+  --bg: #D8DEE9;
+  --secondary: #81A1C1;
+  --primary: #4C566A;
+}
+
+/* Dark Theme Overrides */
+body.dark-mode {
+  --textbg: #2E3440;
+  --bg: #000000;
+  --secondary: #ECEFF4;
+  --primary: #4C566A;
+}
+
+/* Global Stuff */
+
 body {
-  background-color: #D8DEE9;
+  background-color: var(--bg);
   margin: 0;
 }
 
 main {
-  margin-bottom: 100px;
+  margin-top: calc(10em); /* Adjust 60px to the actual navbar height */
+  margin-bottom: 10em;
 }
 
 /* ----- Top Navbar Layout ----- */
@@ -13,24 +31,28 @@ main {
 /* Flex container for the top navbar with three columns */
 .top-navbar-container {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 1em;
+  left: 1em;
+  right: 1em;
+  z-index: 1000;
+  background-color: var(--bg);
+  padding: 0.5em;
+  border-radius: 10px;
   box-sizing: border-box;
 }
 
 /* Title Wrapper (center) */
 .title-wrapper {
-  order: 2;
-  flex: 1;
   text-align: center;
   font-family: "Edu TAS Beginner", cursive;
-  background-color: #4C566A;
-  border: 2px solid #4C566A;
-  margin: 10px;
+  background-color: var(--primary);
+  border: 2px solid var(--primary);
   padding: 10px;
   padding-bottom: 20px;
   border-radius: 10px;
-  width: auto;
   box-sizing: border-box;
 }
 
@@ -40,33 +62,27 @@ main {
 }
 
 .title a {
-  color: #ECEFF4;
+  color: var(--textbg);
 }
 
 
 /* Search Wrapper (left) */
 .search-wrapper {
-  position: fixed;
-  left: 0;
-  order: 1;
-  flex: 1;
+  transform: translateY(2em); /* adjust the value as needed */
   text-align: left;
 }
 
 /* Auth Stuff Wrapper (right) */
 .auth-stuff-wrapper {
-  position: fixed;
-  right: 0;
-  order: 3;
-  flex: 1;
   text-align: right;
 }
 
 /* ----- Navigation Menu (Bottom Navbar) ----- */
 .bottom-navbar-container {
   width: 100%;
-  position: relative;
+  position: fixed;
   z-index: 9999;
+  margin-top: 7em;
 }
 
 .menu-list {
@@ -93,14 +109,14 @@ main {
 
 .menu-item a {
   text-decoration: none;
-  color: #4C566A;
+  color: var(--primary);
   font-size: 18px;
   padding: 10px;
   display: block;
 }
 
 .menu-item:hover {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: var(--textbg);
 }
 
 .dropdown {
@@ -153,28 +169,28 @@ main {
   width: 450px;
   padding: 10px;
   font-size: 16px;
-  border: 2px solid #D8DEE9;
-  background-color: #ECEFF4;
-  color: #4C566A;
+  border: 2px solid var(--bg);
+  background-color: var(--textbg);
+  color: var(--primary);
   border-radius: 25px;
   outline: none;
   transition: border-color 0.3s ease-in-out;
 }
 
 #searchBar input:focus {
-  border-color: #4C566A;
+  border-color: var(--primary);
 }
 
 #searchBar input::placeholder {
-  color: #4C566A;
+  color: var(--primary);
 }
 
 .search-container button {
   margin-left: 10px;
   font-size: 16px;
   border: none;
-  background-color: #4C566A;
-  color: #ECEFF4;
+  background-color: var(--primary);
+  color: var(--textbg);
   border-radius: 50%;
   cursor: pointer;
   width: 40px;
@@ -190,13 +206,13 @@ main {
 }
 
 .search-container button:hover {
-  background-color: #4C566A;
+  background-color: var(--primary);
 }
 
 /* ----- Button Styling ----- */
 .btn {
   background-color: #81A1C1;
-  color: #ECEFF4;
+  color: var(--textbg);
   border: 2px solid #81A1C1;
   border-radius: 20px;
   padding: 10px 20px;
@@ -219,13 +235,21 @@ main {
     background: url('{{ profile.profile_picture_url }}') no-repeat center center;
     background-size: cover;
     /* Optionally add a border or box-shadow for style */
-    border: 2px solid #ccc;
+    border: 2px solid var(--primary);
+}
+
+.profile-pic-wrapper {
+  width: 5em;
+  height: 5em;
+  border-radius: 50%;
+  overflow: hidden; /* Ensures the image stays within the circle */
+  background: url('/static/images/default_profile_pic.jpg') center/cover no-repeat;
 }
 
 /* ----- Footer Styling ----- */
 .fixed-footer {
-  background-color: #4C566A;
-  color: #ECEFF4;
+  background-color: var(--primary);
+  color: var(--textbg);
   position: fixed;
   bottom: 0;
   width: 100%;
