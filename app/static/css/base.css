@@ -2,16 +2,22 @@
 :root {
   --textbg: #ECEFF4;
   --bg: #D8DEE9;
+  --tertiary: #4C566A;
   --secondary: #81A1C1;
   --primary: #4C566A;
+  --same: #4C566A;
+  --reverse: #81A1C1;
 }
 
 /* Dark Theme Overrides */
 body.dark-mode {
-  --textbg: #2E3440;
-  --bg: #000000;
-  --secondary: #ECEFF4;
-  --primary: #4C566A;
+  --textbg: #4C566A;
+  --bg: #4C566A;
+  --tertiary: #ECEFF4;
+  --secondary: #D8DEE9;
+  --primary: #81A1C1;
+  --same: #4C566A;
+  --reverse: #4C566A;
 }
 
 /* Global Stuff */
@@ -19,11 +25,11 @@ body.dark-mode {
 body {
   background-color: var(--bg);
   margin: 0;
+  color: var(--tertiary);
 }
 
 main {
-  margin-top: calc(10em); /* Adjust 60px to the actual navbar height */
-  margin-bottom: 10em;
+  margin-top: calc(10em);
 }
 
 /* ----- Top Navbar Layout ----- */
@@ -44,7 +50,6 @@ main {
   box-sizing: border-box;
 }
 
-/* Title Wrapper (center) */
 .title-wrapper {
   text-align: center;
   font-family: "Edu TAS Beginner", cursive;
@@ -68,11 +73,10 @@ main {
 
 /* Search Wrapper (left) */
 .search-wrapper {
-  transform: translateY(2em); /* adjust the value as needed */
+  transform: translateY(2em);
   text-align: left;
 }
 
-/* Auth Stuff Wrapper (right) */
 .auth-stuff-wrapper {
   text-align: right;
 }
@@ -95,6 +99,9 @@ main {
   width: 100%;
   border-top: 1px solid rgba(0, 0, 0, 0.5);
   border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+  background-color: var(--primary);
+  border: 2px;
+  border-color: var(--secondary);
 }
 
 .menu-item {
@@ -109,14 +116,14 @@ main {
 
 .menu-item a {
   text-decoration: none;
-  color: var(--primary);
+  color: var(--textbg);
   font-size: 18px;
   padding: 10px;
   display: block;
 }
 
 .menu-item:hover {
-  background-color: var(--textbg);
+  background-color: var(--secondary);
 }
 
 .dropdown {
@@ -170,8 +177,8 @@ main {
   padding: 10px;
   font-size: 16px;
   border: 2px solid var(--bg);
-  background-color: var(--textbg);
-  color: var(--primary);
+  background-color: #ECEFF4;
+  color: var(--same);
   border-radius: 25px;
   outline: none;
   transition: border-color 0.3s ease-in-out;
@@ -182,7 +189,7 @@ main {
 }
 
 #searchBar input::placeholder {
-  color: var(--primary);
+  color: var(--same);
 }
 
 .search-container button {
@@ -206,14 +213,14 @@ main {
 }
 
 .search-container button:hover {
-  background-color: var(--primary);
+  background-color: var(--secondary);
 }
 
 /* ----- Button Styling ----- */
 .btn {
-  background-color: #81A1C1;
+  background-color: var(--primary);
   color: var(--textbg);
-  border: 2px solid #81A1C1;
+  border: 2px solid var(--reverse);
   border-radius: 20px;
   padding: 10px 20px;
   text-decoration: none;
@@ -223,8 +230,7 @@ main {
 }
 
 .btn:hover {
-  background-color: #6790B0;
-  border-color: #6790B0;
+  background-color: var(--reverse);
 }
 
 .profile-btn {
@@ -234,8 +240,11 @@ main {
     border-radius: 50%;
     background: url('{{ profile.profile_picture_url }}') no-repeat center center;
     background-size: cover;
-    /* Optionally add a border or box-shadow for style */
     border: 2px solid var(--primary);
+}
+
+.profile-btn:hover {
+    border: 2px solid var(--secondary);
 }
 
 .profile-pic-wrapper {
