@@ -219,7 +219,7 @@ main {
 /* ----- Button Styling ----- */
 .btn {
   background-color: var(--primary);
-  color: var(--textbg);
+  color: #ECEFF4;
   border: 2px solid var(--reverse);
   border-radius: 20px;
   padding: 10px 20px;
