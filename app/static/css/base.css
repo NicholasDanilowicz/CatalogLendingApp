@@ -238,7 +238,7 @@ main {
     width: 5em;
     height: 5em;
     border-radius: 50%;
-    background: url('{{ profile.profile_picture_url }}') no-repeat center center;
+     background: url('/static/images/default_profile_pic.jpg') no-repeat center center;
     background-size: cover;
     border: 2px solid var(--primary);
 }
