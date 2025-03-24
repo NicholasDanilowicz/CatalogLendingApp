@@ -48,13 +48,13 @@
                 <!--                <p>User: {{ user.userprofile.real_name|default:user.username }}!</p>-->
                 <!--                <p>Role: {% if user.userprofile.role == 'librarian' %}Librarian{% else %}Patron{% endif %}</p>-->
                 <div class="profile-pic-wrapper">
-                    <a href="{% url 'profile_detail' %}" class="profile-btn"></a>
+                    <a href="{% url 'profile_detail' %}" class="login-btn"></a>
                 </div>
             </div>
             {% else %}
             <div class="user-info">
                 <div class="top-right-buttons">
-                    <a id="loginButton" href="{% url 'social:begin' 'google-oauth2' %}" class="btn">Login with
+                    <a id="loginButton" href="{% url 'social:begin' 'google-oauth2' %}" class="login-btn">Login with
                         Google</a>
                 </div>
             </div>
@@ -143,7 +143,7 @@
 
 <footer class="fixed-footer">
     <div class="footer-container">
-        <button id="theme-toggle" class="btn">
+        <button id="theme-toggle" class="theme-btn">
             <i id="theme-icon" class="fas fa-moon"> </i>
         </button>
         <small>© 2025 A-19. All rights reserved.</small>
