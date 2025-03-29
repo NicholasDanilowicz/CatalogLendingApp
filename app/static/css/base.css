@@ -55,8 +55,7 @@ main {
   font-family: "Edu TAS Beginner", cursive;
   background-color: var(--primary);
   border: 2px solid var(--primary);
-  padding: 10px;
-  padding-bottom: 20px;
+  padding: 10px 10px 20px;
   border-radius: 10px;
   box-sizing: border-box;
 }
@@ -97,10 +96,7 @@ main {
   padding: 0;
   margin-top: 10px;
   width: 100%;
-  border-top: 1px solid rgba(0, 0, 0, 0.5);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
   background-color: var(--primary);
-  border: 2px;
   border-color: var(--secondary);
 }
 
@@ -252,9 +248,9 @@ main {
 }
 
 .profile-btn {
-    display: inline-block;
-    width: 5em;
-    height: 5em;
+    display: block;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     background: url('/static/images/default_profile_pic.jpg') no-repeat center center;
     background-size: cover;
@@ -270,7 +266,7 @@ main {
   height: 5em;
   border-radius: 50%;
   overflow: hidden; /* Ensures the image stays within the circle */
-  background: url('/static/images/default_profile_pic.jpg') center/cover no-repeat;
+  position: relative;
 }
 
 /* ----- Footer Styling ----- */
