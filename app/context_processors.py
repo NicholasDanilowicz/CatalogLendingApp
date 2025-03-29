@@ -10,6 +10,5 @@ def search_form(request):
 
 def user_profile(request):
     if request.user.is_authenticated:
-        # Assuming you have a OneToOne relationship from User to Profile
         return {'profile': request.user.userprofile}
     return {}

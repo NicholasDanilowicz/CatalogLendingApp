@@ -86,7 +86,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'social_django.context_processors.backends',  # for google auth
                 'app.context_processors.search_form',
-                'myapp.context_processors.user_profile',
+                'app.context_processors.user_profile',
             ],
         },
     },
