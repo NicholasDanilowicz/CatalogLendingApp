@@ -48,7 +48,9 @@
                 <!--                <p>User: {{ user.userprofile.real_name|default:user.username }}!</p>-->
                 <!--                <p>Role: {% if user.userprofile.role == 'librarian' %}Librarian{% else %}Patron{% endif %}</p>-->
                 <div class="profile-pic-wrapper">
-                    <a href="{% url 'profile_detail' %}" class="profile-btn"></a>
+                    <a href="{% url 'profile_detail' %}" class="profile-btn">
+                        <img src="{{ profile.profile_picture_url }}" alt="Profile Picture" class="profile-pic">
+                    </a>
                 </div>
             </div>
             {% else %}
