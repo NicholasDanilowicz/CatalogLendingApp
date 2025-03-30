@@ -16,17 +16,12 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.utils import timezone
 
-from .forms import SearchForm, EquipmentEditForm, ProfileEditForm
+from .forms import SearchForm, EquipmentEditForm, ProfileEditForm, CollectionCreateForm, CollectionEditForm, EquipmentCreateForm
 from .models import UserProfile
 from .models import Equipment
 from .models import Collection
 from django.contrib import messages
-from .models import EquipmentImage
-
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Equipment, Rental
+from .models import EquipmentImage, Rental
 
 
 def custom_login(request):
@@ -69,6 +64,28 @@ def item_detail(request, item_id):
     is_librarian = hasattr(request.user, 'userprofile') and request.user.userprofile.role == 'librarian'
     edit_form = None
 
+    if is_librarian:
+        if request.method == 'POST':
+            form = EquipmentEditForm(request.POST, request.FILES, instance=item)
+            if form.is_valid():
+                equipment = form.save()
+                
+                images = request.FILES.getlist('images')
+                if images:
+                    equipment.images.all().delete()
+                    
+                    for image in images:
+                        EquipmentImage.objects.create(
+                            equipment=equipment,
+                            image=image,
+                            is_primary=not equipment.images.exists()
+                        )
+                
+                messages.success(request, 'Equipment updated successfully!')
+                return redirect('item_detail', item_id=item.id)
+        else:
+            edit_form = EquipmentEditForm(instance=item)
+
     equipment = get_object_or_404(Equipment, id=item_id)
     rental = Rental.objects.filter(equipment=equipment, user=request.user, returned_on__isnull=True).first()
 
@@ -101,23 +118,27 @@ def item_detail(request, item_id):
 
     return render(request, 'item_detail.html', {
         'item': item,
-        'is_librarian': is_librarian,
         'edit_form': edit_form if is_librarian else None,
+        'is_librarian': is_librarian,
         'rental': rental,
+
     })
 
 def collection_detail(request, collection_id):
     collection = get_object_or_404(Collection, id=collection_id)
-    if not collection.can_user_access(request.user):
-        return redirect('home')
+    has_access = collection.can_user_access(request.user)
     
-    equipment_items = collection.equipment_items.all()
-    
-    return render(request, 'collection_detail.html', {
+    context = {
         'collection': collection,
-        'equipment_items': equipment_items,
+        'has_access': has_access,
         'collection_id': collection_id
-    })
+    }
+    
+    if has_access:
+        equipment_items = collection.equipment_items.all()
+        context['equipment_items'] = equipment_items
+    
+    return render(request, 'collection_detail.html', context)
 
 def search_results(req):
     form = SearchForm(req.GET)
@@ -177,3 +198,107 @@ def profile_detail(request):
         'google_account': request.user.email
     })
 
+@login_required
+def create_collection(request):
+    if request.method == 'POST':
+        form = CollectionCreateForm(request.POST, user=request.user)
+        if form.is_valid():
+            collection = form.save(commit=False)
+            collection.creator = request.user
+            collection = form.save()
+            messages.success(request, 'Collection created!')
+            return redirect('collection_detail', collection_id=collection.id)
+    else:
+        form = CollectionCreateForm(user=request.user)
+    
+    return render(request, 'create_collection.html', {
+        'form': form,
+        'is_librarian': request.user.userprofile.role == 'librarian',
+        'is_patron': request.user.userprofile.role == 'patron'
+    })
+
+@login_required
+def edit_collection(request, collection_id):
+    collection = get_object_or_404(Collection, id=collection_id)
+    
+    if collection.creator != request.user and request.user.userprofile.role != 'librarian':
+        messages.error(request, "You don't have permission to edit this collection.")
+        return redirect('collection_detail', collection_id=collection_id)
+    
+    if request.method == 'POST':
+        form = CollectionEditForm(request.POST, instance=collection, user=request.user)
+        if form.is_valid():
+            collection = form.save()
+            messages.success(request, 'Collection updated successfully!')
+            return redirect('collection_detail', collection_id=collection.id)
+    else:
+        form = CollectionEditForm(instance=collection, user=request.user)
+    
+    return render(request, 'edit_collection.html', {
+        'form': form,
+        'collection': collection,
+        'is_librarian': request.user.userprofile.role == 'librarian'
+    })
+
+@login_required
+def delete_collection(request, collection_id):
+    collection = get_object_or_404(Collection, id=collection_id)
+    
+    if collection.creator != request.user and request.user.userprofile.role != 'librarian':
+        messages.error(request, "You don't have permission to delete this collection.")
+        return redirect('collection_detail', collection_id=collection_id)
+    
+    if request.method == 'POST':
+        collection.delete()
+        messages.success(request, 'Collection deleted successfully!')
+        return redirect('home')
+    
+    return render(request, 'delete_collection.html', {
+        'collection': collection
+    })
+
+@login_required
+def create_equipment(request):
+    if not request.user.userprofile.role == 'librarian':
+        messages.error(request, "Only librarians can create equipment.")
+        return redirect('home')
+        
+    if request.method == 'POST':
+        form = EquipmentCreateForm(request.POST, request.FILES)
+        if form.is_valid():
+            equipment = form.save()
+            
+            images = request.FILES.getlist('images')
+            if images:
+                for image in images:
+                    EquipmentImage.objects.create(
+                        equipment=equipment,
+                        image=image,
+                        is_primary=not equipment.images.exists()
+                    )
+            
+            messages.success(request, 'Equipment created successfully!')
+            return redirect('item_detail', item_id=equipment.id)
+    else:
+        form = EquipmentCreateForm()
+    
+    return render(request, 'create_equipment.html', {
+        'form': form
+    })
+
+@login_required
+def delete_equipment(request, item_id):
+    if not request.user.userprofile.role == 'librarian':
+        messages.error(request, "Only librarians can delete equipment.")
+        return redirect('item_detail', item_id=item_id)
+        
+    equipment = get_object_or_404(Equipment, id=item_id)
+    
+    if request.method == 'POST':
+        equipment.delete()
+        messages.success(request, 'Equipment deleted successfully!')
+        return redirect('home')
+    
+    return render(request, 'delete_equipment.html', {
+        'equipment': equipment
+    })

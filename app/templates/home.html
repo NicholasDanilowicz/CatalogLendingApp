@@ -13,9 +13,19 @@ Home
   <div class="container py-4">
     <div class="row justify-content-center">
       <div class="col-md-6">
-        {% if user.is_authenticated and user.userprofile.role == 'librarian' %}
-          <div class="text-center">
-            <h3>Hi Librarian</h3>
+        {% if user.is_authenticated %}
+          <div class="text-center mb-4">
+            <h3>Hi {{ user.userprofile.role|title }}</h3>
+            <div class="mb-3">
+              <a href="{% url 'create_collection' %}" class="btn btn-success me-2">
+                <i class="fas fa-plus"></i> Create New Collection
+              </a>
+              {% if user.userprofile.role == 'librarian' %}
+                <a href="{% url 'create_equipment' %}" class="btn btn-success">
+                  <i class="fas fa-plus"></i> Add New Equipment
+                </a>
+              {% endif %}
+            </div>
           </div>
         {% endif %}
       </div>

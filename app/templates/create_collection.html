@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load static %}
+
+{% block title %}Create Collection{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/collection.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Create New Collection</h2>
+                    <form method="post" id="collectionForm">
+                        {% csrf_token %}
+                        {% bootstrap_form form %}
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success">Create Collection</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.querySelector('input[name="is_public"]')?.addEventListener('change', function() {
+    document.querySelector('.allowed-users-field')?.classList.toggle('show', !this.checked);
+});
+</script>
+{% endblock %} 
