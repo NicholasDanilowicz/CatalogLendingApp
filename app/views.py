@@ -14,12 +14,19 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
 from django.core.paginator import Paginator
+from django.utils import timezone
+
 from .forms import SearchForm, EquipmentEditForm, ProfileEditForm
 from .models import UserProfile
 from .models import Equipment
 from .models import Collection
 from django.contrib import messages
 from .models import EquipmentImage
+
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Equipment, Rental
 
 
 def custom_login(request):
@@ -62,32 +69,41 @@ def item_detail(request, item_id):
     is_librarian = hasattr(request.user, 'userprofile') and request.user.userprofile.role == 'librarian'
     edit_form = None
 
-    if is_librarian:
-        if request.method == 'POST':
-            form = EquipmentEditForm(request.POST, request.FILES, instance=item)
-            if form.is_valid():
-                equipment = form.save()
-                
-                images = request.FILES.getlist('images')
-                if images:
-                    equipment.images.all().delete()
-                    
-                    for image in images:
-                        EquipmentImage.objects.create(
-                            equipment=equipment,
-                            image=image,
-                            is_primary=not equipment.images.exists()
-                        )
-                
-                messages.success(request, 'Equipment updated successfully!')
-                return redirect('item_detail', item_id=item.id)
+    equipment = get_object_or_404(Equipment, id=item_id)
+    rental = Rental.objects.filter(equipment=equipment, user=request.user, returned_on__isnull=True).first()
+
+    if request.method == 'POST':
+        if rental:
+            rental.returned_on = timezone.now()
+            rental.save()
+
+            equipment.available = True
+            equipment.save()
+
+            messages.success(request, f"Thank you for returning {equipment.name}.")
+            return redirect('item_detail', item_id=item_id)
         else:
-            edit_form = EquipmentEditForm(instance=item)
+            if not equipment.available:
+                messages.error(request, "This item is currently unavailable.")
+                return redirect('item_detail', item_id=item_id)
+
+            equipment.available = False
+            equipment.save()
+
+            rental = Rental.objects.create(
+                equipment=equipment,
+                user=request.user,
+                return_by=timezone.now() + timezone.timedelta(days=7),
+            )
+
+            messages.success(request, f"You have rented {equipment.name}. Please return it by {rental.return_by}.")
+            return redirect('item_detail', item_id=item_id)
 
     return render(request, 'item_detail.html', {
         'item': item,
-        'edit_form': edit_form if is_librarian else None,
         'is_librarian': is_librarian,
+        'edit_form': edit_form if is_librarian else None,
+        'rental': rental,
     })
 
 def collection_detail(request, collection_id):
@@ -160,3 +176,4 @@ def profile_detail(request):
         'edit_form': edit_form,
         'google_account': request.user.email
     })
+

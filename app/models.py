@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
+from django.db import models
 
 TAG_CHOICES = [
     ('sports', 'Sports'),
@@ -99,3 +100,20 @@ class Collection(models.Model):
 
     def get_tags_list(self):
         return [tag.strip() for tag in self.tags.split(',') if tag.strip()]
+
+
+class Rental(models.Model):
+    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rented_on = models.DateTimeField(default=timezone.now)
+    return_by = models.DateTimeField(null=True, blank=True)
+    returned_on = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.username} rented {self.equipment.name}"
+
+    @property
+    def is_overdue(self):
+        if self.returned_on is None and self.return_by and timezone.now() > self.return_by:
+            return True
+        return False
