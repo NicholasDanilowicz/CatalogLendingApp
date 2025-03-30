@@ -75,17 +75,19 @@ class EquipmentImage(models.Model):
 
 class Collection(models.Model):
     title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
     is_public = models.BooleanField(default=True)
     allowed_users = models.ManyToManyField(User, blank=True, related_name='accessible_collections')
     tags = models.CharField(max_length=100, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_collections', null=True, blank=True)
 
     def __str__(self):
         return self.title
 
     def can_user_access(self, user):
-        if user.groups.filter(name='Librarian').exists():
+        if hasattr(user, 'userprofile') and user.userprofile.role == 'librarian':
             return True
         if self.is_public:
             return True

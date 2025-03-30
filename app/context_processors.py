@@ -2,9 +2,9 @@ from .forms import SearchForm
 from .models import Collection
 
 def search_form(request):
-    collections = Collection.objects.filter(is_public=True)
+    collections = Collection.objects.all()
     return {
-        'form': SearchForm(),
+        'search_form': SearchForm(),
         'collections': collections
     }
 

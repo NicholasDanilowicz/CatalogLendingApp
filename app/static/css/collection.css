@@ -1,0 +1,23 @@
+/* Collection Detail Styles */
+.permission-request {
+    text-align: center;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin: 2rem 0;
+}
+
+.permission-request i {
+    font-size: 3rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+/* Create Collection Styles */
+.allowed-users-field {
+    display: none;
+}
+
+.allowed-users-field.show {
+    display: block;
+} 
