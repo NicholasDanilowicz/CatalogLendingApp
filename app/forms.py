@@ -5,7 +5,7 @@
 # *************************************************************************************
 
 from django import forms
-from .models import Collection, TAG_CHOICES, Equipment, EquipmentImage, UserProfile
+from .models import Collection, TAG_CHOICES, Equipment, EquipmentImage, UserProfile, User
 
 class SearchForm(forms.Form):
     query = forms.CharField(
@@ -36,10 +36,29 @@ class EquipmentEditForm(forms.ModelForm):
             'description': 'Description',
             'available': 'Available for Checkout',
         }
-        help_texts = {
-            'description': 'Provide a detailed description of the equipment.',
-            'available': 'Check this box if the equipment is available for checkout.',
-            'collections': 'Select the collections this equipment belongs to.',
+
+class EquipmentCreateForm(forms.ModelForm):
+    collections = forms.ModelMultipleChoiceField(
+        queryset=Collection.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label='Collections'
+    )
+
+    class Meta:
+        model = Equipment
+        fields = ['name', 'description', 'available', 'collections']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'available': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'collections': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'})
+        }
+        labels = {
+            'name': 'Equipment Name',
+            'description': 'Description',
+            'available': 'Available for Checkout',
+            'collections': 'Collections'
         }
 
 class CollectionAdminForm(forms.ModelForm):
@@ -77,7 +96,69 @@ class ProfileEditForm(forms.ModelForm):
             'real_name': 'Full Name',
             'profile_picture': 'Profile Picture'
         }
-        help_texts = {
-            'real_name': 'Enter your full name',
-            'profile_picture': 'Upload a profile picture (optional)'
+
+class CollectionCreateForm(forms.ModelForm):
+    tags = forms.MultipleChoiceField(
+        choices=TAG_CHOICES,
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        label='Tags',
+    )
+    allowed_users = forms.ModelMultipleChoiceField(
+        queryset=User.objects.filter(userprofile__role='patron'),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        label='Allowed Users',
+    )
+
+    class Meta:
+        model = Collection
+        fields = ['title', 'description', 'is_public', 'tags', 'allowed_users']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'is_public': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'tags': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
+            'allowed_users': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'})
         }
+        labels = {
+            'title': 'Collection Title',
+            'description': 'Description',
+            'is_public': 'Public Collection',
+            'tags': 'Tags',
+            'allowed_users': 'Allowed Users'
+        }
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if self.user and not self.user.userprofile.role == 'librarian':
+            self.fields.pop('is_public')
+            self.fields.pop('allowed_users')
+            self.instance.is_public = True
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if 'tags' in self.cleaned_data:
+            instance.tags = ','.join(self.cleaned_data['tags'])
+        if commit:
+            instance.save()
+            if 'allowed_users' in self.cleaned_data:
+                instance.allowed_users.set(self.cleaned_data['allowed_users'])
+        return instance
+
+class CollectionEditForm(CollectionCreateForm):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        if self.user and not self.user.userprofile.role == 'librarian':
+            self.fields.pop('is_public')
+            self.fields.pop('allowed_users')
+            self.instance.is_public = True
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if self.instance.creator and self.instance.creator != self.user and not self.user.userprofile.role == 'librarian':
+            raise forms.ValidationError("You don't have permission to edit this collection.")
+        return cleaned_data

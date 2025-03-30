@@ -2,13 +2,24 @@
 {% load static %}
 {% load django_bootstrap5 %}
 
+{% block title %}
+{{ item.name }}
+{% endblock %}
+
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/item_detail.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <h1>{{ item.name }}</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ item.name }}</h1>
+        {% if is_librarian %}
+            <a href="{% url 'delete_equipment' item_id=item.id %}" class="btn btn-danger btn-sm">
+                <i class="fas fa-trash"></i> Delete
+            </a>
+        {% endif %}
+    </div>
     
     <div id="itemCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
         <div class="carousel-inner">

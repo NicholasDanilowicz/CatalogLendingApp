@@ -28,7 +28,7 @@
         <div class="search-wrapper">
             <form action="{% url 'search_results' %}" method="GET">
                 <div id="searchBar" class="search-container">
-                    {{form.as_p}}
+                    {{search_form.as_p}}
                     {% if collection_id %}
                     <input type="hidden" name="collection_id" value="{{ collection_id }}">
                     {% elif tag %}
@@ -75,8 +75,13 @@
                     <a href="{% url 'search_results' %}?tag=sports">Sports</a>
                     <ul class="dropdown">
                         {% for collection in collections %}
-                        {% if 'sports' in collection.get_tags_list and collection.is_public %}
-                        <li><a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a></li>
+                        {% if 'sports' in collection.get_tags_list %}
+                        <li>
+                            <a href="{% url 'collection_detail' collection.id %}">
+                                {{ collection.title }}
+                                {% if not collection.is_public %}<i class="fas fa-lock"></i>{% endif %}
+                            </a>
+                        </li>
                         {% endif %}
                         {% endfor %}
                     </ul>
@@ -85,8 +90,13 @@
                     <a href="{% url 'search_results' %}?tag=exercise">Exercise</a>
                     <ul class="dropdown">
                         {% for collection in collections %}
-                        {% if 'exercise' in collection.get_tags_list and collection.is_public %}
-                        <li><a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a></li>
+                        {% if 'exercise' in collection.get_tags_list %}
+                        <li>
+                            <a href="{% url 'collection_detail' collection.id %}">
+                                {{ collection.title }}
+                                {% if not collection.is_public %}<i class="fas fa-lock"></i>{% endif %}
+                            </a>
+                        </li>
                         {% endif %}
                         {% endfor %}
                     </ul>
@@ -95,8 +105,13 @@
                     <a href="{% url 'search_results' %}?tag=outdoor">Outdoor</a>
                     <ul class="dropdown">
                         {% for collection in collections %}
-                        {% if 'outdoor' in collection.get_tags_list and collection.is_public %}
-                        <li><a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a></li>
+                        {% if 'outdoor' in collection.get_tags_list %}
+                        <li>
+                            <a href="{% url 'collection_detail' collection.id %}">
+                                {{ collection.title }}
+                                {% if not collection.is_public %}<i class="fas fa-lock"></i>{% endif %}
+                            </a>
+                        </li>
                         {% endif %}
                         {% endfor %}
                     </ul>
@@ -105,8 +120,13 @@
                     <a href="{% url 'search_results' %}?tag=male">Male</a>
                     <ul class="dropdown">
                         {% for collection in collections %}
-                        {% if 'male' in collection.get_tags_list and collection.is_public %}
-                        <li><a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a></li>
+                        {% if 'male' in collection.get_tags_list %}
+                        <li>
+                            <a href="{% url 'collection_detail' collection.id %}">
+                                {{ collection.title }}
+                                {% if not collection.is_public %}<i class="fas fa-lock"></i>{% endif %}
+                            </a>
+                        </li>
                         {% endif %}
                         {% endfor %}
                     </ul>
@@ -115,8 +135,13 @@
                     <a href="{% url 'search_results' %}?tag=female">Female</a>
                     <ul class="dropdown">
                         {% for collection in collections %}
-                        {% if 'female' in collection.get_tags_list and collection.is_public %}
-                        <li><a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a></li>
+                        {% if 'female' in collection.get_tags_list %}
+                        <li>
+                            <a href="{% url 'collection_detail' collection.id %}">
+                                {{ collection.title }}
+                                {% if not collection.is_public %}<i class="fas fa-lock"></i>{% endif %}
+                            </a>
+                        </li>
                         {% endif %}
                         {% endfor %}
                     </ul>
@@ -125,8 +150,13 @@
                     <a href="{% url 'search_results' %}?tag=other">Other</a>
                     <ul class="dropdown">
                         {% for collection in collections %}
-                        {% if 'other' in collection.get_tags_list and collection.is_public %}
-                        <li><a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a></li>
+                        {% if 'other' in collection.get_tags_list %}
+                        <li>
+                            <a href="{% url 'collection_detail' collection.id %}">
+                                {{ collection.title }}
+                                {% if not collection.is_public %}<i class="fas fa-lock"></i>{% endif %}
+                            </a>
+                        </li>
                         {% endif %}
                         {% endfor %}
                     </ul>
