@@ -39,7 +39,7 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: fixed;
+  position: relative;
   top: 1em;
   left: 1em;
   right: 1em;
@@ -83,7 +83,7 @@ main {
 /* ----- Navigation Menu (Bottom Navbar) ----- */
 .bottom-navbar-container {
   width: 100%;
-  position: fixed;
+  position: relative;
   z-index: 9999;
   margin-top: 7em;
 }
@@ -279,7 +279,7 @@ main {
 .fixed-footer {
   background-color: var(--primary);
   color: var(--textbg);
-  position: fixed;
+  position: relative;
   bottom: 0;
   width: 100%;
   padding: 0.75rem 0;
