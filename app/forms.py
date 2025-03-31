@@ -151,7 +151,7 @@ class CollectionEditForm(CollectionCreateForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        
+
         if self.user and not self.user.userprofile.role == 'librarian':
             self.fields.pop('is_public')
             self.fields.pop('allowed_users')
@@ -159,6 +159,10 @@ class CollectionEditForm(CollectionCreateForm):
 
     def clean(self):
         cleaned_data = super().clean()
+
+        if self.user is None:
+            raise forms.ValidationError("User information is required for this operation.")
+
         if self.instance.creator and self.instance.creator != self.user and not self.user.userprofile.role == 'librarian':
             raise forms.ValidationError("You don't have permission to edit this collection.")
         return cleaned_data
