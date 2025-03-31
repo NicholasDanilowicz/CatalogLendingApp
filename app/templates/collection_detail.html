@@ -69,7 +69,7 @@
         </div>
     {% else %}
     {% if not has_access and user.userprofile.role == 'patron' %}
-        <form method="post">
+        <form method="post" action="{% url 'request_access' collection.id %}">
             {% csrf_token %}
             <div class="permission-request">
                 <h3>Access Required</h3>

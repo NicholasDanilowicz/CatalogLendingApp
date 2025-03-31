@@ -335,3 +335,21 @@ def handle_request(request, request_id, action):
         messages.warning(request, "Access request denied.")
     access_request.save()
     return redirect('collection_detail', collection_id=access_request.collection.id)
+
+@login_required
+def request_access(request, collection_id):
+    collection = get_object_or_404(Collection, id=collection_id)
+
+    if CollectionAccessRequest.objects.filter(patron=request.user, collection=collection).exists():
+        messages.warning(request, "You have already requested access to this collection.")
+    else:
+        CollectionAccessRequest.objects.create(patron=request.user, collection=collection)
+        messages.success(request, "Access request submitted.")
+    
+    return redirect('collection_detail', collection_id=collection.id)
+# def request_access(request, collection_id):
+#     if request.method == 'POST':
+#         collection = get_object_or_404(Collection, id=collection_id)
+#         CollectionAccessRequest.objects.get_or_create(patron=request.user, collection=collection)
+#         messages.success(request, 'Access request submitted.')
+#         return redirect('collection_detail', collection_id=collection.id)
