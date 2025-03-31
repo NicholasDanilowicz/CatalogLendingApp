@@ -39,8 +39,8 @@
                                 <a href="{% url 'handle_request' request_id=req.id action='accept' %}" class="btn btn-success btn-sm">Accept</a>
                                 <a href="{% url 'handle_request' request_id=req.id action='deny' %}" class="btn btn-danger btn-sm">Deny</a>    
                             </li>
+                        {% endif %}
                     </ul>
-                {% endif %}
             </div>
         </div>
     </div>
@@ -73,7 +73,7 @@
             <div class="permission-request">
                 <h3>Access Required</h3>
                 <p>This is a private collection. You need permission to view its contents.</p>
-                <button class="btn btn-primary" onclick="requestPermission()">
+                <button class="btn btn-primary" type="submit">
                     <i class="fas fa-key"></i> Request Permission
                 </button>
             </div>
