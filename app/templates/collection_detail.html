@@ -39,7 +39,7 @@
                                 <a href="{% url 'handle_request' request_id=req.id action='accept' %}" class="btn btn-success btn-sm">Accept</a>
                                 <a href="{% url 'handle_request' request_id=req.id action='deny' %}" class="btn btn-danger btn-sm">Deny</a>    
                             </li>
-                        {% endif %}
+                        {% endfor %}
                     </ul>
             </div>
         </div>
