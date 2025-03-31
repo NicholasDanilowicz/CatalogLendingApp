@@ -160,9 +160,6 @@ class CollectionEditForm(CollectionCreateForm):
     def clean(self):
         cleaned_data = super().clean()
 
-        if self.user is None:
-            raise forms.ValidationError("User information is required for this operation.")
-
         if self.instance.creator and self.instance.creator != self.user and not self.user.userprofile.role == 'librarian':
             raise forms.ValidationError("You don't have permission to edit this collection.")
         return cleaned_data
