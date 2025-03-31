@@ -31,6 +31,15 @@
                             <i class="fas fa-trash"></i> Delete Collection
                         </a>
                     </div>
+                    <h3>Pending Access Requests</h3>
+                    <ul>
+                        {% for req in access_requests %}
+                            <li>
+                                {{ req.patron.username }} -                 
+                                <a href="{% url 'handle_request' request_id=req.id action='accept' %}" class="btn btn-success btn-sm">Accept</a>
+                                <a href="{% url 'handle_request' request_id=req.id action='deny' %}" class="btn btn-danger btn-sm">Deny</a>    
+                            </li>
+                    </ul>
                 {% endif %}
             </div>
         </div>
@@ -58,13 +67,20 @@
             {% endfor %}
         </div>
     {% else %}
-        <div class="permission-request">
-            <h3>Access Required</h3>
-            <p>This is a private collection. You need permission to view its contents.</p>
-            <button class="btn btn-primary" onclick="requestPermission()">
-                <i class="fas fa-key"></i> Request Permission
-            </button>
-        </div>
+    {% if not has_access and user.userprofile.role == 'patron' %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="permission-request">
+                <h3>Access Required</h3>
+                <p>This is a private collection. You need permission to view its contents.</p>
+                <button class="btn btn-primary" onclick="requestPermission()">
+                    <i class="fas fa-key"></i> Request Permission
+                </button>
+            </div>
+        </form>
+    {% elif has_access %}
+        <p>You have access to this collection. </p>
+    {% endif %}
     {% endif %}
 </div>
 

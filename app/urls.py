@@ -17,6 +17,7 @@ urlpatterns = [
     path("collection/<int:collection_id>/edit/", views.edit_collection, name='edit_collection'),
     path("collection/<int:collection_id>/delete/", views.delete_collection, name='delete_collection'),
     path("profile/", views.profile_detail, name='profile_detail'),
+    path("request/<int:request_id>/<str:action>", views.handle_request, name='handle_request')
 ]
 
 # if settings.DEBUG:

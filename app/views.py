@@ -124,14 +124,30 @@ def item_detail(request, item_id):
 
     })
 
+from .models import CollectionAccessRequest
 def collection_detail(request, collection_id):
     collection = get_object_or_404(Collection, id=collection_id)
     has_access = collection.can_user_access(request.user)
     
+    if not has_access and request.user.userprofile.role == 'patron':
+        existing_request = CollectionAccessRequest.objects.filter(collection=collection, patron=request.user, status='pending').exists()
+        if request.method == 'POST' and 'request_access' in request.POST:
+            if existing_request:
+                messages.info(request, "You have already requested access to this collection.")
+            else:
+                CollectionAccessRequest.objects.create(collection=collection, patron=request.user)
+                messages.success(request, "Your access request has been submitted.")
+            return redirect('collection_detail', collection_id=collection_id)
+    access_requests = []
+
+    if request.user.userprofile.role == 'librarian' and collection.creator == request.user:
+        access_requests = collection.access_requests.filter(status='pending')
+    
     context = {
         'collection': collection,
         'has_access': has_access,
-        'collection_id': collection_id
+        'collection_id': collection_id,
+        'access_requests': access_requests
     }
     
     if has_access:
@@ -302,3 +318,20 @@ def delete_equipment(request, item_id):
     return render(request, 'delete_equipment.html', {
         'equipment': equipment
     })
+
+@login_required
+def handle_request(request, request_id, action):
+    access_request = get_object_or_404(CollectionAccessRequest, id=request_id)
+
+    if request.user.userprofile.role != 'librarian' or access_request.collection.creator != request.user:
+        messages.error(request, 'You are not authoriazed to manage this request.')
+        return redirect('collection_detail', collection_id=access_request.collection.id)
+    if action == 'accept':
+        access_request.status = 'accepted'
+        access_request.collection.allowed_users.add(access_request.patron)
+        messages.success(request, "Access request accepted.")
+    elif action == 'deny':
+        access_request.status = 'denied'
+        messages.warning(request, "Access request denied.")
+    access_request.save()
+    return redirect('collection_detail', collection_id=access_request.collection.id)

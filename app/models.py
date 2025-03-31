@@ -119,3 +119,16 @@ class Rental(models.Model):
         if self.returned_on is None and self.return_by and timezone.now() > self.return_by:
             return True
         return False
+
+class CollectionAccessRequest(models.Model):
+    collection = models.ForeignKey(Collection, on_delete=models.CASCADE, related_name='access_requests')
+    patron = models.ForeignKey(User, on_delete=models.CASCADE, related_name='collection_access_requests')
+    status = models.CharField(max_length=10, choices=[
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('denied', 'Denied')
+    ], default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Request by {self.patron.username} for {self.collection.title} - {self.status}"
