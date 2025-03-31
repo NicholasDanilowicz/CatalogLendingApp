@@ -149,12 +149,15 @@ class CollectionCreateForm(forms.ModelForm):
 
 class CollectionEditForm(CollectionCreateForm):
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
+        user = kwargs.get('user', None)
         super().__init__(*args, **kwargs)
+        self.user = user
         
         if self.user and not self.user.userprofile.role == 'librarian':
-            self.fields.pop('is_public')
-            self.fields.pop('allowed_users')
+            if 'is_public' in self.fields:
+                self.fields.pop('is_public')
+            if 'allowed_users' in self.fields:
+                self.fields.pop('allowed_users')
             self.instance.is_public = True
 
     def clean(self):
