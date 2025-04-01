@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.utils import timezone
 
-from .forms import SearchForm, EquipmentEditForm, ProfileEditForm, CollectionCreateForm, CollectionEditForm, EquipmentCreateForm
+from .forms import SearchForm, EquipmentForm, ProfileEditForm, CollectionCreateForm, CollectionEditForm
 from .models import UserProfile
 from .models import Equipment
 from .models import Collection
@@ -60,33 +60,8 @@ def select_role(request):
 
 @login_required
 def item_detail(request, item_id):
-    item = get_object_or_404(Equipment, id=item_id)
-    is_librarian = hasattr(request.user, 'userprofile') and request.user.userprofile.role == 'librarian'
-    edit_form = None
-
-    if is_librarian:
-        if request.method == 'POST':
-            form = EquipmentEditForm(request.POST, request.FILES, instance=item)
-            if form.is_valid():
-                equipment = form.save()
-                
-                images = request.FILES.getlist('images')
-                if images:
-                    equipment.images.all().delete()
-                    
-                    for image in images:
-                        EquipmentImage.objects.create(
-                            equipment=equipment,
-                            image=image,
-                            is_primary=not equipment.images.exists()
-                        )
-                
-                messages.success(request, 'Equipment updated successfully!')
-                return redirect('item_detail', item_id=item.id)
-        else:
-            edit_form = EquipmentEditForm(instance=item)
-
     equipment = get_object_or_404(Equipment, id=item_id)
+    is_librarian = hasattr(request.user, 'userprofile') and request.user.userprofile.role == 'librarian'
     rental = Rental.objects.filter(equipment=equipment, user=request.user, returned_on__isnull=True).first()
 
     if request.method == 'POST':
@@ -117,12 +92,11 @@ def item_detail(request, item_id):
             return redirect('item_detail', item_id=item_id)
 
     return render(request, 'item_detail.html', {
-        'item': item,
-        'edit_form': edit_form if is_librarian else None,
+        'item': equipment,
         'is_librarian': is_librarian,
         'rental': rental,
-
     })
+
 
 from .models import CollectionAccessRequest
 def collection_detail(request, collection_id):
@@ -259,7 +233,6 @@ def edit_collection(request, collection_id):
 @login_required
 def delete_collection(request, collection_id):
     collection = get_object_or_404(Collection, id=collection_id)
-    
     if collection.creator != request.user and request.user.userprofile.role != 'librarian':
         messages.error(request, "You don't have permission to delete this collection.")
         return redirect('collection_detail', collection_id=collection_id)
@@ -280,10 +253,9 @@ def create_equipment(request):
         return redirect('home')
         
     if request.method == 'POST':
-        form = EquipmentCreateForm(request.POST, request.FILES)
+        form = EquipmentForm(request.POST, request.FILES)
         if form.is_valid():
             equipment = form.save()
-            
             images = request.FILES.getlist('images')
             if images:
                 for image in images:
@@ -292,14 +264,44 @@ def create_equipment(request):
                         image=image,
                         is_primary=not equipment.images.exists()
                     )
-            
             messages.success(request, 'Equipment created successfully!')
             return redirect('item_detail', item_id=equipment.id)
     else:
-        form = EquipmentCreateForm()
+        form = EquipmentForm()
     
     return render(request, 'create_equipment.html', {
         'form': form
+    })
+
+@login_required
+def edit_equipment(request, item_id):
+    if not request.user.userprofile.role == 'librarian':
+        messages.error(request, "Only librarians can edit equipment.")
+        return redirect('item_detail', item_id=item_id)
+        
+    equipment = get_object_or_404(Equipment, id=item_id)
+    
+    if request.method == 'POST':
+        form = EquipmentForm(request.POST, request.FILES, instance=equipment)
+        if form.is_valid():
+            equipment = form.save()
+            images = request.FILES.getlist('images')
+            if images:
+                equipment.images.all().delete()
+                for image in images:
+                    EquipmentImage.objects.create(
+                        equipment=equipment,
+                        image=image,
+                        is_primary=not equipment.images.exists()
+                    )
+            messages.success(request, 'Equipment updated successfully!')
+            return redirect('item_detail', item_id=equipment.id)
+    else:
+        form = EquipmentForm(instance=equipment)
+    
+    return render(request, 'edit_equipment.html', {
+        'form': form,
+        'item': equipment
     })
 
 @login_required
