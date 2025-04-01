@@ -1,8 +1,30 @@
-# *************************************************************************************
+# /***************************************************************************************
 # *  REFERENCES
+# *  Title: Form and Field Validation
+# *  Author: Django Software Foundation
+# *  Date: 2024
+# *  Code version: Django 5.1
+# *  URL: https://docs.djangoproject.com/en/5.1/ref/forms/validation/
+# *
+# *  Title: Django form field custom widgets
+# *  Author: GeeksforGeeks
+# *  Date: 2023
+# *  URL: https://www.geeksforgeeks.org/django-form-field-custom-widgets/
+# *
 # *  Title: Django Forms
+# *  Author: GeeksforGeeks
+# *  Date: 2023
 # *  URL: https://www.geeksforgeeks.org/django-forms/
-# *************************************************************************************
+# *
+# *  Title: Debugging Django Code Errors with ChatGPT
+# *  Author: OpenAI (ChatGPT)
+# *  Date: 2025
+# *  Code version: GPT-4o
+# *  URL: https://chat.openai.com/
+# *  Software License: OpenAI Terms of Use
+# *  Description: Used to debug Django form errors while developing functionality for creating and editing equipment and collections (mainly with the save, clean, and init methods)
+# ***************************************************************************************/
+
 
 from django import forms
 from .models import Collection, TAG_CHOICES, Equipment, EquipmentImage, UserProfile, User
@@ -15,7 +37,7 @@ class SearchForm(forms.Form):
         widget=forms.TextInput(attrs={'placeholder': 'Search for equipment...', 'class': 'search-input'})
     )
 
-class EquipmentEditForm(forms.ModelForm):
+class EquipmentForm(forms.ModelForm):
     collections = forms.ModelMultipleChoiceField(
         queryset=Collection.objects.all(),
         widget=forms.CheckboxSelectMultiple,
@@ -30,35 +52,13 @@ class EquipmentEditForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'available': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'collections': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
         }
         labels = {
             'name': 'Equipment Name',
             'description': 'Description',
             'available': 'Available for Checkout',
-        }
-
-class EquipmentCreateForm(forms.ModelForm):
-    collections = forms.ModelMultipleChoiceField(
-        queryset=Collection.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=False,
-        label='Collections'
-    )
-
-    class Meta:
-        model = Equipment
-        fields = ['name', 'description', 'available', 'collections']
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'available': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'collections': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'})
-        }
-        labels = {
-            'name': 'Equipment Name',
-            'description': 'Description',
-            'available': 'Available for Checkout',
-            'collections': 'Collections'
+            'collections': 'Collections',
         }
 
 class CollectionAdminForm(forms.ModelForm):

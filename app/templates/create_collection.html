@@ -1,3 +1,14 @@
+<!-- ***************************************************************************************
+*  REFERENCES
+*  Title: Fixing the card container design for consistency and a cleaner look
+*  Author: OpenAI (ChatGPT)
+*  Date: 2025
+*  Code version: GPT-4o
+*  URL: https://chat.openai.com/
+*  Software License: OpenAI Terms of Use
+*  Description: Used ChatGPT to help improve the styling and layout of my original card container design, which has been consistently applied across various templates including profile, collection, and equipment pages for a more consistent look and feel.
+*************************************************************************************** -->
+
 {% extends "base.html" %}
 {% load django_bootstrap5 %}
 {% load static %}
@@ -11,7 +22,7 @@
 {% block content %}
 <div class="container py-4">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
                     <h2 class="card-title text-center mb-4">Create New Collection</h2>
@@ -27,6 +38,17 @@
         </div>
     </div>
 </div>
+
+<!-- ***************************************************************************************
+*  REFERENCES
+*  Title: Creating a JavaScript script to toggle the allowed users field visibility
+*  Author: OpenAI (ChatGPT)
+*  Date: 2025
+*  Code version: GPT-4o
+*  URL: https://chat.openai.com/
+*  Software License: OpenAI Terms of Use
+*  Description: Used ChatGPT to help create a JavaScript script that dynamically toggles the visibility of the allowed users field.
+*************************************************************************************** -->
 
 <script>
 document.querySelector('input[name="is_public"]')?.addEventListener('change', function() {
