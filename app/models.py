@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
 from django.db import models
+from .auth_utils import is_librarian
 
 TAG_CHOICES = [
     ('sports', 'Sports'),
@@ -88,7 +89,7 @@ class Collection(models.Model):
         return self.title
 
     def can_user_access(self, user):
-        if hasattr(user, 'userprofile') and user.userprofile.role == 'librarian':
+        if is_librarian(user):
             return True
         if self.is_public:
             return True

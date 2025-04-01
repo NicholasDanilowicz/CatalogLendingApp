@@ -21,7 +21,9 @@ from .models import UserProfile
 from .models import Equipment
 from .models import Collection
 from django.contrib import messages
-from .models import EquipmentImage, Rental
+from .models import Rental
+from .utils import handle_equipment_images
+from .auth_utils import is_librarian
 
 
 def custom_login(request):
@@ -61,7 +63,7 @@ def select_role(request):
 @login_required
 def item_detail(request, item_id):
     equipment = get_object_or_404(Equipment, id=item_id)
-    is_librarian = hasattr(request.user, 'userprofile') and request.user.userprofile.role == 'librarian'
+    is_librarian_user = is_librarian(request.user)
     rental = Rental.objects.filter(equipment=equipment, user=request.user, returned_on__isnull=True).first()
 
     if request.method == 'POST':
@@ -93,7 +95,7 @@ def item_detail(request, item_id):
 
     return render(request, 'item_detail.html', {
         'item': equipment,
-        'is_librarian': is_librarian,
+        'is_librarian': is_librarian_user,
         'rental': rental,
     })
 
@@ -203,15 +205,19 @@ def create_collection(request):
     
     return render(request, 'create_collection.html', {
         'form': form,
-        'is_librarian': request.user.userprofile.role == 'librarian',
+        'is_librarian': is_librarian(request.user),
         'is_patron': request.user.userprofile.role == 'patron'
     })
 
 @login_required
 def edit_collection(request, collection_id):
+    if not is_librarian(request.user):
+        messages.error(request, "Only librarians can edit collections.")
+        return redirect('home')
+        
     collection = get_object_or_404(Collection, id=collection_id)
     
-    if collection.creator != request.user and request.user.userprofile.role != 'librarian':
+    if collection.creator != request.user:
         messages.error(request, "You don't have permission to edit this collection.")
         return redirect('collection_detail', collection_id=collection_id)
     
@@ -227,13 +233,18 @@ def edit_collection(request, collection_id):
     return render(request, 'edit_collection.html', {
         'form': form,
         'collection': collection,
-        'is_librarian': request.user.userprofile.role == 'librarian'
+        'is_librarian': is_librarian(request.user)
     })
 
 @login_required
 def delete_collection(request, collection_id):
+    if not is_librarian(request.user):
+        messages.error(request, "Only librarians can delete collections.")
+        return redirect('home')
+        
     collection = get_object_or_404(Collection, id=collection_id)
-    if collection.creator != request.user and request.user.userprofile.role != 'librarian':
+    
+    if collection.creator != request.user:
         messages.error(request, "You don't have permission to delete this collection.")
         return redirect('collection_detail', collection_id=collection_id)
     
@@ -248,7 +259,7 @@ def delete_collection(request, collection_id):
 
 @login_required
 def create_equipment(request):
-    if not request.user.userprofile.role == 'librarian':
+    if not is_librarian(request.user):
         messages.error(request, "Only librarians can create equipment.")
         return redirect('home')
         
@@ -257,13 +268,7 @@ def create_equipment(request):
         if form.is_valid():
             equipment = form.save()
             images = request.FILES.getlist('images')
-            if images:
-                for image in images:
-                    EquipmentImage.objects.create(
-                        equipment=equipment,
-                        image=image,
-                        is_primary=not equipment.images.exists()
-                    )
+            handle_equipment_images(equipment, images)
             messages.success(request, 'Equipment created successfully!')
             return redirect('item_detail', item_id=equipment.id)
     else:
@@ -275,9 +280,9 @@ def create_equipment(request):
 
 @login_required
 def edit_equipment(request, item_id):
-    if not request.user.userprofile.role == 'librarian':
+    if not is_librarian(request.user):
         messages.error(request, "Only librarians can edit equipment.")
-        return redirect('item_detail', item_id=item_id)
+        return redirect('home')
         
     equipment = get_object_or_404(Equipment, id=item_id)
     
@@ -286,14 +291,7 @@ def edit_equipment(request, item_id):
         if form.is_valid():
             equipment = form.save()
             images = request.FILES.getlist('images')
-            if images:
-                equipment.images.all().delete()
-                for image in images:
-                    EquipmentImage.objects.create(
-                        equipment=equipment,
-                        image=image,
-                        is_primary=not equipment.images.exists()
-                    )
+            handle_equipment_images(equipment, images)
             messages.success(request, 'Equipment updated successfully!')
             return redirect('item_detail', item_id=equipment.id)
     else:
@@ -306,9 +304,9 @@ def edit_equipment(request, item_id):
 
 @login_required
 def delete_equipment(request, item_id):
-    if not request.user.userprofile.role == 'librarian':
+    if not is_librarian(request.user):
         messages.error(request, "Only librarians can delete equipment.")
-        return redirect('item_detail', item_id=item_id)
+        return redirect('home')
         
     equipment = get_object_or_404(Equipment, id=item_id)
     
@@ -325,7 +323,7 @@ def delete_equipment(request, item_id):
 def handle_request(request, request_id, action):
     access_request = get_object_or_404(CollectionAccessRequest, id=request_id)
 
-    if request.user.userprofile.role != 'librarian' or access_request.collection.creator != request.user:
+    if not is_librarian(request.user) or access_request.collection.creator != request.user:
         messages.error(request, 'You are not authoriazed to manage this request.')
         return redirect('collection_detail', collection_id=access_request.collection.id)
     if action == 'accept':

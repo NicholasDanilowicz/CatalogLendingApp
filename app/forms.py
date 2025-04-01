@@ -28,6 +28,8 @@
 
 from django import forms
 from .models import Collection, TAG_CHOICES, Equipment, EquipmentImage, UserProfile, User
+from django.contrib.auth.models import User
+from .auth_utils import is_librarian
 
 class SearchForm(forms.Form):
     query = forms.CharField(
@@ -132,7 +134,7 @@ class CollectionCreateForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         
-        if self.user and not self.user.userprofile.role == 'librarian':
+        if self.user and not is_librarian(self.user):
             self.fields.pop('is_public')
             self.fields.pop('allowed_users')
             self.instance.is_public = True
@@ -153,7 +155,7 @@ class CollectionEditForm(CollectionCreateForm):
         super().__init__(*args, **kwargs)
         self.user = user
         
-        if self.user and not self.user.userprofile.role == 'librarian':
+        if self.user and not is_librarian(self.user):
             if 'is_public' in self.fields:
                 self.fields.pop('is_public')
             if 'allowed_users' in self.fields:
@@ -162,6 +164,6 @@ class CollectionEditForm(CollectionCreateForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        if self.instance.creator and self.instance.creator != self.user and not self.user.userprofile.role == 'librarian':
+        if self.instance.creator and self.instance.creator != self.user and not is_librarian(self.user):
             raise forms.ValidationError("You don't have permission to edit this collection.")
         return cleaned_data
