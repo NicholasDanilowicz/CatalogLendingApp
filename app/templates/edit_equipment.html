@@ -13,7 +13,7 @@
 {% load django_bootstrap5 %}
 {% load static %}
 
-{% block title %}Create Equipment{% endblock %}
+{% block title %}Edit Equipment{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/collection.css' %}">
@@ -25,7 +25,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h2 class="card-title text-center mb-4">Create New Equipment</h2>
+                    <h2 class="card-title text-center mb-4">Edit Equipment</h2>
                     <form method="post" enctype="multipart/form-data" id="equipmentForm">
                         {% csrf_token %}
                         {% bootstrap_form form %}
@@ -34,8 +34,8 @@
                             <input type="file" class="form-control" id="images" name="images" multiple accept="image/*">
                         </div>
                         <div class="text-center">
-                            <button type="submit" class="btn btn-success">Create Equipment</button>
-                            <a href="{% url 'home' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-success">Save Changes</button>
+                            <a href="{% url 'item_detail' item_id=item.id %}" class="btn btn-secondary">Cancel</a>
                         </div>
                     </form>
                 </div>

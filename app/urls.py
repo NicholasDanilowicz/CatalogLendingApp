@@ -11,6 +11,7 @@ urlpatterns = [
     path("search/", views.search_results, name='search_results'),
     path("item/<int:item_id>", views.item_detail, name='item_detail'),
     path("item/create/", views.create_equipment, name='create_equipment'),
+    path("item/<int:item_id>/edit/", views.edit_equipment, name='edit_equipment'),
     path("item/<int:item_id>/delete/", views.delete_equipment, name='delete_equipment'),
     path("collection/<int:collection_id>/", views.collection_detail, name='collection_detail'),
     path("collection/create/", views.create_collection, name='create_collection'),
