@@ -29,7 +29,7 @@ body {
 }
 
 main {
-  margin-top: calc(10em);
+  margin-top: 2em;
 }
 
 /* ----- Top Navbar Layout ----- */
@@ -39,13 +39,8 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: fixed;
-  top: 1em;
-  left: 1em;
-  right: 1em;
   z-index: 1000;
   background-color: var(--bg);
-  padding: 0.5em;
   border-radius: 10px;
   box-sizing: border-box;
 }
@@ -55,37 +50,33 @@ main {
   font-family: "Edu TAS Beginner", cursive;
   background-color: var(--primary);
   border: 2px solid var(--primary);
-  padding: 10px 10px 20px;
+  padding: 5px 5px 10px;
   border-radius: 10px;
   box-sizing: border-box;
+  margin-left: .5em;
 }
 
 .title {
   margin: 0;
-  font-weight: 400;
 }
 
 .title a {
   color: var(--textbg);
 }
 
-
-/* Search Wrapper (left) */
 .search-wrapper {
-  transform: translateY(2em);
-  text-align: left;
+  margin-top: 1em;
 }
 
 .auth-stuff-wrapper {
   text-align: right;
+  margin-right: .5em;
 }
 
 /* ----- Navigation Menu (Bottom Navbar) ----- */
 .bottom-navbar-container {
   width: 100%;
-  position: fixed;
   z-index: 9999;
-  margin-top: 7em;
 }
 
 .menu-list {
@@ -94,7 +85,6 @@ main {
   align-items: center;
   list-style: none;
   padding: 0;
-  margin-top: 10px;
   width: 100%;
   background-color: var(--primary);
   border-color: var(--secondary);
@@ -166,6 +156,13 @@ main {
 /* ----- Search Bar Styling ----- */
 .search-container {
   display: flex;
+  align-items: center;
+}
+
+#searchBar p {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: inline;
 }
 
 #searchBar input {
@@ -282,7 +279,7 @@ main {
   position: fixed;
   bottom: 0;
   width: 100%;
-  padding: 0.75rem 0;
+  padding: 0.25rem 0;
 }
 
 .footer-container {
@@ -310,6 +307,5 @@ main {
   .auth-stuff-wrapper {
     order: unset;
     width: 100%;
-    margin-bottom: 10px;
   }
 }

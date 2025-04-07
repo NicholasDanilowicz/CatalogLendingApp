@@ -20,7 +20,6 @@
 </head>
 
 <body>
-<header class="navbar">
     <div class="top-navbar-container">
         <div class=title-wrapper>
             <h1 class="title"><a href="{% url 'home' %}">Sportify</a></h1>
@@ -55,10 +54,7 @@
             </div>
             {% else %}
             <div class="user-info">
-                <div class="top-right-buttons">
-                    <a id="loginButton" href="{% url 'social:begin' 'google-oauth2' %}" class="login-btn">Login with
-                        Google</a>
-                </div>
+                <a id="loginButton" href="{% url 'social:begin' 'google-oauth2' %}" class="login-btn">Login with Google</a>
             </div>
             {% endif %}
         </div>
@@ -164,7 +160,6 @@
             </ul>
         </nav>
     </div>
-</header>
 
 <main>
     {% block content %}
