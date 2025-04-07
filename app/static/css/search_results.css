@@ -1,6 +1,7 @@
 /* This css is typically very similar to collection_detail.css */
 
 .grid-container {
+    z-index: -1000;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 20px;
