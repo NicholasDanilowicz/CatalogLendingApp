@@ -10,3 +10,5 @@ class TestUserProfile(TestCase):
         userprof.user.username = 'John Doe'
         userprof.role = 'patron'
         self.assertEqual(str(userprof), "User: John Doe Role: patron")
+
+
