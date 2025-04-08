@@ -72,3 +72,12 @@
   /* left: -30px; */
   color: black;
 }
+
+.average-rating .star {
+  font-size: 2em;
+  color: gray;
+}
+
+.average-rating .star.filled {
+  color: gold;
+}

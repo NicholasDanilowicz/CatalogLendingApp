@@ -139,17 +139,19 @@ class CollectionAccessRequest(models.Model):
         return f"Request by {self.patron.username} for {self.collection.title} - {self.status}"
 
 class Rating(models.Model):
-    user = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
-    equipment = models.ForeignKey('Equipment', on_delete=models.CASCADE)
-
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    equipment = models.ForeignKey(Equipment, related_name='ratings', on_delete=models.CASCADE)
     rating = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)],
         help_text="Rating between 1 (poor) and 5 (excellent)"
     )
+    review_text = models.TextField(blank=True, null=True, help_text="Optional text review")
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ('user', 'equipment')
 
     def __str__(self):
         return f"{self.user} rated {self.equipment} as {self.rating} stars"
+

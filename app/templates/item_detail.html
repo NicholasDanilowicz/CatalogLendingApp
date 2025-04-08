@@ -54,90 +54,108 @@
 
 
             <div class="stars">
-                <form method="post" id="rating-form">
-                    {% csrf_token %}
-                    {{ form.rating.errors }}
-                    <div id="rating-stars" class="star-rating">
-                        {% for value, label in form.fields.rating.widget.choices %} {% with rating_val=form.data.rating|stringformat:"s" current_val=value|stringformat:"s" initial_val=form.initial.rating|stringformat:"s" %}
-                        <input
-                                type="radio"
-                                id="star-{{ value }}"
-                                name="rating"
-                                value="{{ value }}"
-                                {% if rating_val == current_val or current_val == initial_val %} checked {% endif %}
-                        />
-                        <label for="star-{{ value }}" data-value="{{ value }}">&#9733;</label>
-                        {% endwith %}
-                        {% endfor %}
-
-
+                <div class="average-rating">
+                    <span class="star {% if average_rating|floatformat:0|add:'0' >= 1 %}filled{% endif %}">&#9733;</span>
+                    <span class="star {% if average_rating|floatformat:0|add:'0' >= 2 %}filled{% endif %}">&#9733;</span>
+                    <span class="star {% if average_rating|floatformat:0|add:'0' >= 3 %}filled{% endif %}">&#9733;</span>
+                    <span class="star {% if average_rating|floatformat:0|add:'0' >= 4 %}filled{% endif %}">&#9733;</span>
+                    <span class="star {% if average_rating|floatformat:0|add:'0' >= 5 %}filled{% endif %}">&#9733;</span>
+                    <span class="rating-value">({{ average_rating }})</span>
                     </div>
-                    <button type="submit">Submit</button>
-                </form>
 
-                <script>
-                    // Highlight stars on hover and click
-                    const stars = document.querySelectorAll('#rating-stars label');
-                    const inputs = document.querySelectorAll('#rating-stars input');
+                    <!-- Leave a review button -->
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                        Leave a review
+                    </button>
 
-                    stars.forEach((star) => {
-                        star.addEventListener('mouseenter', () => {
-                            resetStars();
-                            highlightStars(star.dataset.value);
+                    <!-- Modal for leaving/editing a review -->
+                    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="reviewModalLabel">Leave Your Review</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Star rating interface -->
+                                    <div id="user-rating" class="star-rating">
+                                        <span class="star" data-value="1">&#9733;</span>
+                                        <span class="star" data-value="2">&#9733;</span>
+                                        <span class="star" data-value="3">&#9733;</span>
+                                        <span class="star" data-value="4">&#9733;</span>
+                                        <span class="star" data-value="5">&#9733;</span>
+                                    </div>
+                                    <!-- Hidden form for submitting the review -->
+                                    <form id="review-form" method="post" action="{% url 'submit_review' item.id %}">
+                                        {% csrf_token %}
+                                        <!-- hidden field to store the star rating -->
+                                        <input type="hidden" name="rating" id="rating-input" value="">
+                                        <!-- Optional text review -->
+                                        <textarea name="review" class="form-control mt-3"
+                                                  placeholder="Leave your comments here"></textarea>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel
+                                    </button>
+                                    <button type="button" class="btn btn-primary" id="save-review-btn">Submit Review
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const stars = document.querySelectorAll('#user-rating .star');
+                            const ratingInput = document.getElementById('rating-input');
+
+                            // Function to update star display based on current rating value
+                            function updateStars(rating) {
+                                stars.forEach(function (star) {
+                                    const starValue = parseInt(star.getAttribute('data-value'), 10);
+                                    if (starValue <= rating) {
+                                        star.classList.add('filled');
+                                    } else {
+                                        star.classList.remove('filled');
+                                    }
+                                });
+                            }
+
+                            // Add event listeners for hover and click
+                            stars.forEach(function (star) {
+                                star.addEventListener('mouseenter', function () {
+                                    const rating = parseInt(this.getAttribute('data-value'), 10);
+                                    updateStars(rating);
+                                });
+                                star.addEventListener('click', function () {
+                                    const rating = parseInt(this.getAttribute('data-value'), 10);
+                                    ratingInput.value = rating;  // Save the selected rating
+                                    updateStars(rating);
+                                });
+                            });
+
+                            // When mouse leaves the stars area, revert to the saved rating (or zero if none)
+                            document.getElementById('user-rating').addEventListener('mouseleave', function () {
+                                updateStars(ratingInput.value || 0);
+                            });
+
+                            // On submit button, check that a rating has been selected
+                            document.getElementById('save-review-btn').addEventListener('click', function () {
+                                if (ratingInput.value === '') {
+                                    alert("Please select a star rating before submitting your review.");
+                                } else {
+                                    // Submit the review form (could also submit via AJAX if desired)
+                                    document.getElementById('review-form').submit();
+                                }
+                            });
                         });
+                    </script>
 
-                        star.addEventListener('click', (e) => {
-                            resetStars();
-                            highlightStars(star.dataset.value);
-                        });
-                    });
-
-                    document.getElementById('rating-stars').addEventListener('mouseleave', resetStars);
-
-                    function highlightStars(value) {
-                        const rating = parseInt(value, 10);
-                        const totalStars = stars.length;
-                        const startIndex = totalStars - rating;
-                        for (let i = startIndex; i < totalStars; i++) {
-                            stars[i].classList.add('selected');
-                        }
-                    }
+                </div>
 
 
-                    function resetStars() {
-                        stars.forEach((star) => {
-                            star.classList.remove('selected');
-                        });
-                        const checked = Array.from(inputs).find(input => input.checked);
-                        if (checked) {
-                            highlightStars(checked.value);
-                        }
-                    }
-
-                    resetStars();
-                </script>
-
-                <style>
-                    #rating-stars {
-                        display: flex;
-                        flex-direction: row-reverse;
-                        justify-content: center;
-                    }
-
-                    #rating-stars input {
-                        display: none;
-                    }
-
-                    #rating-stars label {
-                        font-size: 2em;
-                        color: gray;
-                        cursor: pointer;
-                    }
-
-                    #rating-stars label.selected {
-                        color: gold;
-                    }
-                </style>
             </div>
 
 
