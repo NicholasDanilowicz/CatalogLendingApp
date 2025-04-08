@@ -12,6 +12,7 @@
 from django.contrib.auth import logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 
 from django.core.paginator import Paginator
 from django.utils import timezone
@@ -24,6 +25,9 @@ from django.contrib import messages
 from .models import Rental
 from .utils import handle_equipment_images
 from .auth_utils import is_librarian
+from .models import Equipment, Rating
+from .forms import RatingForm
+
 
 
 def custom_login(request):
@@ -353,3 +357,37 @@ def request_access(request, collection_id):
 #         CollectionAccessRequest.objects.get_or_create(patron=request.user, collection=collection)
 #         messages.success(request, 'Access request submitted.')
 #         return redirect('collection_detail', collection_id=collection.id)
+
+def can_user_rate(user, equipment):
+    return Rental.objects.filter(
+        user=user,
+        equipment=equipment,
+        returned_on__isnull=False
+    ).exists()
+
+
+@login_required
+def rate_equipment(request, equipment_id):
+    equipment = get_object_or_404(Equipment, id=equipment_id)
+    user = request.user.userprofile
+
+    if request.method == "POST":
+        form = RatingForm(request.POST)
+        if form.is_valid():
+            if not can_user_rate(user, equipment):
+                form.add_error(None, "You are not allowed to rate this equipment.")
+            else:
+                # Save the rating
+                rating = form.save(commit=False)
+                rating.user = user
+                rating.equipment = equipment
+                rating.save()
+                return HttpResponseRedirect(f'/equipment/{equipment_id}')  # Redirect after saving
+    else:
+        form = RatingForm()
+
+    return render(request, 'rating_form.html', {
+        'form': form,
+        'equipment': equipment
+    })
+

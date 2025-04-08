@@ -27,7 +27,7 @@
 
 
 from django import forms
-from .models import Collection, TAG_CHOICES, Equipment, EquipmentImage, UserProfile, User
+from .models import Collection, TAG_CHOICES, Equipment, EquipmentImage, UserProfile, User, Rating
 from django.contrib.auth.models import User
 from .auth_utils import is_librarian
 
@@ -167,3 +167,15 @@ class CollectionEditForm(CollectionCreateForm):
         if self.instance.creator and self.instance.creator != self.user and not is_librarian(self.user):
             raise forms.ValidationError("You don't have permission to edit this collection.")
         return cleaned_data
+
+class RatingForm(forms.ModelForm):
+    rating = forms.IntegerField(
+        label="Rate",
+        widget=forms.RadioSelect(
+            choices=[(i, "★" * i) for i in range(1, 6)]  # Displays stars as options
+        )
+    )
+
+    class Meta:
+        model = Rating
+        fields = ['rating']

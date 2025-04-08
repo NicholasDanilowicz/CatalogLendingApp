@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/item_detail.css' %}">
+<link rel="stylesheet" href="{% static 'css/item_detail.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -15,22 +15,23 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>{{ item.name }}</h1>
         {% if is_librarian %}
-            <div>
-                <a href="{% url 'edit_equipment' item_id=item.id %}" class="btn btn-success me-2">
-                    <i class="fas fa-edit"></i> Edit Equipment
-                </a>
-                <a href="{% url 'delete_equipment' item_id=item.id %}" class="btn btn-danger">
-                    <i class="fas fa-trash"></i> Delete Equipment
-                </a>
-            </div>
+        <div>
+            <a href="{% url 'edit_equipment' item_id=item.id %}" class="btn btn-success me-2">
+                <i class="fas fa-edit"></i> Edit Equipment
+            </a>
+            <a href="{% url 'delete_equipment' item_id=item.id %}" class="btn btn-danger">
+                <i class="fas fa-trash"></i> Delete Equipment
+            </a>
+        </div>
         {% endif %}
     </div>
-    
+
     <div id="itemCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
         <div class="carousel-inner">
             {% for image in item.all_images %}
             <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                <img src="{{ image.url }}" class="d-block w-100" alt="{{ item.name }}" style="object-fit: contain; max-height: 400px;">
+                <img src="{{ image.url }}" class="d-block w-100" alt="{{ item.name }}"
+                     style="object-fit: contain; max-height: 400px;">
             </div>
             {% endfor %}
         </div>
@@ -50,22 +51,119 @@
         <div class="card-body">
             <h5 class="card-title">Description</h5>
             <p class="card-text">{{ item.description|default:"No description available." }}</p>
+
+
+            <div class="stars">
+                <form method="post" id="rating-form">
+                    {% csrf_token %}
+                    {{ form.rating.errors }}
+                    <div id="rating-stars" class="star-rating">
+                        {% for value, label in form.fields.rating.widget.choices %}
+                        {% with rating_val=form.data.rating|stringformat:"s"
+                        current_val=value|stringformat:"s"
+                        initial_val=form.initial.rating|stringformat:"s" %}
+                        <input
+                                type="radio"
+                                id="star-{{ value }}"
+                                name="rating"
+                                value="{{ value }}"
+                                {% if rating_val== current_val or current_val== initial_val %} checked {% endif %}
+                        />
+                        <label for="star-{{ value }}" data-value="{{ value }}">&#9733;</label>
+                        {% endwith %}
+                        {% endfor %}
+
+
+                        <label for="star-{{ value }}" data-value="{{ value }}">&#9733;</label>
+                        {% endfor %}
+                    </div>
+                    <button type="submit">Submit</button>
+                </form>
+
+                <script>
+                    // Highlight stars on hover and click
+                    const stars = document.querySelectorAll('#rating-stars label');
+                    const inputs = document.querySelectorAll('#rating-stars input');
+
+                    stars.forEach((star) => {
+                        star.addEventListener('mouseenter', () => {
+                            resetStars();
+                            highlightStars(star.dataset.value);
+                        });
+
+                        star.addEventListener('click', (e) => {
+                            resetStars();
+                            highlightStars(star.dataset.value);
+                        });
+                    });
+
+                    document.getElementById('rating-stars').addEventListener('mouseleave', resetStars);
+
+                    function highlightStars(value) {
+                        const rating = parseInt(value, 10);
+                        const totalStars = stars.length;
+                        const startIndex = totalStars - rating;
+                        for (let i = startIndex; i < totalStars; i++) {
+                            stars[i].classList.add('selected');
+                        }
+                    }
+
+
+                    function resetStars() {
+                        stars.forEach((star) => {
+                            star.classList.remove('selected');
+                        });
+                        const checked = Array.from(inputs).find(input => input.checked);
+                        if (checked) {
+                            highlightStars(checked.value);
+                        }
+                    }
+
+                    resetStars();
+                </script>
+
+                <style>
+                    #rating-stars {
+                        display: flex;
+                        flex-direction: row-reverse;
+                        justify-content: center;
+                    }
+
+                    #rating-stars input {
+                        display: none;
+                    }
+
+                    #rating-stars label {
+                        font-size: 2em;
+                        color: gray;
+                        cursor: pointer;
+                    }
+
+                    #rating-stars label.selected {
+                        color: gold;
+                    }
+                </style>
+            </div>
+
+
         </div>
     </div>
+
+
     {% if rental %}
-        <form method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Return this item</button>
-        </form>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Return this item</button>
+    </form>
     {% else %}
-        {% if item.available %}
-        <form method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-success">Rent this item</button>
-        </form>
-        {% else %}
-        <button class="btn btn-secondary" disabled>Item Unavailable</button>
-        {% endif %}
+    {% if item.available %}
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Rent this item</button>
+    </form>
+    {% else %}
+    <button class="btn btn-secondary" disabled>Item Unavailable</button>
+    {% endif %}
     {% endif %}
     {% endblock %}
 </div>

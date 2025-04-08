@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 from django.db import models
 from .auth_utils import is_librarian
@@ -112,6 +113,9 @@ class Rental(models.Model):
     return_by = models.DateTimeField(null=True, blank=True)
     returned_on = models.DateTimeField(null=True, blank=True)
 
+    def can_user_rate(self, user, equipment):
+        return Rental.objects.filter(user=user, equipment=equipment, returned_on__isnull=False).exists()
+
     def __str__(self):
         return f"{self.user.username} rented {self.equipment.name}"
 
@@ -133,3 +137,19 @@ class CollectionAccessRequest(models.Model):
 
     def __str__(self):
         return f"Request by {self.patron.username} for {self.collection.title} - {self.status}"
+
+class Rating(models.Model):
+    user = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
+    equipment = models.ForeignKey('Equipment', on_delete=models.CASCADE)
+
+    rating = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        help_text="Rating between 1 (poor) and 5 (excellent)"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'equipment')
+
+    def __str__(self):
+        return f"{self.user} rated {self.equipment} as {self.rating} stars"
