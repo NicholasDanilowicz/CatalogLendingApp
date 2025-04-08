@@ -59,8 +59,7 @@
                     {{ form.rating.errors }}
                     <div id="rating-stars" class="star-rating">
                         {% for value, label in form.fields.rating.widget.choices %}
-                        {% with rating_val=form.data.rating|stringformat:"s"
-                        current_val=value|stringformat:"s"
+                        {% with rating_val=form.data.rating|stringformat:"s" current_val=value|stringformat:"s"
                         initial_val=form.initial.rating|stringformat:"s" %}
                         <input
                                 type="radio"
@@ -73,9 +72,6 @@
                         {% endwith %}
                         {% endfor %}
 
-
-                        <label for="star-{{ value }}" data-value="{{ value }}">&#9733;</label>
-                        {% endfor %}
                     </div>
                     <button type="submit">Submit</button>
                 </form>
