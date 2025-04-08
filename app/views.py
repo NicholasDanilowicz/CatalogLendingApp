@@ -25,8 +25,7 @@ from django.contrib import messages
 from .models import Rental
 from .utils import handle_equipment_images
 from .auth_utils import is_librarian
-from .models import Equipment, Rating
-from .forms import RatingForm
+
 
 
 

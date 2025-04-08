@@ -27,7 +27,7 @@
 
 
 from django import forms
-from .models import Collection, TAG_CHOICES, Equipment, EquipmentImage, UserProfile, User, Rating
+from .models import Collection, TAG_CHOICES, Equipment, EquipmentImage, UserProfile, User
 from django.contrib.auth.models import User
 from .auth_utils import is_librarian
 
