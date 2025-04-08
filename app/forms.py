@@ -168,14 +168,5 @@ class CollectionEditForm(CollectionCreateForm):
             raise forms.ValidationError("You don't have permission to edit this collection.")
         return cleaned_data
 
-class RatingForm(forms.ModelForm):
-    rating = forms.IntegerField(
-        label="Rate",
-        widget=forms.RadioSelect(
-            choices=[(i, "★" * i) for i in range(1, 6)]  # Displays stars as options
-        )
-    )
-
-    class Meta:
-        model = Rating
-        fields = ['rating']
+# class RatingForm(forms.ModelForm):
+    # def __init__(self):

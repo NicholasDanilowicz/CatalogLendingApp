@@ -358,36 +358,11 @@ def request_access(request, collection_id):
 #         messages.success(request, 'Access request submitted.')
 #         return redirect('collection_detail', collection_id=collection.id)
 
-def can_user_rate(user, equipment):
-    return Rental.objects.filter(
-        user=user,
-        equipment=equipment,
-        returned_on__isnull=False
-    ).exists()
+#def can_user_rate(user, equipment):
 
 
-@login_required
-def rate_equipment(request, equipment_id):
-    equipment = get_object_or_404(Equipment, id=equipment_id)
-    user = request.user.userprofile
 
-    if request.method == "POST":
-        form = RatingForm(request.POST)
-        if form.is_valid():
-            if not can_user_rate(user, equipment):
-                form.add_error(None, "You are not allowed to rate this equipment.")
-            else:
-                # Save the rating
-                rating = form.save(commit=False)
-                rating.user = user
-                rating.equipment = equipment
-                rating.save()
-                return HttpResponseRedirect(f'/equipment/{equipment_id}')  # Redirect after saving
-    else:
-        form = RatingForm()
+# @login_required
+# def rate_equipment(request, equipment_id):
 
-    return render(request, 'rating_form.html', {
-        'form': form,
-        'equipment': equipment
-    })
 
