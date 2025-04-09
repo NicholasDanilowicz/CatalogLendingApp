@@ -24,16 +24,16 @@ Search Results
         {% for item in page_obj %}
             {% if item.is_public %}
                 <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <img src="{{ item.display_image_url }}" class="card-img-top" alt="{{ item.name }}" style="height: 200px; object-fit: contain;">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ item.name }}</h5>
-                        <a href="{% url 'item_detail' item_id=item.id %}" class="btn btn-primary">View Details</a>
-                        <p class="availability-tag {% if item.available %}available{% else %}unavailable{% endif %}">
-                            {% if item.available %}Available{% else %}Not Available{% endif %}
-                        </p>
+                    <div class="card h-100">
+                        <img src="{{ item.display_image_url }}" class="card-img-top" alt="{{ item.name }}" style="height: 200px; object-fit: contain;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.name }}</h5>
+                            <a href="{% url 'item_detail' item_id=item.id %}" class="btn btn-primary">View Details</a>
+                            <p class="availability-tag {% if item.available %}available{% else %}unavailable{% endif %}">
+                                {% if item.available %}Available{% else %}Not Available{% endif %}
+                            </p>
+                        </div>
                     </div>
-                </div>
                 </div>
             {% endif %}
         {% empty %}
