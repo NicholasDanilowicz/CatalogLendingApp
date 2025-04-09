@@ -56,12 +56,15 @@
 
                 <form method="post" action="{% url 'rate_equipment' item.id %}" class="star-rating">
                     {% csrf_token %}
-                    {% for i in "12345" reversed %}
+                    {% for i in "54321" %}
                     <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}">
+                    {% endfor %}
+                    {% for i in "54321" %}
                     <label for="star{{ i }}">&#9733;</label>
                     {% endfor %}
                     <button type="submit">Rate</button>
                 </form>
+
 
             </div>
 
