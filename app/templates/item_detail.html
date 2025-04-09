@@ -54,7 +54,7 @@
 
             <div class="reviews">
 
-                <form method="post" action="{% url 'rate_product' product.id %}" class="star-rating">
+                <form method="post" action="{% url 'rate_equipment' item.id %}" class="star-rating">
                     {% csrf_token %}
                     {% for i in "54321" %}
                     <input type="radio" id="star{{ i }}" name="score" value="{{ i }}">
