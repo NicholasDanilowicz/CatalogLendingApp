@@ -184,7 +184,3 @@ AWS_S3_FILE_OVERWRITE = False
 AWS_QUERYSTRING_AUTH = False
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-SECRET_KEY = 'django-insecure-6svnxqc3noeut0$pu@swux4)engan982d6epyim53+q4h_6d(o'
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '1009432591380-82dnqupq4f6t6fjg8nnqk76elrtimm9s.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
