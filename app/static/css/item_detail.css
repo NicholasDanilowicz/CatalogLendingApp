@@ -81,7 +81,7 @@
 }
 
 form.star-rating input[type="radio"] {
-  display: none; !important;
+  display: none !important;
 }
 
 .star-rating label {
