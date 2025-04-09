@@ -137,5 +137,13 @@ class CollectionAccessRequest(models.Model):
     def __str__(self):
         return f"Request by {self.patron.username} for {self.collection.title} - {self.status}"
 
-# class Rating(models.Model):
+class Rating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_ratings')
+    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
+    rating = models.PositiveSmallIntegerField(default=0)
 
+    class Meta:
+        unique_together = ('user', 'equipment')
+
+    def __str__(self):
+        return f"{self.user.username} rated {self.equipment.name} with {self.rating} stars"

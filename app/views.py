@@ -12,7 +12,6 @@
 from django.contrib.auth import logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
 
 from django.core.paginator import Paginator
 from django.utils import timezone
@@ -23,6 +22,7 @@ from .models import Equipment
 from .models import Collection
 from django.contrib import messages
 from .models import Rental
+from .models import Rating
 from .utils import handle_equipment_images
 from .auth_utils import is_librarian
 
@@ -357,11 +357,16 @@ def request_access(request, collection_id):
 #         messages.success(request, 'Access request submitted.')
 #         return redirect('collection_detail', collection_id=collection.id)
 
-#def can_user_rate(user, equipment):
+@login_required
+def rate_equipment(request, item_id):
+        if request.method == 'POST':
+            rating = int(request.POST.get('rating'))
+            if 1 <= rating <= 5:
+                item = get_object_or_404(Equipment, id=item_id)
+                rating, created = Rating.objects.get_or_create(
+                    equipment=item,
+                    user=request.user,
+                    defaults={'rating': rating}
+                )
 
-
-
-# @login_required
-# def rate_equipment(request, equipment_id):
-
-
+        return redirect('item_detail', item_id=item_id)
