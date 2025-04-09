@@ -52,35 +52,45 @@
             <h5 class="card-title">Description</h5>
             <p class="card-text">{{ item.description|default:"No description available." }}</p>
 
-                    <div class="reviews">
-                    </div>
+            <div class="reviews">
 
-                </div>
-
+                <form method="post" action="{% url 'rate_product' product.id %}" class="star-rating">
+                    {% csrf_token %}
+                    {% for i in "54321" %}
+                    <input type="radio" id="star{{ i }}" name="score" value="{{ i }}">
+                    <label for="star{{ i }}">&#9733;</label>
+                    {% endfor %}
+                    <button type="submit">Rate</button>
+                </form>
 
             </div>
 
-
         </div>
+
+
     </div>
 
 
-    {% if rental %}
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Return this item</button>
-    </form>
-    {% else %}
-    {% if item.available %}
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-success">Rent this item</button>
-    </form>
-    {% else %}
-    <button class="btn btn-secondary" disabled>Item Unavailable</button>
-    {% endif %}
-    {% endif %}
-    {% endblock %}
+</div>
+</div>
+
+
+{% if rental %}
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Return this item</button>
+</form>
+{% else %}
+{% if item.available %}
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success">Rent this item</button>
+</form>
+{% else %}
+<button class="btn btn-secondary" disabled>Item Unavailable</button>
+{% endif %}
+{% endif %}
+{% endblock %}
 </div>
 
 

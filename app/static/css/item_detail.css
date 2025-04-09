@@ -73,11 +73,29 @@
   color: black;
 }
 
-.average-rating .star {
-  font-size: 2em;
-  color: gray;
+.star-rating {
+  direction: rtl;
+  display: inline-flex;
+  flex-direction: row-reverse;
+  font-size: 2rem;
 }
 
-.average-rating .star.filled {
+.star-rating input[type="radio"] {
+  display: none;
+}
+
+.star-rating label {
+  color: lightgray;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.star-rating input[type="radio"]:checked ~ label {
   color: gold;
 }
+
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  color: gold;
+}
+
