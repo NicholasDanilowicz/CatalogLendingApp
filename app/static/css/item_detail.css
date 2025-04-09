@@ -75,6 +75,7 @@
 
 .star-rating {
   direction: rtl;
+  unicode-bidi: bidi-override;
   font-size: 2rem;
   display: inline-flex;
 }
