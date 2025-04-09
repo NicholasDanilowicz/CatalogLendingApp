@@ -75,9 +75,8 @@
 
 .star-rating {
   direction: rtl;
-  display: inline-flex;
-  flex-direction: row-reverse;
   font-size: 2rem;
+  display: inline-flex;
 }
 
 .star-rating input[type="radio"] {
@@ -90,12 +89,15 @@
   transition: color 0.2s;
 }
 
+/* Selected stars */
 .star-rating input[type="radio"]:checked ~ label {
   color: gold;
 }
 
+/* Hover effect */
 .star-rating label:hover,
 .star-rating label:hover ~ label {
   color: gold;
 }
+
 
