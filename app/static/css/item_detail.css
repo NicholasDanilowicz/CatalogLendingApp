@@ -80,8 +80,8 @@
   display: inline-flex;
 }
 
-.star-rating input[type="radio"] {
-  display: none;
+form.star-rating input[type="radio"] {
+  display: none; !important;
 }
 
 .star-rating label {
