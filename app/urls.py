@@ -20,7 +20,7 @@ urlpatterns = [
     path("profile/", views.profile_detail, name='profile_detail'),
     path("request/<int:request_id>/<str:action>", views.handle_request, name='handle_request'),
     path("request-access/<int:collection_id>/", views.request_access, name='request_access'),
-    path("rate/<int:product_id>/", views.rate_equipment, name='rate_equipment')
+    path("rate/<int:item_id>/", views.rate_equipment, name='rate_equipment')
 ]
 
 # if settings.DEBUG:
