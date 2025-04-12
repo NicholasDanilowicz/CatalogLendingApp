@@ -22,6 +22,7 @@ from .models import Equipment
 from .models import Collection
 from django.contrib import messages
 from .models import Rental
+from .models import RentalRequest
 from .models import Rating
 from .utils import handle_equipment_images
 from .auth_utils import is_librarian
@@ -63,11 +64,13 @@ def select_role(request):
         
         return render(request, 'select_role.html')
 
+
 @login_required
 def item_detail(request, item_id):
     equipment = get_object_or_404(Equipment, id=item_id)
     is_librarian_user = is_librarian(request.user)
     rental = Rental.objects.filter(equipment=equipment, user=request.user, returned_on__isnull=True).first()
+    pending_request = RentalRequest.objects.filter(equipment=equipment, patron=request.user, status='pending').first()
 
     if request.method == 'POST':
         if rental:
@@ -92,14 +95,25 @@ def item_detail(request, item_id):
                 user=request.user,
                 return_by=timezone.now() + timezone.timedelta(days=7),
             )
+        if pending_request:
+            pending_request.delete()
+            messages.info(request, "Your request has been canceled.")
+            return redirect('item_detail', item_id=item_id)
 
             messages.success(request, f"You have rented {equipment.name}. Please return it by {rental.return_by}.")
+        if not equipment.available:
+            messages.error(request, "This item is currently unavailable.")
             return redirect('item_detail', item_id=item_id)
+
+        RentalRequest.objects.create(equipment=equipment, patron=request.user)
+        messages.success(request, f"You have requested {equipment.name}. Await librarian approval.")
+        return redirect('item_detail', item_id=item_id)
 
     return render(request, 'item_detail.html', {
         'item': equipment,
         'is_librarian': is_librarian_user,
         'rental': rental,
+        'pending_request': pending_request,
     })
 
 
@@ -375,3 +389,51 @@ def rate_equipment(request, item_id):
                 )
 
         return redirect('item_detail', item_id=item_id)
+
+
+@login_required
+def request_rental(request, equipment_id):
+    equipment = get_object_or_404(Equipment, id=equipment_id)
+
+    if RentalRequest.objects.filter(equipment=equipment, patron=request.user, status='pending').exists():
+        return redirect('item_detail', equipment_id=equipment.id)
+
+    RentalRequest.objects.create(equipment=equipment, patron=request.user)
+    return redirect('rental_detail')
+
+
+@login_required
+def rental_requests_view(request):
+    if request.method == 'POST':
+        request_id = request.POST.get('request_id')
+        action = request.POST.get('action')
+
+        rental_request = get_object_or_404(RentalRequest, id=request_id)
+
+        if rental_request.status != 'pending':
+            messages.warning(request, "This request has already been processed.")
+            return redirect('rental_requests')
+
+        if action == 'approve':
+            rental_request.status = 'approved'
+            rental_request.save()
+
+            rental = Rental.objects.create(
+                equipment=rental_request.equipment,
+                user=rental_request.patron,
+                return_by=timezone.now() + timezone.timedelta(days=7)
+            )
+
+            rental_request.equipment.available = False
+            rental_request.equipment.save()
+
+            messages.success(request, f"Rental approved for {rental_request.patron.username}.")
+        elif action == 'deny':
+            rental_request.status = 'denied'
+            rental_request.save()
+            messages.info(request, f"Rental denied for {rental_request.patron.username}.")
+
+        return redirect('rental_requests')
+
+    requests = RentalRequest.objects.filter(status='pending').select_related('equipment', 'patron')
+    return render(request, 'rental_requests.html', {'requests': requests})

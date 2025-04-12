@@ -147,3 +147,17 @@ class Rating(models.Model):
 
     def __str__(self):
         return f"{self.user.username} rated {self.equipment.name} with {self.rating} stars"
+
+
+class RentalRequest(models.Model):
+    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
+    patron = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=[
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('denied', 'Denied')
+    ], default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.patron.username} requests {self.equipment.name} - {self.status}"
