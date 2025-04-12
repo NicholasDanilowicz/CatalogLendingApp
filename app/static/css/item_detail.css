@@ -77,6 +77,7 @@
   display: inline-flex;
   direction: ltr;
   font-size: 2rem;
+    background-color: pink !important;
 }
 
 .star-rating input[type="radio"] {
