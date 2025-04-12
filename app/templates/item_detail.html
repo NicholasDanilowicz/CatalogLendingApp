@@ -7,35 +7,6 @@
 {% endblock %}
 
 {% block extra_css %}
-<style>
-    /* Inline CSS for star rating */
-    form.star-rating {
-        direction: rtl;
-        unicode-bidi: bidi-override;
-        font-size: 2rem;
-        display: inline-flex;
-    }
-
-    form.star-rating input[type="radio"] {
-        display: none !important;
-    }
-
-    form.star-rating label {
-        color: lightgray !important;
-        cursor: pointer;
-        transition: color 0.2s;
-        user-select: none;
-    }
-
-    form.star-rating input[type="radio"]:checked ~ label {
-        color: gold !important;
-    }
-
-    form.star-rating label:hover,
-    form.star-rating label:hover ~ label {
-        color: gold !important;
-    }
-</style>
 <link rel="stylesheet" href="{% static 'css/item_detail.css' %}">
 {% endblock %}
 
@@ -84,13 +55,22 @@
             <div class="reviews">
                 <form method="post" action="{% url 'rate_equipment' item.id %}" class="star-rating">
                     {% csrf_token %}
-                    <input type="radio" id="star1" name="rating" value="1"><label for="star1">&#9733;</label>
-                    <input type="radio" id="star2" name="rating" value="2"><label for="star2">&#9733;</label>
-                    <input type="radio" id="star3" name="rating" value="3"><label for="star3">&#9733;</label>
-                    <input type="radio" id="star4" name="rating" value="4"><label for="star4">&#9733;</label>
-                    <input type="radio" id="star5" name="rating" value="5"><label for="star5">&#9733;</label>
+                    <input type="radio" id="star1" name="rating" value="1">
+                    <label for="star1" title="1 star"></label>
 
-                    <button type="submit">Rate</button>
+                    <input type="radio" id="star2" name="rating" value="2">
+                    <label for="star2" title="2 stars"></label>
+
+                    <input type="radio" id="star3" name="rating" value="3">
+                    <label for="star3" title="3 stars"></label>
+
+                    <input type="radio" id="star4" name="rating" value="4">
+                    <label for="star4" title="4 stars"></label>
+
+                    <input type="radio" id="star5" name="rating" value="5">
+                    <label for="star5" title="5 stars"></label>
+
+                    <button type="submit" class="btn btn-sm btn-primary ms-2">Rate</button>
                 </form>
             </div>
         </div>

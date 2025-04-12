@@ -74,31 +74,41 @@
 }
 
 .star-rating {
-  direction: rtl;
-  unicode-bidi: bidi-override;
-  font-size: 2rem;
   display: inline-flex;
+  direction: ltr;
+  font-size: 2rem;
 }
 
-form.star-rating input[type="radio"] {
-  display: none !important;
+.star-rating input[type="radio"] {
+  display: none;
 }
 
 .star-rating label {
   color: lightgray;
   cursor: pointer;
-  transition: color 0.2s;
+  position: relative;
 }
 
-/* Selected stars */
-.star-rating input[type="radio"]:checked ~ label {
+/* Real star symbol */
+.star-rating label::before {
+  content: '★';  /* <- this is the real star symbol */
+}
+
+/* Selected rating and all lower ones */
+.star-rating input[type="radio"]:checked ~ label::before {
   color: gold;
 }
 
 /* Hover effect */
-.star-rating label:hover,
-.star-rating label:hover ~ label {
+.star-rating label:hover::before,
+.star-rating label:hover ~ label::before {
   color: gold;
 }
+
+/* Reset right-side stars to gray on hover */
+.star-rating label:hover ~ label::before {
+  color: lightgray;
+}
+
 
 
