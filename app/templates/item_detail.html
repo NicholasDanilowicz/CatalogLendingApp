@@ -6,9 +6,41 @@
 {{ item.name }}
 {% endblock %}
 
+<head>
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/item_detail.css' %}">
+<style>
+  .star-rating {
+    display: inline-flex;
+    direction: ltr;
+    font-size: 2rem;
+    background-color: pink;
+  }
+  .star-rating input[type="radio"] {
+    all: unset;
+    display: none !important;
+  }
+  .star-rating label {
+    cursor: pointer;
+    color: lightgray;
+    padding: 0 4px;
+  }
+  .star-rating label::before {
+    content: '★';
+  }
+  .star-rating input[type="radio"]:checked ~ label::before {
+    color: gold;
+  }
+  .star-rating label:hover::before,
+  .star-rating label:hover ~ label::before {
+    color: gold;
+  }
+  .star-rating label:hover ~ label::before {
+    color: lightgray;
+  }
+</style>
 {% endblock %}
+</head>
 
 {% block content %}
 <div class="container mt-4">
