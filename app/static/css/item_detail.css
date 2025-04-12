@@ -75,7 +75,7 @@
 
 .star-rating {
   display: inline-flex;
-  direction: ltr;
+  direction: rtl;
   font-size: 2rem;
 }
 .star-rating input[type="radio"] {
