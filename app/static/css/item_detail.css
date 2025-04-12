@@ -80,32 +80,31 @@
 }
 
 .star-rating input[type="radio"] {
-  display: none;
+  all: unset;
+  display: none !important;
 }
 
 .star-rating label {
-  color: lightgray;
   cursor: pointer;
-  position: relative;
+  color: lightgray;
+  font-size: 2rem;
+  user-select: none;
+  padding: 0 4px;
 }
 
-/* Real star symbol */
 .star-rating label::before {
-  content: '★';  /* <- this is the real star symbol */
+  content: '★';
 }
 
-/* Selected rating and all lower ones */
 .star-rating input[type="radio"]:checked ~ label::before {
   color: gold;
 }
 
-/* Hover effect */
 .star-rating label:hover::before,
 .star-rating label:hover ~ label::before {
   color: gold;
 }
 
-/* Reset right-side stars to gray on hover */
 .star-rating label:hover ~ label::before {
   color: lightgray;
 }
