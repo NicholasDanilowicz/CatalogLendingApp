@@ -40,7 +40,6 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: fixed;
   z-index: 1000;
   background-color: var(--bg);
   border-radius: 10px;
@@ -78,7 +77,6 @@ main {
 /* ----- Navigation Menu (Bottom Navbar) ----- */
 .bottom-navbar-container {
   width: 100%;
-  position: fixed;
   z-index: 9999;
 }
 
