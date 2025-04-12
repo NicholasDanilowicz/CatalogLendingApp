@@ -358,6 +358,11 @@ def request_access(request, collection_id):
 #         return redirect('collection_detail', collection_id=collection.id)
 
 @login_required
+def rental_detail(request):
+    active_rentals = Rental.objects.filter(user=request.user, returned_on__isnull=True)
+    return render(request, 'rental_detail.html', {'rentals': active_rentals})
+
+@login_required
 def rate_equipment(request, item_id):
         if request.method == 'POST':
             rating = int(request.POST.get('rating'))

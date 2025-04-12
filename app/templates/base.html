@@ -42,22 +42,43 @@
             </form>
         </div>
 
-        <div class=auth-stuff-wrapper>
-            {% if user.is_authenticated %}
+<!--        <div class=auth-stuff-wrapper>-->
+<!--            {% if user.is_authenticated %}-->
+<!--            <div class="user-info">-->
+<!--                &lt;!&ndash;                <p>User: {{ user.userprofile.real_name|default:user.username }}!</p>&ndash;&gt;-->
+<!--                &lt;!&ndash;                <p>Role: {% if user.userprofile.role == 'librarian' %}Librarian{% else %}Patron{% endif %}</p>&ndash;&gt;-->
+<!--                <div class="profile-pic-wrapper">-->
+<!--                    <a href="{% url 'profile_detail' %}" class="profile-btn">-->
+<!--                        <img src="{{ profile.profile_picture_url }}" alt="Profile Picture" class="profile-pic">-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            {% else %}-->
+<!--            <div class="user-info">-->
+<!--                <a id="loginButton" href="{% url 'social:begin' 'google-oauth2' %}" class="login-btn">Login with Google</a>-->
+<!--            </div>-->
+<!--            {% endif %}-->
+<!--        </div>-->
+
+        <div class="auth-stuff-wrapper">
             <div class="user-info">
-                <!--                <p>User: {{ user.userprofile.real_name|default:user.username }}!</p>-->
-                <!--                <p>Role: {% if user.userprofile.role == 'librarian' %}Librarian{% else %}Patron{% endif %}</p>-->
-                <div class="profile-pic-wrapper">
-                    <a href="{% url 'profile_detail' %}" class="profile-btn">
+                {% if user.is_authenticated %}
+                <div class="dropdown-auth">
+                    <div class="profile-pic-wrapper dropdown-toggle" id="authDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="{{ profile.profile_picture_url }}" alt="Profile Picture" class="profile-pic">
-                    </a>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="authDropdown">
+                        <li><a class="dropdown-item" href="{% url 'profile_detail' %}">View Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'rental_detail' %}">View Your Rentals</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Log out</a></li>
+                    </ul>
                 </div>
-            </div>
-            {% else %}
-            <div class="user-info">
+                {% else %}
                 <a id="loginButton" href="{% url 'social:begin' 'google-oauth2' %}" class="login-btn">Login with Google</a>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
     </div>
 

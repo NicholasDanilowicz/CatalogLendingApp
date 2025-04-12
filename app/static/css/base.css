@@ -148,12 +148,25 @@ main {
   display: block;
 }
 
+.dropdown-auth {
+  position: relative;
+  z-index: 10000;
+}
+
+.dropdown-auth .dropdown-menu {
+  z-index: 10001;
+
+}
+
+.dropdown-item:hover {
+  background-color: var(--secondary);
+}
+
 /* ----- Navbar Container ----- */
 .navbar-container {
   position: fixed;
   width: 100%;
   margin: 0;
-  z-index: 9999;
 }
 
 /* ----- Search Bar Styling ----- */
