@@ -76,31 +76,16 @@ def item_detail(request, item_id):
         if rental:
             rental.returned_on = timezone.now()
             rental.save()
-
             equipment.available = True
             equipment.save()
-
             messages.success(request, f"Thank you for returning {equipment.name}.")
             return redirect('item_detail', item_id=item_id)
-        else:
-            if not equipment.available:
-                messages.error(request, "This item is currently unavailable.")
-                return redirect('item_detail', item_id=item_id)
 
-            equipment.available = False
-            equipment.save()
-
-            rental = Rental.objects.create(
-                equipment=equipment,
-                user=request.user,
-                return_by=timezone.now() + timezone.timedelta(days=7),
-            )
         if pending_request:
             pending_request.delete()
             messages.info(request, "Your request has been canceled.")
             return redirect('item_detail', item_id=item_id)
 
-            messages.success(request, f"You have rented {equipment.name}. Please return it by {rental.return_by}.")
         if not equipment.available:
             messages.error(request, "This item is currently unavailable.")
             return redirect('item_detail', item_id=item_id)
@@ -115,7 +100,6 @@ def item_detail(request, item_id):
         'rental': rental,
         'pending_request': pending_request,
     })
-
 
 from .models import CollectionAccessRequest
 def collection_detail(request, collection_id):
@@ -415,10 +399,16 @@ def rental_requests_view(request):
             return redirect('rental_requests')
 
         if action == 'approve':
+            if not rental_request.equipment.available:
+                messages.error(request, "This equipment is no longer available.")
+                rental_request.status = 'denied'
+                rental_request.save()
+                return redirect('rental_requests')
+
             rental_request.status = 'approved'
             rental_request.save()
 
-            rental = Rental.objects.create(
+            Rental.objects.create(
                 equipment=rental_request.equipment,
                 user=rental_request.patron,
                 return_by=timezone.now() + timezone.timedelta(days=7)
@@ -426,6 +416,11 @@ def rental_requests_view(request):
 
             rental_request.equipment.available = False
             rental_request.equipment.save()
+
+            RentalRequest.objects.filter(
+                equipment=rental_request.equipment,
+                status='pending'
+            ).exclude(id=rental_request.id).update(status='denied')
 
             messages.success(request, f"Rental approved for {rental_request.patron.username}.")
         elif action == 'deny':
