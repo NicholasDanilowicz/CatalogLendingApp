@@ -120,11 +120,15 @@ def collection_detail(request, collection_id):
     if request.user.userprofile.role == 'librarian' and collection.creator == request.user:
         access_requests = collection.access_requests.filter(status='pending')
     
+    lol = "working"
+    if len(access_requests) > 0:
+        lol = "NOT FUCKING WORKING"
     context = {
         'collection': collection,
         'has_access': has_access,
         'collection_id': collection_id,
-        'access_requests': access_requests
+        'access_requests': access_requests,
+        'sum_shit': lol
     }
     
     if has_access:
