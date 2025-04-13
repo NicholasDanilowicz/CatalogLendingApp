@@ -338,7 +338,7 @@ def handle_request(request, request_id, action):
     return redirect('collection_detail', collection_id=access_request.collection.id)
 
 from django.views.decorators.csrf import csrf_exempt
-@login_required
+# @login_required
 @csrf_exempt
 def request_access(request, collection_id):
     collection = get_object_or_404(Collection, id=collection_id)
