@@ -101,41 +101,6 @@ def item_detail(request, item_id):
         'pending_request': pending_request,
     })
 
-from .models import CollectionAccessRequest
-def collection_detail(request, collection_id):
-    collection = get_object_or_404(Collection, id=collection_id)
-    has_access = collection.can_user_access(request.user)
-    
-    if not has_access and request.user.userprofile.role == 'patron':
-        existing_request = CollectionAccessRequest.objects.filter(collection=collection, patron=request.user, status='pending').exists()
-        if request.method == 'POST' and 'request_access' in request.POST:
-            if existing_request:
-                messages.info(request, "You have already requested access to this collection.")
-            else:
-                CollectionAccessRequest.objects.create(collection=collection, patron=request.user)
-                messages.success(request, "Your access request has been submitted.")
-            return redirect('collection_detail', collection_id=collection_id)
-    access_requests = []
-
-    if request.user.userprofile.role == 'librarian' and collection.creator == request.user:
-        access_requests = collection.access_requests.filter(status='pending')
-    
-    lol = "working"
-    if len(access_requests) > 0:
-        lol = "NOT FUCKING WORKING"
-    context = {
-        'collection': collection,
-        'has_access': has_access,
-        'collection_id': collection_id,
-        'access_requests': access_requests,
-        'sum_shit': lol
-    }
-    
-    if has_access:
-        equipment_items = collection.equipment_items.all()
-        context['equipment_items'] = equipment_items
-    
-    return render(request, 'collection_detail.html', context)
 
 def search_results(req):
     form = SearchForm(req.GET)
@@ -341,10 +306,49 @@ def handle_request(request, request_id, action):
     access_request.save()
     return redirect('collection_detail', collection_id=access_request.collection.id)
 
+from .models import CollectionAccessRequest
+def collection_detail(request, collection_id):
+    collection = get_object_or_404(Collection, id=collection_id)
+    has_access = collection.can_user_access(request.user)
+    
+    if not has_access and request.user.userprofile.role == 'patron':
+        existing_request = CollectionAccessRequest.objects.filter(collection=collection, patron=request.user, status='pending').exists()
+        if request.method == 'POST' and 'request_access' in request.POST:
+            if existing_request:
+                messages.info(request, "You have already requested access to this collection.")
+            else:
+                CollectionAccessRequest.objects.create(
+                    collection=collection,
+                    patron=request.user,
+                    status='pending'
+                )
+                messages.success(request, "Your access request has been submitted.")
+            return redirect('collection_detail', collection_id=collection_id)
+    access_requests = []
+
+    if request.user.userprofile.role == 'librarian' and collection.creator == request.user:
+        access_requests = collection.access_requests.filter(status='pending')
+    
+    lol = request.user.userprofile.role
+    if len(access_requests) == 0:
+        lol = "NOT FUCKING WORKING"
+    context = {
+        'collection': collection,
+        'has_access': has_access,
+        'collection_id': collection_id,
+        'access_requests': access_requests,
+        'sum_shit': lol
+    }
+    
+    if has_access:
+        equipment_items = collection.equipment_items.all()
+        context['equipment_items'] = equipment_items
+    
+    return render(request, 'collection_detail.html', context)
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
-# @login_required
-@csrf_exempt
+@login_required
+# @csrf_exempt
 def request_access(request, collection_id):
     collection = get_object_or_404(Collection, id=collection_id)
 
