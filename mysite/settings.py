@@ -29,7 +29,12 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 # SECRET_KEY = 'django-insecure-6svnxqc3noeut0$pu@swux4)engan982d6epyim53+q4h_6d(o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+
+if 'HEROKU' in os.environ:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 ALLOWED_HOSTS = ['localhost','127.0.0.1',"sports-cataloging-lending-app-bd1891024175.herokuapp.com"]
 

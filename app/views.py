@@ -338,6 +338,7 @@ def handle_request(request, request_id, action):
     return redirect('collection_detail', collection_id=access_request.collection.id)
 
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 # @login_required
 @csrf_exempt
 def request_access(request, collection_id):
@@ -350,7 +351,8 @@ def request_access(request, collection_id):
         CollectionAccessRequest.objects.create(patron=request.user, collection=collection)
         messages.success(request, "Access request submitted.")
     
-    return redirect('collection_detail', collection_id=collection.id)
+    # return redirect('collection_detail', collection_id=collection.id)
+    return HttpResponse("PROCESSING REQUEST OK????")
 # def request_access(request, collection_id):
 #     if request.method == 'POST':
 #         collection = get_object_or_404(Collection, id=collection_id)
