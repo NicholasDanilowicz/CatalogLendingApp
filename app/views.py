@@ -20,6 +20,7 @@ from .forms import SearchForm, EquipmentForm, ProfileEditForm, CollectionCreateF
 from .models import UserProfile
 from .models import Equipment
 from .models import Collection
+from django.db.models import Avg
 from django.contrib import messages
 from .models import Rental
 from .models import RentalRequest
@@ -94,11 +95,18 @@ def item_detail(request, item_id):
         messages.success(request, f"You have requested {equipment.name}. Await librarian approval.")
         return redirect('item_detail', item_id=item_id)
 
+    # Average rating calculations
+    user_rating = Rating.objects.filter(equipment=equipment, user=request.user).first()
+    average_rating = Rating.objects.filter(equipment=equipment).aggregate(Avg('rating'))['rating__avg'] or 0
+
+
     return render(request, 'item_detail.html', {
         'item': equipment,
         'is_librarian': is_librarian_user,
         'rental': rental,
         'pending_request': pending_request,
+        'user_rating': user_rating,
+        'average_rating': average_rating,
     })
 
 
@@ -382,14 +390,25 @@ def rental_detail(request):
 @login_required
 def rate_equipment(request, item_id):
         if request.method == 'POST':
-            rating = int(request.POST.get('rating'))
-            if 1 <= rating <= 5:
-                item = get_object_or_404(Equipment, id=item_id)
-                rating, created = Rating.objects.get_or_create(
-                    equipment=item,
+            try:
+                rating_value = int(request.POST.get('rating'))
+            except (TypeError, ValueError):
+                messages.error(request, "Invalid rating value.")
+                return redirect('item_detail', item_id=item_id)
+
+            if 1 <= rating_value <= 5:
+                equipment = get_object_or_404(Equipment, id=item_id)
+                rating_obj, created = Rating.objects.get_or_create(
+                    equipment=equipment,
                     user=request.user,
-                    defaults={'rating': rating}
+                    defaults={'rating': rating_value}
                 )
+                if not created:
+                    rating_obj.rating = rating_value
+                    rating_obj.save()
+                messages.success(request, "Your rating has been saved.")
+            else:
+                messages.error(request, "Rating must be between 1 and 5.")
 
         return redirect('item_detail', item_id=item_id)
 
