@@ -96,7 +96,6 @@
   color: gold;
 }
 .star-rating label:hover ~ label::before {
-  color: lightgray;
 }
 
 
