@@ -34,20 +34,20 @@
                     <h3>Pending Access Requests</h3>
                     <ul>
                         {% for req in access_requests %}
-                        <h1>HERE IS WHERE A REQUEST IS SUPPOSED TO BE</h1>
+                        <!-- <h1>HERE IS WHERE A REQUEST IS SUPPOSED TO BE</h1> -->
                             <li>
                                 {{ req.patron.username }} -                 
                                 <a href="{% url 'handle_request' request_id=req.id action='accept' %}" class="btn btn-success btn-sm">Accept</a>
                                 <a href="{% url 'handle_request' request_id=req.id action='deny' %}" class="btn btn-danger btn-sm">Deny</a>    
                             </li>
                         {% endfor %}
-                        <h4>Access Requests (length: {{ access_requests|length }})</h4>
+                        <!-- <h4>Access Requests (length: {{ access_requests|length }})</h4>
                         <p>DEBUG</p>
                         {{ debug }}
                         <p>DEBUG2</p>
                         {{ debug2 }}
                         <p>DEBUG3</p>
-                        {{ debug3 }}
+                        {{ debug3 }} -->
                     </ul>
                 {% endif %}
             </div>

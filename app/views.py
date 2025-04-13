@@ -334,6 +334,7 @@ def collection_detail(request, collection_id):
     debug3 = CollectionAccessRequest.objects.all()
     # if len(access_requests) == 0:
     #     lol = "NOT FUCKING WORKING"
+    # will clean this up later 
     context = {
         'collection': collection,
         'has_access': has_access,
