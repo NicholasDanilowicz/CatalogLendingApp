@@ -360,13 +360,13 @@ def request_access(request, collection_id):
     print("this is getting hit")
     if CollectionAccessRequest.objects.filter(patron=request.user, collection=collection).exists():
         messages.warning(request, "You have already requested access to this collection.")
-        return HttpResponse("PROCESSING REQUEST YOU HAVE ALREADY REQUESTED ACCESS????")
+        # return HttpResponse("PROCESSING REQUEST YOU HAVE ALREADY REQUESTED ACCESS????")
     else:
         CollectionAccessRequest.objects.create(patron=request.user, collection=collection)
         messages.success(request, "Access request submitted.")
-        return HttpResponse("PROCESSING REQUEST GOOD FIRST TIME???")
+        # return HttpResponse("PROCESSING REQUEST GOOD FIRST TIME???")
     
-    # return redirect('collection_detail', collection_id=collection.id)
+    return redirect('collection_detail', collection_id=collection.id)
 # def request_access(request, collection_id):
 #     if request.method == 'POST':
 #         collection = get_object_or_404(Collection, id=collection_id)
