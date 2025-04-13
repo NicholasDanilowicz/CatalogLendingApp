@@ -353,10 +353,13 @@ def handle_request(request, request_id, action):
     access_request.save()
     return redirect('collection_detail', collection_id=access_request.collection.id)
 
+from django.views.decorators.csrf import csrf_exempt
 @login_required
+@csrf_exempt
 def request_access(request, collection_id):
     collection = get_object_or_404(Collection, id=collection_id)
 
+    print("this is getting hit")
     if CollectionAccessRequest.objects.filter(patron=request.user, collection=collection).exists():
         messages.warning(request, "You have already requested access to this collection.")
     else:
