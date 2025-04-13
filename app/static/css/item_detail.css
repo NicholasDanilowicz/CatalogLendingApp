@@ -108,13 +108,15 @@
 }
 
 .average-rating {
-  display: inline-flex;
-  font-size: 2rem;
+  display: inline-block;
   position: relative;
+  font-size: 2rem;
   color: lightgray;
+  line-height: 1;
 }
 .average-rating span {
-  position: relative;
+  color: lightgray;
+  pointer-events: none;
 }
 .average-rating::before {
   content: '★★★★★';
@@ -124,7 +126,7 @@
   color: gold;
   overflow: hidden;
   white-space: nowrap;
-  width: calc(var(--avg-width, 0%));
+  width: var(--avg-width, 0%);
   pointer-events: none;
 }
 

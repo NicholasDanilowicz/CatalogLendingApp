@@ -56,7 +56,7 @@
             <p class="card-text">{{ item.description|default:"No description available." }}</p>
 
             <div class="average-rating" data-rating="{{ average_rating }}">
-                <span>*</span><span>*</span><span>*</span><span>*</span><span>*</span>
+                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
             </div>
             <p>{{ average_rating|floatformat:1 }} / 5.0</p>
 
@@ -85,24 +85,34 @@
         </div>
     </div>
     {% if rental %}
-        <form method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Return this item</button>
-        </form>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Return this item</button>
+    </form>
     {% elif pending_request %}
-         <form method="post">
-             {% csrf_token %}
-             <button type="submit" class="btn btn-warning">Cancel Request</button>
-         </form>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-warning">Cancel Request</button>
+    </form>
     {% elif item.available %}
-        <form method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-primary">Request this item</button>
-        </form>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Request this item</button>
+    </form>
     {% else %}
-        <button class="btn btn-secondary" disabled>Item Unavailable</button>
+    <button class="btn btn-secondary" disabled>Item Unavailable</button>
     {% endif %}
 </div>
 {% endblock %}
+
+<script>
+  const avg = document.querySelector('.average-rating');
+  if (avg) {
+    const rating = parseFloat(avg.dataset.rating);
+    const percent = (rating / 5) * 100;
+    avg.style.setProperty('--avg-width', `${percent}%`);
+  }
+</script>
+
 
 
