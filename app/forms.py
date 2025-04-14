@@ -170,8 +170,6 @@ class CollectionCreateForm(forms.ModelForm):
             cleaned_data['allowed_users'] = None
             if hasattr(self.instance, 'allowed_users'):
                 self.instance.allowed_users.clear()
-        elif not allowed_users:
-            raise forms.ValidationError("Please select at least one allowed user for private collections.")
             
         return cleaned_data
 

@@ -310,9 +310,10 @@ def delete_equipment(request, item_id):
 def handle_request(request, request_id, action):
     access_request = get_object_or_404(CollectionAccessRequest, id=request_id)
 
-    if not is_librarian(request.user) or access_request.collection.creator != request.user:
-        messages.error(request, 'You are not authoriazed to manage this request.')
+    if not is_librarian(request.user):
+        messages.error(request, 'You are not authorized to manage this request.')
         return redirect('collection_detail', collection_id=access_request.collection.id)
+    
     if action == 'accept':
         access_request.status = 'accepted'
         access_request.collection.allowed_users.add(access_request.patron)
@@ -348,7 +349,7 @@ def collection_detail(request, collection_id):
             return redirect('collection_detail', collection_id=collection_id)
     access_requests = []
 
-    if request.user.is_authenticated and request.user.userprofile.role == 'librarian' and collection.creator == request.user:
+    if request.user.is_authenticated and request.user.userprofile.role == 'librarian':
         access_requests = collection.access_requests.filter(status='pending')
     
     context = {
@@ -369,15 +370,30 @@ from django.http import HttpResponse
 # @csrf_exempt
 def request_access(request, collection_id):
     collection = get_object_or_404(Collection, id=collection_id)
-
-    print("this is getting hit")
-    if CollectionAccessRequest.objects.filter(patron=request.user, collection=collection).exists():
+    
+    if collection.is_public:
+        messages.warning(request, "This is a public collection. No access request needed.")
+        return redirect('collection_detail', collection_id=collection.id)
+    
+    if collection.can_user_access(request.user):
+        messages.info(request, "You already have access to this collection.")
+        return redirect('collection_detail', collection_id=collection.id)
+    
+    existing_request = CollectionAccessRequest.objects.filter(
+        patron=request.user,
+        collection=collection,
+        status='pending'
+    ).exists()
+    
+    if existing_request:
         messages.warning(request, "You have already requested access to this collection.")
-        # return HttpResponse("PROCESSING REQUEST YOU HAVE ALREADY REQUESTED ACCESS????")
     else:
-        CollectionAccessRequest.objects.create(patron=request.user, collection=collection)
-        messages.success(request, "Access request submitted.")
-        # return HttpResponse("PROCESSING REQUEST GOOD FIRST TIME???")
+        CollectionAccessRequest.objects.create(
+            patron=request.user,
+            collection=collection,
+            status='pending'
+        )
+        messages.success(request, "Access request submitted successfully.")
     
     return redirect('collection_detail', collection_id=collection.id)
 
