@@ -9,7 +9,15 @@ db.sqlite3
 venv/
 .venv/
 
+# Don't commit collected static files
+static/admin/
+static/*.css.gz
+static/*.js.gz
+static/staticfiles.json
+static/css
+
 # Pycharm stuff
 .idea/
 
 .env
+

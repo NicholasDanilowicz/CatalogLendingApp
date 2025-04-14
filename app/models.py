@@ -96,6 +96,8 @@ class Collection(models.Model):
         return self.title
 
     def can_user_access(self, user):
+        if not user.is_authenticated:
+            return self.is_public
         if is_librarian(user):
             return True
         if self.is_public:
@@ -119,6 +121,9 @@ class Rental(models.Model):
     return_by = models.DateTimeField(null=True, blank=True)
     returned_on = models.DateTimeField(null=True, blank=True)
 
+    def can_user_rate(self, user, equipment):
+        return Rental.objects.filter(user=user, equipment=equipment, returned_on__isnull=False).exists()
+
     def __str__(self):
         return f"{self.user.username} rented {self.equipment.name}"
 
@@ -140,3 +145,28 @@ class CollectionAccessRequest(models.Model):
 
     def __str__(self):
         return f"Request by {self.patron.username} for {self.collection.title} - {self.status}"
+
+class Rating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_ratings')
+    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
+    rating = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        unique_together = ('user', 'equipment')
+
+    def __str__(self):
+        return f"{self.user.username} rated {self.equipment.name} with {self.rating} stars"
+
+
+class RentalRequest(models.Model):
+    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
+    patron = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=[
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('denied', 'Denied')
+    ], default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.patron.username} requests {self.equipment.name} - {self.status}"

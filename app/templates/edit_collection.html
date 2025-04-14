@@ -41,8 +41,24 @@
 </div>
 
 <script>
-document.querySelector('input[name="is_public"]')?.addEventListener('change', function() {
-    document.querySelector('.allowed-users-field')?.classList.toggle('show', !this.checked);
+document.addEventListener('DOMContentLoaded', function() {
+    const isPrivateCheckbox = document.querySelector('input[name="is_public"]');
+    const allowedUsersField = document.querySelector('.allowed-users-field');
+
+    function toggleAllowedUsers() {
+        if (!isPrivateCheckbox.checked) {
+            allowedUsersField.style.display = 'none';
+            const userCheckboxes = allowedUsersField.querySelectorAll('input[type="checkbox"]');
+            userCheckboxes.forEach(checkbox => checkbox.checked = false);
+        } else {
+            allowedUsersField.style.display = 'block';
+        }
+    }
+
+    if (isPrivateCheckbox) {
+        isPrivateCheckbox.addEventListener('change', toggleAllowedUsers);
+        toggleAllowedUsers();
+    }
 });
 </script>
 {% endblock %} 

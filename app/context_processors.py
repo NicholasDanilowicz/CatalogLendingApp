@@ -2,7 +2,10 @@ from .forms import SearchForm
 from .models import Collection
 
 def search_form(request):
-    collections = Collection.objects.all()
+    if request.user.is_authenticated:
+        collections = Collection.objects.all()
+    else:
+        collections = Collection.objects.filter(is_public=True)
     return {
         'search_form': SearchForm(),
         'collections': collections

@@ -31,6 +31,11 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+if 'HEROKU' in os.environ:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
 ALLOWED_HOSTS = ['localhost','127.0.0.1',"sports-cataloging-lending-app-bd1891024175.herokuapp.com"]
 
 # MEDIA_URL = '/media/'

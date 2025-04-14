@@ -21,7 +21,11 @@ urlpatterns = [
     path("collection/<int:collection_id>/delete/", views.delete_collection, name='delete_collection'),
     path("profile/", views.profile_detail, name='profile_detail'),
     path("request/<int:request_id>/<str:action>", views.handle_request, name='handle_request'),
-    path("request-access/<int:collection_id>/", views.request_access, name='request_access')
+    path("request-access/<int:collection_id>/", views.request_access, name='request_access'),
+    path('rentals/', views.rental_detail, name='rental_detail'),
+    path("rate/<int:item_id>/", views.rate_equipment, name='rate_equipment'),
+    path('request-rental/<int:equipment_id>/', views.request_rental, name='request_rental'),
+    path('rental-requests/', views.rental_requests_view, name='rental_requests'),
 ]
 
 # if settings.DEBUG:
