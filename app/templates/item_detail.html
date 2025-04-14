@@ -70,7 +70,7 @@
                     <input type="radio" id="star2" name="rating" value="2" {% if user_rating_value == 2 %}checked{% endif %} {% if not rental %}disabled{% endif %}><label for="star2" title="2 stars"></label>
                     <input type="radio" id="star1" name="rating" value="1" {% if user_rating_value == 1 %}checked{% endif %} {% if not rental %}disabled{% endif %}><label for="star1" title="1 star"></label>
                     {% endwith %}
-                    <button type="submit" class="btn btn-sm btn-primary ms-2" {% if not rental %}disabled{% endif %}>
+                    <button type="submit" class="btn btn-sm btn-primary" {% if not rental %}disabled{% endif %}>
                         Rate
                     </button>
                 </form>
