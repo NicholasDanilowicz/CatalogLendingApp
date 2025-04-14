@@ -387,6 +387,7 @@ def request_access(request, collection_id):
 def put_item_in_public_collection(request, item_id):
     equipment = get_object_or_404(Equipment, id=item_id)
 
+    form = PutItemInPublicCollectionForm()
     if request.method == 'POST':
         form = PutItemInPublicCollectionForm(request.POST, request.FILES, instance=equipment)
         if form.is_valid():
@@ -394,9 +395,11 @@ def put_item_in_public_collection(request, item_id):
             messages.success(request, 'Item added to public collection(s) successfully!')
             return redirect('item_detail', item_id=equipment.id)
         else:
-            return PutItemInPublicCollectionForm()
+            return PutItemInPublicCollectionForm(instance=equipment)
+
     return render(request, 'put_in_public_collection.html', {
         'item': equipment,
+        'form': form,
     })
 # def request_access(request, collection_id):
 #     if request.method == 'POST':
