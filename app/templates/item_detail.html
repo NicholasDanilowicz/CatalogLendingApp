@@ -52,8 +52,20 @@
 
     <div class="card mb-4">
         <div class="card-body">
-            <h5 class="card-title">Description</h5>
-            <p class="card-text">{{ item.description|default:"No description available." }}</p>
+            <div class="mb-3">
+                <p><strong>ISBN:</strong> <span class="badge bg-info">{{ item.isbn }}</span></p>
+                <p><strong>Location:</strong> <span class="badge bg-secondary">{{ item.location }}</span></p>
+            </div>
+            <div class="description-section mb-4">
+                <h5 class="card-title border-bottom pb-2">Description</h5>
+                <div class="card-text description-content mt-3">
+                    {% if item.description %}
+                        {{ item.description|linebreaks }}
+                    {% else %}
+                        <p class="text-muted">No description available.</p>
+                    {% endif %}
+                </div>
+            </div>
 
             <div class="average-rating star-set" data-rating="{{ average_rating }}">
                 <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>

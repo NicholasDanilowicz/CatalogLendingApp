@@ -1,4 +1,4 @@
-# /***************************************************************************************
+# ***************************************************************************************
 # *  REFERENCES
 # *  Title: Form and Field Validation
 # *  Author: Django Software Foundation
@@ -23,7 +23,7 @@
 # *  URL: https://chat.openai.com/
 # *  Software License: OpenAI Terms of Use
 # *  Description: Used to debug Django form errors while developing functionality for creating and editing equipment and collections (mainly with the save, clean, and init methods)
-# ***************************************************************************************/
+# ***************************************************************************************
 
 
 from django import forms
@@ -49,15 +49,17 @@ class EquipmentForm(forms.ModelForm):
 
     class Meta:
         model = Equipment
-        fields = ['name', 'description', 'available', 'collections']
+        fields = ['name', 'location', 'description', 'available', 'collections']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'location': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter location (e.g., UVA Recreation Center, Storage Room, etc.)'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 5, 'placeholder': 'Provide a detailed description of the equipment...'}),
             'available': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'collections': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
         }
         labels = {
             'name': 'Equipment Name',
+            'location': 'Location',
             'description': 'Description',
             'available': 'Available for Checkout',
             'collections': 'Collections',
@@ -137,19 +139,19 @@ class CollectionCreateForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'is_public': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'tags': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
+            'allowed_users': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'})
         }
         labels = {
             'title': 'Collection Title',
             'description': 'Description',
-            'is_public': 'Private Collection',
+            'is_public': 'Public Collection',
             'tags': 'Tags',
             'allowed_users': 'Allowed Users'
         }
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        
-        if self.user and not is_librarian(self.user):
+        if 'instance' in kwargs and kwargs['instance'] and kwargs['instance'].is_public:
             self.fields.pop('is_public')
             self.fields.pop('allowed_users')
             self.instance.is_public = True
@@ -163,11 +165,14 @@ class CollectionCreateForm(forms.ModelForm):
         cleaned_data = super().clean()
         is_public = cleaned_data.get('is_public')
         allowed_users = cleaned_data.get('allowed_users')
-
-        if is_public and allowed_users:
+        
+        if is_public:
             cleaned_data['allowed_users'] = None
-            self.instance.allowed_users.clear()
-
+            if hasattr(self.instance, 'allowed_users'):
+                self.instance.allowed_users.clear()
+        elif not allowed_users:
+            raise forms.ValidationError("Please select at least one allowed user for private collections.")
+            
         return cleaned_data
 
     def save(self, commit=True):
