@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='equipment',
             name='isbn',
-            field=models.CharField(blank=True, help_text='Auto-generated ISBN-13', max_length=13, unique=True),
+            field=models.CharField(blank=True, null=True, help_text='Auto-generated ISBN-13', max_length=13, unique=True),
         ),
         migrations.AddField(
             model_name='equipment',
