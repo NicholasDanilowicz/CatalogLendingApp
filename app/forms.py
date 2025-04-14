@@ -200,22 +200,17 @@ class CollectionEditForm(CollectionCreateForm):
         return cleaned_data
 
 class PutItemInPublicCollectionForm(forms.ModelForm):
-    user = None
     def __init__(self, *args, **kwargs):
-        user = kwargs.get('user', None)
+        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         self.user = user
+
+        if self.user:
+            self.fields['collections'].queryset = Collection.objects.filter(
+                is_public=True,
+                creator=self.user
+            )
 
     class Meta:
         model = Equipment
         fields = ['collections']
-
-    collections = forms.ModelMultipleChoiceField(
-        queryset=Collection.objects.filter(is_public=True, creator=user),
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
-        label='Public Collections',
-    )
-    
-# class RatingForm(forms.ModelForm):
-    # def __init__(self):
