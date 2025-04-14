@@ -135,6 +135,14 @@
   cursor: not-allowed;
 }
 
+.btn-primary {
+    margin: 3px;
+}
+
+.reviews {
+    padding-bottom: 0;
+}
+
 
 
 
