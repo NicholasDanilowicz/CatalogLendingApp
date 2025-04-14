@@ -398,6 +398,12 @@ def rate_equipment(request, item_id):
 
             if 1 <= rating_value <= 5:
                 equipment = get_object_or_404(Equipment, id=item_id)
+                has_rented = Rental.objects.filter(equipment=equipment, user=request.user).exists()
+
+                if not has_rented:
+                    messages.error(request, "You can only review items you have rented.")
+                    return redirect('item_detail', item_id=item_id)
+
                 rating_obj, created = Rating.objects.get_or_create(
                     equipment=equipment,
                     user=request.user,
