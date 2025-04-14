@@ -99,6 +99,7 @@
             <button class="btn btn-secondary" disabled>Create a Public Collection to add this item to it.</button>
             {% endif %}
             <div class="d-flex flex-wrap gap-2">
+                {% if user.is_authenticated %}
                 {% if rental %}
                 <form method="post">
                     {% csrf_token %}
@@ -116,6 +117,7 @@
                 </form>
                 {% else %}
                 <button class="btn btn-secondary" disabled>Item Unavailable</button>
+                {% endif %}
                 {% endif %}
             </div>
             {% endblock %}
