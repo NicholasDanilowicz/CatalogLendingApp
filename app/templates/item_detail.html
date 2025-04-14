@@ -73,14 +73,14 @@
                     <button type="submit" class="btn btn-sm btn-primary ms-2" {% if not rental %}disabled{% endif %}>
                         Rate
                     </button>
+                </form>
 
-                    {% if not rental %}
+                 {% if not rental %}
                     <p class="text-muted mt-2">
                         You must rent this item before submitting a review.
                     </p>
                     {% endif %}
 
-                </form>
             </div>
             <script>
                 const avg = document.querySelector('.average-rating');
