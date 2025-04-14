@@ -151,10 +151,11 @@ class CollectionCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        if 'instance' in kwargs and kwargs['instance'] and kwargs['instance'].is_public:
-            self.fields.pop('is_public')
-            self.fields.pop('allowed_users')
-            self.instance.is_public = True
+        if self.user and not is_librarian(self.user):
+            self.fields.pop('is_public', None)
+            self.fields.pop('allowed_users', None)
+            if self.instance:
+                self.instance.is_public = True
         else:
             if 'is_public' in self.initial and not self.initial['is_public']:
                 self.fields['allowed_users'].widget.attrs['style'] = 'display: block;'
@@ -164,13 +165,10 @@ class CollectionCreateForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         is_public = cleaned_data.get('is_public')
-        allowed_users = cleaned_data.get('allowed_users')
         
         if is_public:
-            cleaned_data['allowed_users'] = None
-            if hasattr(self.instance, 'allowed_users'):
-                self.instance.allowed_users.clear()
-            
+            cleaned_data['allowed_users'] = []
+        
         return cleaned_data
 
     def save(self, commit=True):
@@ -179,8 +177,10 @@ class CollectionCreateForm(forms.ModelForm):
             instance.tags = ','.join(self.cleaned_data['tags'])
         if commit:
             instance.save()
-            if 'allowed_users' in self.cleaned_data and self.cleaned_data['allowed_users']:
+            if not self.cleaned_data.get('is_public') and self.cleaned_data.get('allowed_users'):
                 instance.allowed_users.set(self.cleaned_data['allowed_users'])
+            else:
+                instance.allowed_users.clear()
         return instance
 
 class CollectionEditForm(CollectionCreateForm):
@@ -208,15 +208,15 @@ class PutItemInPublicCollectionForm(forms.ModelForm):
         fields = ['collections']
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.get('user', None)
+        self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        self.user = user
-        self.fields['collections'] = forms.ModelMultipleChoiceField(
-            queryset=Collection.objects.filter(is_public=True, creator=self.user),
-            required=False,
-            widget=forms.CheckboxSelectMultiple,
-            label='Public Collections',
-        )
+        if self.user:
+            self.fields['collections'] = forms.ModelMultipleChoiceField(
+                queryset=Collection.objects.filter(is_public=True, creator=self.user),
+                required=False,
+                widget=forms.CheckboxSelectMultiple,
+                label='Public Collections'
+            )
     
 # class RatingForm(forms.ModelForm):
     # def __init__(self):

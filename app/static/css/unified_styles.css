@@ -1,0 +1,310 @@
+/* ***************************************************************************************
+*  REFERENCES
+*  Title: Minor fixes to the card container design for consistency and a cleaner look as well as helping with unified styling for search results and collection pages.
+*  Author: OpenAI (ChatGPT)
+*  Date: 2025
+*  Code version: GPT-4o
+*  URL: https://chat.openai.com/
+*  Software License: OpenAI Terms of Use
+*  Description: Used ChatGPT to help improve minor styling issues and layout of this container design as well as helping with unified styling for search results and collection pages.
+*************************************************************************************** */
+
+/* Common Header Styles */
+.search-header, .collection-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1rem 2rem;
+    margin-bottom: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.search-info, .collection-info {
+    flex-grow: 1;
+}
+
+.search-title, .collection-title {
+    margin: 0 0 1rem 0;
+    color: #343a40;
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+.search-highlight {
+    color: #007bff;
+    font-weight: 600;
+}
+
+/* Tag Styles */
+.search-filters, .collection-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.search-tag, .collection-tag, .search-query {
+    padding: 0.25rem 0.75rem;
+    background-color: #007bff;
+    color: white;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.search-tag:hover, .collection-tag:hover {
+    background-color: #0056b3;
+    color: white;
+    text-decoration: none;
+}
+
+.search-query {
+    background-color: #6c757d;
+}
+
+.collection-privacy {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: #6c757d;
+    color: white;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+/* Collection Actions */
+.collection-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.collection-actions .btn {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-edit {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-delete {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-edit:hover {
+    background-color: #218838;
+    color: white;
+}
+
+.btn-delete:hover {
+    background-color: #c82333;
+    color: white;
+}
+
+/* Tab Styles */
+.nav-tabs {
+    border-bottom: 2px solid #dee2e6;
+    margin-bottom: 2rem;
+}
+
+.nav-tabs .nav-item {
+    margin-bottom: -2px;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    color: #6c757d;
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.nav-tabs .nav-link i {
+    font-size: 1.1em;
+}
+
+.nav-tabs .nav-link:hover {
+    border: none;
+    color: #007bff;
+}
+
+.nav-tabs .nav-link.active {
+    border: none;
+    border-bottom: 2px solid #007bff;
+    color: #007bff;
+    background-color: transparent;
+}
+
+.nav-tabs .badge {
+    margin-left: 0.5rem;
+    font-size: 0.8em;
+    padding: 0.35em 0.65em;
+}
+
+/* Tab Content Styles */
+.tab-content {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 2rem;
+}
+
+/* Access Requests Styles */
+.access-requests-container {
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+.access-request-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.access-request-item:last-child {
+    margin-bottom: 0;
+}
+
+.access-request-info {
+    flex-grow: 1;
+}
+
+.access-request-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Permission Request Styles */
+.permission-request {
+    text-align: center;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin: 2rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.permission-request i {
+    font-size: 3rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card-img-top {
+    padding: 1rem;
+    background-color: #f8f9fa;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.availability-tag {
+    display: block;
+    text-align: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+    width: 100%;
+}
+
+.available {
+    background-color: #e7f4ea;
+    color: #28a745;
+}
+
+.unavailable {
+    background-color: #fbe7e9;
+    color: #dc3545;
+}
+
+.btn-primary {
+    width: 100%;
+}
+
+/* Empty State Styles */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    padding: 3rem;
+    text-align: center;
+    color: #6c757d;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin: 0;
+    width: 100%;
+}
+
+.empty-state i {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.5;
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+    margin: 0 0 0.5rem 0;
+    font-weight: 500;
+}
+
+.empty-state small {
+    font-size: 0.9rem;
+}
+
+/* Pagination Styles */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.pagination a {
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.pagination a:hover {
+    background-color: #0056b3;
+}
+
+.pagination span {
+    padding: 0.5rem 1rem;
+    color: #6c757d;
+    font-weight: 500;
+} 

@@ -401,15 +401,14 @@ def request_access(request, collection_id):
 def put_item_in_public_collection(request, item_id):
     equipment = get_object_or_404(Equipment, id=item_id)
 
-    form = None
     if request.method == 'POST':
-        form = PutItemInPublicCollectionForm(request.POST, request.FILES, instance=equipment)
+        form = PutItemInPublicCollectionForm(request.POST, request.FILES, instance=equipment, user=request.user)
         if form.is_valid():
             equipment = form.save()
             messages.success(request, 'Item added to public collection(s) successfully!')
             return redirect('item_detail', item_id=equipment.id)
-        else:
-            return PutItemInPublicCollectionForm(instance=equipment)
+    else:
+        form = PutItemInPublicCollectionForm(instance=equipment, user=request.user)
 
     return render(request, 'put_in_public_collection.html', {
         'item': equipment,
