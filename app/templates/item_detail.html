@@ -58,7 +58,7 @@
             <div class="average-rating" data-rating="{{ average_rating }}">
                 <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
             </div>
-            <p class ="average-rating-text"> Average Rating: {{ average_rating|floatformat:1 }} / 5.0</p>
+            <p class="average-rating-text"> Average Rating: {{ average_rating|floatformat:1 }} / 5.0</p>
 
             <div class="reviews">
                 <form method="post" action="{% url 'rate_equipment' item.id %}" class="star-rating">
@@ -74,14 +74,14 @@
                         Rate
                     </button>
                 </form>
+            </div>
 
-                 {% if not rental %}
+            {% if not rental %}
                     <p class="text-muted mt-2">
                         You must rent this item before submitting a review.
                     </p>
-                    {% endif %}
+                {% endif %}
 
-            </div>
             <script>
                 const avg = document.querySelector('.average-rating');
                 if (avg) {
