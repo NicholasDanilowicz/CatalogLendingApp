@@ -66,11 +66,22 @@ def select_role(request):
         return render(request, 'select_role.html')
 
 
+
 def item_detail(request, item_id):
-    equipment = get_object_or_404(Equipment, id=item_id)
-    is_librarian_user = is_librarian(request.user)
-    rental = Rental.objects.filter(equipment=equipment, user=request.user, returned_on__isnull=True).first()
-    pending_request = RentalRequest.objects.filter(equipment=equipment, patron=request.user, status='pending').first()
+    if request.user.is_authenticated:
+        equipment = get_object_or_404(Equipment, id=item_id)
+        is_librarian_user = is_librarian(request.user)
+        rental = Rental.objects.filter(equipment=equipment, user=request.user, returned_on__isnull=True).first()
+        pending_request = RentalRequest.objects.filter(equipment=equipment, patron=request.user, status='pending').first()
+        user_rating = Rating.objects.filter(equipment=equipment, user=request.user).first()
+        has_rented = Rental.objects.filter(equipment=equipment, user=request.user).exists()
+    else:
+        equipment = get_object_or_404(Equipment, id=item_id)
+        is_librarian_user = False
+        rental = None
+        pending_request = None
+        user_rating = None
+        has_rented = False
 
     if request.method == 'POST':
         if rental:
@@ -95,9 +106,7 @@ def item_detail(request, item_id):
         return redirect('item_detail', item_id=item_id)
 
     # Average rating calculations
-    user_rating = Rating.objects.filter(equipment=equipment, user=request.user).first()
     average_rating = Rating.objects.filter(equipment=equipment).aggregate(Avg('rating'))['rating__avg'] or 0
-    has_rented = Rental.objects.filter(equipment=equipment, user=request.user).exists()
 
     return render(request, 'item_detail.html', {
         'item': equipment,
@@ -346,7 +355,6 @@ def collection_detail(request, collection_id):
         context['equipment_items'] = equipment_items
     
     return render(request, 'collection_detail.html', context)
-
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 @login_required
