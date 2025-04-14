@@ -200,11 +200,16 @@ class CollectionEditForm(CollectionCreateForm):
         return cleaned_data
 
 class PutItemInPublicCollectionForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        user = kwargs.get('user', None)
+        super().__init__(*args, **kwargs)
+        self.user = user
+
     class Meta:
         model = Equipment
         fields = ['collections']
 
-    collections = forms.MultipleChoiceField(
+    collections = forms.ModelMultipleChoiceField(
         queryset=Collection.objects.filter(is_public=True),
         required=False,
         widget=forms.CheckboxSelectMultiple,
