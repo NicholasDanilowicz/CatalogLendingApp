@@ -75,7 +75,7 @@ MIDDLEWARE = [
     'social_django.middleware.SocialAuthExceptionMiddleware',  # for google auth
 ]
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'mysite.urls'
 
@@ -197,8 +197,8 @@ if not 'HEROKU' in os.environ:
     SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 
 TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
-STATICFILES_STORAGE = (
-    'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-    if TESTING
-    else 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-)
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    }
+}
