@@ -124,8 +124,8 @@ class CollectionCreateForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         label='Tags',
     )
-    allowed_users = forms.ModelMultipleChoiceField(
-        queryset=User.objects.filter(userprofile__role='patron'),
+    allowed_users = forms.MultipleChoiceField(
+        choices=User.objects.filter(userprofile__role='patron'),
         required=False,
         widget=forms.CheckboxSelectMultiple(attrs={'class': 'allowed-users-field'}),
         label='Allowed Users',
@@ -211,8 +211,8 @@ class PutItemInPublicCollectionForm(forms.ModelForm):
         user = kwargs.get('user', None)
         super().__init__(*args, **kwargs)
         self.user = user
-        self.fields['collections'] = forms.ModelMultipleChoiceField(
-            queryset=Collection.objects.filter(is_public=True, creator=self.user),
+        self.fields['collections'] = forms.MultipleChoiceField(
+            choices=Collection.objects.filter(is_public=True, creator=self.user),
             required=False,
             widget=forms.CheckboxSelectMultiple,
             label='Public Collections',
