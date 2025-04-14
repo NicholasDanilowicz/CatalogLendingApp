@@ -27,6 +27,8 @@
 
 
 from django import forms
+
+from .context_processors import user_profile
 from .models import Collection, TAG_CHOICES, Equipment, EquipmentImage, UserProfile, User
 from django.contrib.auth.models import User
 from .auth_utils import is_librarian
@@ -167,3 +169,24 @@ class CollectionEditForm(CollectionCreateForm):
         if self.instance.creator and self.instance.creator != self.user and not is_librarian(self.user):
             raise forms.ValidationError("You don't have permission to edit this collection.")
         return cleaned_data
+
+class PutItemInPublicCollectionForm(forms.ModelForm):
+    class Meta:
+        model = Equipment
+        fields = ['collections']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.get('user', None)
+        super().__init__(*args, **kwargs)
+        if user.role == 'patron':
+            self.fields['collections'].queryset = Collection.objects.filter(is_public=True, userprofile__user=user)
+        else:
+            self.fields['collections'].queryset = Collection.objects.filter(is_public=True)
+
+    public_collections = forms.MultipleChoiceField(
+        queryset=Meta.fields['collections'].queryset,
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        label='Public Collections',
+    )
+

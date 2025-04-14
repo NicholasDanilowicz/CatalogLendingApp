@@ -67,6 +67,11 @@
         <button class="btn btn-secondary" disabled>Item Unavailable</button>
         {% endif %}
     {% endif %}
+    {% if public_collections_by_user or is_librarian %}
+        <a href="{% url 'put_in_public_collection' item_id=item.id %}" class="btn btn-primary">Put in a Public Collection</a>
+    {% else %}
+        <button class="btn btn-secondary" disabled>Create a Public Collection to add this item to it.</button>
+    {% endif %}
     {% endblock %}
 </div>
 

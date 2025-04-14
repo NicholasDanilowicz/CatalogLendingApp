@@ -16,7 +16,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.utils import timezone
 
-from .forms import SearchForm, EquipmentForm, ProfileEditForm, CollectionCreateForm, CollectionEditForm
+from .forms import SearchForm, EquipmentForm, ProfileEditForm, CollectionCreateForm, CollectionEditForm, \
+    AddItemToPublicCollectionForm, PutItemInPublicCollectionForm
 from .models import UserProfile
 from .models import Equipment
 from .models import Collection
@@ -62,9 +63,12 @@ def select_role(request):
 
 @login_required
 def item_detail(request, item_id):
+    user = request.user
     equipment = get_object_or_404(Equipment, id=item_id)
-    is_librarian_user = is_librarian(request.user)
+    is_librarian_user = is_librarian(user)
     rental = Rental.objects.filter(equipment=equipment, user=request.user, returned_on__isnull=True).first()
+    private_collections = Collection.objects.filter(is_public=False)
+    public_collections_by_user = Collection.objects.filter(creator=request.user, is_public=True)
 
     if request.method == 'POST':
         if rental:
@@ -97,6 +101,8 @@ def item_detail(request, item_id):
         'item': equipment,
         'is_librarian': is_librarian_user,
         'rental': rental,
+        'public_collections_by_user': public_collections_by_user,
+        'user': user,
     })
 
 
@@ -347,6 +353,22 @@ def request_access(request, collection_id):
         messages.success(request, "Access request submitted.")
     
     return redirect('collection_detail', collection_id=collection.id)
+
+@login_required
+def put_item_in_public_collection(request, item_id):
+    equipment = get_object_or_404(Equipment, id=item_id)
+
+    if request.method == 'POST':
+        form = PutItemInPublicCollectionForm(request.POST, request.FILES, instance=equipment)
+        if form.is_valid():
+            equipment = form.save()
+            messages.success(request, 'Item added to public collection(s) successfully!')
+            return redirect('item_detail', item_id=equipment.id)
+        else:
+            return PutItemInPublicCollectionForm()
+    return render(request, put_item_in_public_collection.html, {
+        'item': equipment,
+    })
 # def request_access(request, collection_id):
 #     if request.method == 'POST':
 #         collection = get_object_or_404(Collection, id=collection_id)
