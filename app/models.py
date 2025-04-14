@@ -5,8 +5,8 @@ from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
 from django.db import models
 from .auth_utils import is_librarian
-import random
 import string
+import secrets
 
 TAG_CHOICES = [
     ('sports', 'Sports'),
@@ -64,8 +64,8 @@ class Equipment(models.Model):
 # ***************************************************************************************
 
     def generate_isbn(self):
-        prefix = random.choice(['978', '979'])
-        random_digits = ''.join(random.choices(string.digits, k=9))
+        prefix = secrets.choice(['978', '979'])
+        random_digits = ''.join(secrets.choice(string.digits) for _ in range(9))
 
         digits = prefix + random_digits
         total = 0
