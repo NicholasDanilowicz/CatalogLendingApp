@@ -408,8 +408,8 @@ def put_item_in_public_collection(request, item_id):
             equipment = form.save()
             messages.success(request, 'Item added to public collection(s) successfully!')
             return redirect('item_detail', item_id=equipment.id)
-        else:
-            form = PutItemInPublicCollectionForm(instance=equipment)
+    else:
+        form = PutItemInPublicCollectionForm(instance=equipment)
 
     return render(request, 'put_in_public_collection.html', {
         'item': equipment,
