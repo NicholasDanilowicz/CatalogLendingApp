@@ -55,9 +55,7 @@
             <h5 class="card-title">Description</h5>
             <p class="card-text">{{ item.description|default:"No description available." }}</p>
 
-            <div class="average-rating" data-rating="{{ average_rating }}">
-                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-            </div>
+            <div class="average-rating" data-rating="{{ average_rating }}"><div>
             <p>{{ average_rating|floatformat:1 }} / 5.0</p>
 
             <div class="reviews">
