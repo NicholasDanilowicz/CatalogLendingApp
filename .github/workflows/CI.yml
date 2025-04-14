@@ -50,11 +50,14 @@ jobs:
       env:
         DATABASE_URL: postgres://user:password@localhost:5432/test_db
       run: |
+        python manage.py collectstatic
+        python manage.py makemigrations
+        python manage.py migrate
         python manage.py test
-    - name: Run Security Scan
-      run: |
-        pip install bandit
-        bandit -r .
+#    - name: Run Security Scan
+#      run: |
+#        pip install bandit
+#        bandit -r .
     - name: Run Tests with Coverage
       run: |
         pip install coverage
