@@ -189,7 +189,7 @@ AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 AWS_S3_FILE_OVERWRITE = False
 AWS_QUERYSTRING_AUTH = False
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 if not 'HEROKU' in os.environ:
     SECRET_KEY = 'django-insecure-6svnxqc3noeut0$pu@swux4)engan982d6epyim53+q4h_6d(o'
@@ -199,6 +199,7 @@ if not 'HEROKU' in os.environ:
 TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
 STORAGES = {
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "default": 'storages.backends.s3boto3.S3Boto3Storage',
+        "BACKEND": 'whitenoise.storage.CompressedManifestStaticFilesStorage',
     }
 }
