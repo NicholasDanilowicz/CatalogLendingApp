@@ -63,6 +63,22 @@ class EquipmentForm(forms.ModelForm):
             'collections': 'Collections',
         }
 
+    def clean_collections(self):
+        collections = self.cleaned_data.get('collections')
+        if not collections:
+            return collections
+
+        private_collections = collections.filter(is_public=False)
+        public_collections = collections.filter(is_public=True)
+
+        if private_collections.count() > 1:
+            raise forms.ValidationError("Equipment can only be added to one private collection.")
+        
+        if private_collections.exists() and public_collections.exists():
+            raise forms.ValidationError("Equipment cannot be added to both private and public collections simultaneously.")
+
+        return collections
+
 class CollectionAdminForm(forms.ModelForm):
     tags = forms.MultipleChoiceField(
         choices=TAG_CHOICES,
