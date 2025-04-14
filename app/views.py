@@ -66,7 +66,6 @@ def select_role(request):
         return render(request, 'select_role.html')
 
 
-@login_required
 def item_detail(request, item_id):
     equipment = get_object_or_404(Equipment, id=item_id)
     is_librarian_user = is_librarian(request.user)
@@ -347,6 +346,7 @@ def collection_detail(request, collection_id):
         context['equipment_items'] = equipment_items
     
     return render(request, 'collection_detail.html', context)
+
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 @login_required
