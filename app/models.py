@@ -17,6 +17,30 @@ TAG_CHOICES = [
     ('other', 'Other'),
 ]
 
+# ***************************************************************************************
+# *  REFERENCES
+# *  Title: Generate a random ISBN-13 number
+# *  Author: OpenAI (ChatGPT)
+# *  Date: 2025
+# *  Code version: GPT-4o
+# *  URL: https://chat.openai.com/
+# *  Software License: OpenAI Terms of Use
+# *  Description: Used ChatGPT to help generate a random ISBN-13 number.
+# ***************************************************************************************
+
+def generate_isbn():
+    prefix = secrets.choice(['978', '979'])
+    random_digits = ''.join(secrets.choice(string.digits) for _ in range(9))
+    digits = prefix + random_digits
+    total = 0
+    for i, digit in enumerate(digits):
+        if i % 2 == 0:
+            total += int(digit)
+        else:
+            total += int(digit) * 3
+    check_digit = (10 - (total % 10)) % 10
+    return f"{prefix}{random_digits}{check_digit}"
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=9, choices=[
@@ -38,7 +62,7 @@ class UserProfile(models.Model):
 
 class Equipment(models.Model):
     name = models.CharField(max_length=200)
-    isbn = models.CharField(max_length=13, unique=True, blank=True, help_text="Auto-generated ISBN-13")
+    isbn = models.CharField(max_length=13, unique=True, null=True, blank=True, help_text="Auto-generated ISBN-13")
     location = models.CharField(max_length=100, default='UVA Recreation Center')
     description = models.TextField(blank=True)
     available = models.BooleanField(default=True)
@@ -49,35 +73,8 @@ class Equipment(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.isbn:
-            self.isbn = self.generate_isbn()
+            self.isbn = generate_isbn()
         super().save(*args, **kwargs)
-
-# ***************************************************************************************
-# *  REFERENCES
-# *  Title: Generate a random ISBN-13 number
-# *  Author: OpenAI (ChatGPT)
-# *  Date: 2025
-# *  Code version: GPT-4o
-# *  URL: https://chat.openai.com/
-# *  Software License: OpenAI Terms of Use
-# *  Description: Used ChatGPT to help generate a random ISBN-13 number.
-# ***************************************************************************************
-
-    def generate_isbn(self):
-        prefix = secrets.choice(['978', '979'])
-        random_digits = ''.join(secrets.choice(string.digits) for _ in range(9))
-
-        digits = prefix + random_digits
-        total = 0
-        for i, digit in enumerate(digits):
-            if i % 2 == 0:
-                total += int(digit)
-            else:
-                total += int(digit) * 3
-
-        check_digit = (10 - (total % 10)) % 10
-
-        return f"{prefix}{random_digits}{check_digit}"
 
     @property
     def display_image_url(self):
