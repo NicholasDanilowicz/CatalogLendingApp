@@ -27,8 +27,6 @@
 
 
 from django import forms
-
-from .context_processors import user_profile
 from .models import Collection, TAG_CHOICES, Equipment, EquipmentImage, UserProfile, User
 from django.contrib.auth.models import User
 from .auth_utils import is_librarian
