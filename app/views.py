@@ -69,27 +69,25 @@ def select_role(request):
 
 
 def item_detail(request, item_id):
-    user = request.user
-    equipment = get_object_or_404(Equipment, id=item_id)
-    is_librarian_user = is_librarian(user)
-    rental = Rental.objects.filter(equipment=equipment, user=request.user, returned_on__isnull=True).first()
     private_collections = Collection.objects.filter(is_public=False)
-    public_collections_by_user = Collection.objects.filter(creator=request.user, is_public=True)
-    
+    equipment = get_object_or_404(Equipment, id=item_id)
+
     if request.user.is_authenticated:
-        equipment = get_object_or_404(Equipment, id=item_id)
         is_librarian_user = is_librarian(request.user)
         rental = Rental.objects.filter(equipment=equipment, user=request.user, returned_on__isnull=True).first()
         pending_request = RentalRequest.objects.filter(equipment=equipment, patron=request.user, status='pending').first()
         user_rating = Rating.objects.filter(equipment=equipment, user=request.user).first()
         has_rented = Rental.objects.filter(equipment=equipment, user=request.user).exists()
+        user = request.user
+        public_collections_by_user = Collection.objects.filter(creator=request.user, is_public=True)
     else:
-        equipment = get_object_or_404(Equipment, id=item_id)
         is_librarian_user = False
         rental = None
         pending_request = None
         user_rating = None
         has_rented = False
+        user = None
+        public_collections_by_user = None
 
     if request.method == 'POST':
         if rental:
