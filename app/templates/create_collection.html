@@ -53,11 +53,11 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const isPrivateCheckbox = document.querySelector('input[name="is_public"]');
+    const isPublicCheckbox = document.querySelector('input[name="is_public"]');
     const allowedUsersField = document.querySelector('.allowed-users-field');
 
     function toggleAllowedUsers() {
-        if (!isPrivateCheckbox.checked) {
+        if (isPublicCheckbox.checked) {
             allowedUsersField.style.display = 'none';
             const userCheckboxes = allowedUsersField.querySelectorAll('input[type="checkbox"]');
             userCheckboxes.forEach(checkbox => checkbox.checked = false);
@@ -66,8 +66,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    if (isPrivateCheckbox) {
-        isPrivateCheckbox.addEventListener('change', toggleAllowedUsers);
+    if (isPublicCheckbox) {
+        isPublicCheckbox.addEventListener('change', toggleAllowedUsers);
         toggleAllowedUsers();
     }
 });
