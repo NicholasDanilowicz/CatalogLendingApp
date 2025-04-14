@@ -69,7 +69,7 @@
                     <input type="radio" id="star3" name="rating" value="3"{% if user_rating_value == 3 %}checked{% endif %}><label for="star3" title="3 stars"></label>
                     <input type="radio" id="star2" name="rating" value="2"{% if user_rating_value == 2 %}checked{% endif %}><label for="star2" title="2 stars"></label>
                     <input type="radio" id="star1" name="rating" value="1"{% if user_rating_value == 1 %}checked{% endif %}><label for="star1" title="1 star"></label>
-
+                    {% endwith %}
                     <button type="submit" class="btn btn-sm btn-primary ms-2">Rate</button>
                 </form>
             </div>
