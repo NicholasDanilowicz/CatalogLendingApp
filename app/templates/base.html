@@ -105,7 +105,7 @@
                         <li>
                             <a href="{% url 'collection_detail' collection.id %}">
                                 {{ collection.title }}
-                                {% if not collection.is_public %}<i class="fas fa-lock"></i>{% endif %}
+                                {% if not collection.is_public and user.is_authenticated %}<i class="fas fa-lock"></i>{% endif %}
                             </a>
                         </li>
                         {% endif %}
@@ -120,7 +120,7 @@
                         <li>
                             <a href="{% url 'collection_detail' collection.id %}">
                                 {{ collection.title }}
-                                {% if not collection.is_public %}<i class="fas fa-lock"></i>{% endif %}
+                                {% if not collection.is_public and user.is_authenticated %}<i class="fas fa-lock"></i>{% endif %}
                             </a>
                         </li>
                         {% endif %}

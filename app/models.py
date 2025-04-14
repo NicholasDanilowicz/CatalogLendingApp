@@ -89,6 +89,8 @@ class Collection(models.Model):
         return self.title
 
     def can_user_access(self, user):
+        if not user.is_authenticated:
+            return self.is_public
         if is_librarian(user):
             return True
         if self.is_public:

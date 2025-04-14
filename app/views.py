@@ -309,9 +309,14 @@ def handle_request(request, request_id, action):
 from .models import CollectionAccessRequest
 def collection_detail(request, collection_id):
     collection = get_object_or_404(Collection, id=collection_id)
+    
+    if not request.user.is_authenticated and not collection.is_public:
+        messages.error(request, "You must be logged in to view this collection.")
+        return redirect('login')
+    
     has_access = collection.can_user_access(request.user)
     
-    if not has_access and request.user.userprofile.role == 'patron':
+    if not has_access and request.user.is_authenticated and request.user.userprofile.role == 'patron':
         existing_request = CollectionAccessRequest.objects.filter(collection=collection, patron=request.user, status='pending').exists()
         if request.method == 'POST' and 'request_access' in request.POST:
             if existing_request:
@@ -326,23 +331,14 @@ def collection_detail(request, collection_id):
             return redirect('collection_detail', collection_id=collection_id)
     access_requests = []
 
-    if request.user.userprofile.role == 'librarian' and collection.creator == request.user:
+    if request.user.is_authenticated and request.user.userprofile.role == 'librarian' and collection.creator == request.user:
         access_requests = collection.access_requests.filter(status='pending')
     
-    debug = request.user.userprofile.role
-    debug2 = collection.creator
-    debug3 = CollectionAccessRequest.objects.all()
-    # if len(access_requests) == 0:
-    #     lol = "NOT FUCKING WORKING"
-    # will clean this up later 
     context = {
         'collection': collection,
         'has_access': has_access,
         'collection_id': collection_id,
         'access_requests': access_requests,
-        'debug': debug,
-        'debug2': debug2,
-        'debug3': debug3
     }
     
     if has_access:
