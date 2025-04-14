@@ -208,7 +208,7 @@ class PutItemInPublicCollectionForm(forms.ModelForm):
         user = kwargs.get('user', None)
         super().__init__(*args, **kwargs)
         self.user = user
-        self.fields['collections'] = forms.MultipleChoiceField(
+        self.fields['collections'] = forms.ModelMultipleChoiceField(
             queryset=Collection.objects.filter(is_public=True, creator=self.user),
             required=False,
             widget=forms.CheckboxSelectMultiple,
