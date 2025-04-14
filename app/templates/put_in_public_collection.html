@@ -17,7 +17,7 @@
             <div class="card">
                 <div class="card-body">
                     <h2 class="card-title text-center mb-4">Put Item in Your Public Collections</h2>
-                    <form method="post">
+                    <form method="post" id="putInPublicCollection">
                         {% csrf_token %}
                         {% bootstrap_form form %}
                         <div class="text-center">
