@@ -31,24 +31,34 @@
                             <i class="fas fa-trash"></i> Delete Collection
                         </a>
                     </div>
-                    <h3>Pending Access Requests</h3>
-                    <ul>
+                {% endif %}
+                
+                {% if not collection.is_public and user.is_authenticated and user.userprofile.role == 'librarian' %}
+                <div class="access-requests-container">
+                    <h3><i class="fas fa-user-clock"></i> Pending Access Requests</h3>
+                    {% if access_requests %}
                         {% for req in access_requests %}
-                        <!-- <h1>HERE IS WHERE A REQUEST IS SUPPOSED TO BE</h1> -->
-                            <li>
-                                {{ req.patron.username }} -                 
-                                <a href="{% url 'handle_request' request_id=req.id action='accept' %}" class="btn btn-success btn-sm">Accept</a>
-                                <a href="{% url 'handle_request' request_id=req.id action='deny' %}" class="btn btn-danger btn-sm">Deny</a>    
-                            </li>
+                        <div class="access-request-item">
+                            <div class="access-request-info">
+                                <strong>{{ req.patron.username }}</strong>
+                                <small class="text-muted d-block">Requested on {{ req.created_at|date:"M d, Y" }}</small>
+                            </div>
+                            <div class="access-request-actions">
+                                <a href="{% url 'handle_request' request_id=req.id action='accept' %}" class="btn btn-success btn-sm">
+                                    <i class="fas fa-check"></i> Accept
+                                </a>
+                                <a href="{% url 'handle_request' request_id=req.id action='deny' %}" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-times"></i> Deny
+                                </a>
+                            </div>
+                        </div>
                         {% endfor %}
-                        <!-- <h4>Access Requests (length: {{ access_requests|length }})</h4>
-                        <p>DEBUG</p>
-                        {{ debug }}
-                        <p>DEBUG2</p>
-                        {{ debug2 }}
-                        <p>DEBUG3</p>
-                        {{ debug3 }} -->
-                    </ul>
+                    {% else %}
+                        <div class="text-center text-muted py-3">
+                            <p class="mb-0">No pending access requests at this time.</p>
+                        </div>
+                    {% endif %}
+                </div>
                 {% endif %}
             </div>
         </div>
@@ -85,7 +95,7 @@
             <div class="permission-request">
                 <h3>Access Required</h3>
                 <p>This is a private collection. You need permission to view its contents.</p>
-                <button class="btn btn-primary" type="submit">
+                <button class="btn btn-primary" type="submit" name="request_access">
                     <i class="fas fa-key"></i> Request Permission
                 </button>
             </div>
