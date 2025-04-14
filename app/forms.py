@@ -204,13 +204,12 @@ class PutItemInPublicCollectionForm(forms.ModelForm):
         model = Equipment
         fields = ['collections']
 
-    def __init__(self, *args, **kwargs):
-        user = kwargs.get('user', None)
-        super().__init__(*args, **kwargs)
-        self.fields['collections'].queryset = Collection.objects.filter(is_public=True)
-        self.fields['collections'].required = False
-        self.fields['collections'].widget = forms.CheckboxSelectMultiple()
-        self.fields['collections'].label = 'Public Collections'
+    collections = forms.MultipleChoiceField(
+        queryset=Collection.objects.filter(is_public=True),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        label='Public Collections',
+    )
     
 # class RatingForm(forms.ModelForm):
     # def __init__(self):
