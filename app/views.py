@@ -189,13 +189,9 @@ def create_collection(request):
 
 @login_required
 def edit_collection(request, collection_id):
-    if not is_librarian(request.user):
-        messages.error(request, "Only librarians can edit collections.")
-        return redirect('home')
-        
     collection = get_object_or_404(Collection, id=collection_id)
     
-    if collection.creator != request.user:
+    if not is_librarian(request.user) and collection.creator != request.user:
         messages.error(request, "You don't have permission to edit this collection.")
         return redirect('collection_detail', collection_id=collection_id)
     
@@ -216,13 +212,9 @@ def edit_collection(request, collection_id):
 
 @login_required
 def delete_collection(request, collection_id):
-    if not is_librarian(request.user):
-        messages.error(request, "Only librarians can delete collections.")
-        return redirect('home')
-        
     collection = get_object_or_404(Collection, id=collection_id)
     
-    if collection.creator != request.user:
+    if not is_librarian(request.user) and collection.creator != request.user:
         messages.error(request, "You don't have permission to delete this collection.")
         return redirect('collection_detail', collection_id=collection_id)
     
