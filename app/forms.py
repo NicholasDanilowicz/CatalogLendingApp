@@ -207,10 +207,7 @@ class PutItemInPublicCollectionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.get('user', None)
         super().__init__(*args, **kwargs)
-        if user.role == 'patron':
-            self.fields['collections'].queryset = Collection.objects.filter(is_public=True, userprofile__user=user)
-        else:
-            self.fields['collections'].queryset = Collection.objects.filter(is_public=True)
+        self.fields['collections'].queryset = Collection.objects.filter(is_public=True, userprofile__user=user)
 
     public_collections = forms.MultipleChoiceField(
         required=False,
