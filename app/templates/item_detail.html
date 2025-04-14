@@ -92,31 +92,32 @@
                     <p class="review info">
                         You must rent this item before submitting a review.
                     </p>
-                {% endif %}
-                {% if public_collections_by_user or is_librarian %}
-                    <a href="{% url 'put_in_public' item_id=item.id %}" class="btn btn-primary">Put in a Public Collection</a>
-                {% else %}
-                    <button class="btn btn-secondary" disabled>Create a Public Collection to add this item to it.</button>
-                {% endif %}
-
-            {% if rental %}
-            <form method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Return this item</button>
-            </form>
-            {% elif pending_request %}
-            <form method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-warning">Cancel Request</button>
-            </form>
-            {% elif item.available %}
-            <form method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-primary">Request this item</button>
-            </form>
-            {% else %}
-            <button class="btn btn-secondary" disabled>Item Unavailable</button>
             {% endif %}
+            {% if public_collections_by_user or is_librarian %}
+            <a href="{% url 'put_in_public' item_id=item.id %}" class="btn btn-primary">Put in a Public Collection</a>
+            {% else %}
+            <button class="btn btn-secondary" disabled>Create a Public Collection to add this item to it.</button>
+            {% endif %}
+            <div class="d-flex flex-wrap gap-2">
+                {% if rental %}
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Return this item</button>
+                </form>
+                {% elif pending_request %}
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-warning">Cancel Request</button>
+                </form>
+                {% elif item.available %}
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Request this item</button>
+                </form>
+                {% else %}
+                <button class="btn btn-secondary" disabled>Item Unavailable</button>
+                {% endif %}
+            </div>
             {% endblock %}
 
             <script>
