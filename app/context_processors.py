@@ -3,7 +3,8 @@ from .models import Collection
 
 def search_form(request):
     if request.user.is_authenticated:
-        collections = Collection.objects.all()
+        all_collections = Collection.objects.all()
+        collections = [collection for collection in all_collections if collection.can_user_access(request.user)]
     else:
         collections = Collection.objects.filter(is_public=True)
     return {
