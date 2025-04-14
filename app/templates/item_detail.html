@@ -81,6 +81,11 @@
                         You must rent this item before submitting a review.
                     </p>
                 {% endif %}
+                {% if public_collections_by_user or is_librarian %}
+                    <a href="{% url 'put_in_public' item_id=item.id %}" class="btn btn-primary">Put in a Public Collection</a>
+                {% else %}
+                    <button class="btn btn-secondary" disabled>Create a Public Collection to add this item to it.</button>
+                {% endif %}
 
             <script>
                 const avg = document.querySelector('.average-rating');
@@ -110,11 +115,6 @@
     </form>
     {% else %}
     <button class="btn btn-secondary" disabled>Item Unavailable</button>
-    {% endif %}
-    {% if public_collections_by_user or is_librarian %}
-        <a href="{% url 'put_in_public' item_id=item.id %}" class="btn btn-primary">Put in a Public Collection</a>
-    {% else %}
-        <button class="btn btn-secondary" disabled>Create a Public Collection to add this item to it.</button>
     {% endif %}
     {% endblock %}
 </div>
