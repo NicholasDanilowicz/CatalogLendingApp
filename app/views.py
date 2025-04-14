@@ -395,7 +395,7 @@ def put_item_in_public_collection(request, item_id):
             return redirect('item_detail', item_id=equipment.id)
         else:
             return PutItemInPublicCollectionForm()
-    return render(request, put_item_in_public_collection.html, {
+    return render(request, 'put_in_public_collection.html', {
         'item': equipment,
     })
 # def request_access(request, collection_id):
