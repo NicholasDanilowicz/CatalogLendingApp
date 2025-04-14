@@ -1,4 +1,4 @@
-# /***************************************************************************************
+# ***************************************************************************************
 # *  REFERENCES
 # *  Title: Form and Field Validation
 # *  Author: Django Software Foundation
@@ -23,7 +23,7 @@
 # *  URL: https://chat.openai.com/
 # *  Software License: OpenAI Terms of Use
 # *  Description: Used to debug Django form errors while developing functionality for creating and editing equipment and collections (mainly with the save, clean, and init methods)
-# ***************************************************************************************/
+# ***************************************************************************************
 
 
 from django import forms
@@ -49,15 +49,17 @@ class EquipmentForm(forms.ModelForm):
 
     class Meta:
         model = Equipment
-        fields = ['name', 'description', 'available', 'collections']
+        fields = ['name', 'location', 'description', 'available', 'collections']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'location': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter location (e.g., UVA Recreation Center, Storage Room, etc.)'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 5, 'placeholder': 'Provide a detailed description of the equipment...'}),
             'available': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'collections': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
         }
         labels = {
             'name': 'Equipment Name',
+            'location': 'Location',
             'description': 'Description',
             'available': 'Available for Checkout',
             'collections': 'Collections',
