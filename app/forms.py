@@ -27,6 +27,8 @@
 
 
 from django import forms
+
+from .context_processors import user_profile
 from .models import Collection, TAG_CHOICES, Equipment, EquipmentImage, UserProfile, User
 from django.contrib.auth.models import User
 from .auth_utils import is_librarian
@@ -200,6 +202,7 @@ class CollectionEditForm(CollectionCreateForm):
         return cleaned_data
 
 class PutItemInPublicCollectionForm(forms.ModelForm):
+    user = None
     def __init__(self, *args, **kwargs):
         user = kwargs.get('user', None)
         super().__init__(*args, **kwargs)
@@ -210,7 +213,7 @@ class PutItemInPublicCollectionForm(forms.ModelForm):
         fields = ['collections']
 
     collections = forms.ModelMultipleChoiceField(
-        queryset=Collection.objects.filter(is_public=True),
+        queryset=Collection.objects.filter(is_public=True, creator=user),
         required=False,
         widget=forms.CheckboxSelectMultiple,
         label='Public Collections',
