@@ -136,11 +136,11 @@
 }
 
 .btn-primary {
-    margin: 3px;
+    padding: 3px;
 }
 
 .reviews {
-    padding-bottom: 0;
+    margin-bottom: 0;
 }
 
 
