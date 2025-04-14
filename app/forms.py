@@ -174,7 +174,11 @@ class CollectionCreateForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
         if 'tags' in self.cleaned_data:
-            instance.tags = ','.join(self.cleaned_data['tags'])
+            tags = self.cleaned_data['tags']
+            if not tags:
+                instance.tags = 'other'
+            else:
+                instance.tags = ','.join(tags)
         if commit:
             instance.save()
             if not self.cleaned_data.get('is_public') and self.cleaned_data.get('allowed_users'):
