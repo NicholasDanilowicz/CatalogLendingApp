@@ -130,6 +130,12 @@
   pointer-events: none;
 }
 
+.star-rating input[disabled] + label::before {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+
 
 
 
