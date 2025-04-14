@@ -2,35 +2,39 @@
 {% load static %}
 {% load django_bootstrap5 %}
 
+
 {% block title %}
 {{ item.name }}
 {% endblock %}
 
+
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/item_detail.css' %}">
+<link rel="stylesheet" href="{% static 'css/item_detail.css' %}">
 {% endblock %}
+
 
 {% block content %}
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>{{ item.name }}</h1>
         {% if is_librarian %}
-            <div>
-                <a href="{% url 'edit_equipment' item_id=item.id %}" class="btn btn-success me-2">
-                    <i class="fas fa-edit"></i> Edit Equipment
-                </a>
-                <a href="{% url 'delete_equipment' item_id=item.id %}" class="btn btn-danger">
-                    <i class="fas fa-trash"></i> Delete Equipment
-                </a>
-            </div>
+        <div>
+            <a href="{% url 'edit_equipment' item_id=item.id %}" class="btn btn-success me-2">
+                <i class="fas fa-edit"></i> Edit Equipment
+            </a>
+            <a href="{% url 'delete_equipment' item_id=item.id %}" class="btn btn-danger">
+                <i class="fas fa-trash"></i> Delete Equipment
+            </a>
+        </div>
         {% endif %}
     </div>
-    
+
     <div id="itemCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
         <div class="carousel-inner">
             {% for image in item.all_images %}
             <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                <img src="{{ image.url }}" class="d-block w-100" alt="{{ item.name }}" style="object-fit: contain; max-height: 400px;">
+                <img src="{{ image.url }}" class="d-block w-100" alt="{{ item.name }}"
+                     style="object-fit: contain; max-height: 400px;">
             </div>
             {% endfor %}
         </div>
@@ -50,22 +54,62 @@
         <div class="card-body">
             <h5 class="card-title">Description</h5>
             <p class="card-text">{{ item.description|default:"No description available." }}</p>
+
+            <div class="average-rating star-set" data-rating="{{ average_rating }}">
+                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+            </div>
+            <p class="average-rating-text"> Average Rating: {{ average_rating|floatformat:1 }} / 5.0</p>
+
+            <div class="reviews">
+                <form method="post" action="{% url 'rate_equipment' item.id %}" class="star-rating star-set">
+                    {% csrf_token %}
+                    {% with user_rating_value=user_rating.rating %}
+                    <input type="radio" id="star5" name="rating" value="5" {% if user_rating_value == 5 %}checked{% endif %} {% if not has_rented %}disabled{% endif %}><label for="star5" title="5 stars"></label>
+                    <input type="radio" id="star4" name="rating" value="4" {% if user_rating_value == 4 %}checked{% endif %} {% if not has_rented %}disabled{% endif %}><label for="star4" title="4 stars"></label>
+                    <input type="radio" id="star3" name="rating" value="3" {% if user_rating_value == 3 %}checked{% endif %} {% if not has_rented %}disabled{% endif %}><label for="star3" title="3 stars"></label>
+                    <input type="radio" id="star2" name="rating" value="2" {% if user_rating_value == 2 %}checked{% endif %} {% if not has_rented %}disabled{% endif %}><label for="star2" title="2 stars"></label>
+                    <input type="radio" id="star1" name="rating" value="1" {% if user_rating_value == 1 %}checked{% endif %} {% if not has_rented %}disabled{% endif %}><label for="star1" title="1 star"></label>
+                    {% endwith %}
+                    <button type="submit" class="btn btn-sm btn-primary" {% if not has_rented %}disabled{% endif %}>
+                        Rate
+                    </button>
+                </form>
+            </div>
+
+            {% if not has_rented %}
+                    <p class="review info">
+                        You must rent this item before submitting a review.
+                    </p>
+                {% endif %}
+
+            <script>
+                const avg = document.querySelector('.average-rating');
+                if (avg) {
+                    const rating = parseFloat(avg.dataset.rating);
+                    const percent = (rating / 5) * 100;
+                    avg.style.setProperty('--avg-width', `${percent}%`);
+                }
+            </script>
+
         </div>
     </div>
     {% if rental %}
-        <form method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Return this item</button>
-        </form>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Return this item</button>
+    </form>
+    {% elif pending_request %}
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-warning">Cancel Request</button>
+    </form>
+    {% elif item.available %}
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Request this item</button>
+    </form>
     {% else %}
-        {% if item.available %}
-        <form method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-success">Rent this item</button>
-        </form>
-        {% else %}
-        <button class="btn btn-secondary" disabled>Item Unavailable</button>
-        {% endif %}
+    <button class="btn btn-secondary" disabled>Item Unavailable</button>
     {% endif %}
     {% if public_collections_by_user or is_librarian %}
         <a href="{% url 'put_in_public_collection' item_id=item.id %}" class="btn btn-primary">Put in a Public Collection</a>
@@ -74,5 +118,9 @@
     {% endif %}
     {% endblock %}
 </div>
+{% endblock %}
+
+
+
 
 

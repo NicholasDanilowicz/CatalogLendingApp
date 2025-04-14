@@ -34,12 +34,20 @@
                     <h3>Pending Access Requests</h3>
                     <ul>
                         {% for req in access_requests %}
+                        <!-- <h1>HERE IS WHERE A REQUEST IS SUPPOSED TO BE</h1> -->
                             <li>
                                 {{ req.patron.username }} -                 
                                 <a href="{% url 'handle_request' request_id=req.id action='accept' %}" class="btn btn-success btn-sm">Accept</a>
                                 <a href="{% url 'handle_request' request_id=req.id action='deny' %}" class="btn btn-danger btn-sm">Deny</a>    
                             </li>
                         {% endfor %}
+                        <!-- <h4>Access Requests (length: {{ access_requests|length }})</h4>
+                        <p>DEBUG</p>
+                        {{ debug }}
+                        <p>DEBUG2</p>
+                        {{ debug2 }}
+                        <p>DEBUG3</p>
+                        {{ debug3 }} -->
                     </ul>
                 {% endif %}
             </div>
@@ -71,7 +79,7 @@
             {% endfor %}
         </div>
     {% else %}
-    {% if not has_access and user.userprofile.role == 'patron' %}
+    {% if not has_access and user.is_authenticated and user.userprofile.role == 'patron' %}
         <form method="post" action="{% url 'request_access' collection.id %}">
             {% csrf_token %}
             <div class="permission-request">
@@ -84,6 +92,8 @@
         </form>
     {% elif has_access %}
         <p>You have access to this collection. </p>
+    {% else %}
+        <p><a href="{% url 'login' %}">Log in</a> to request access to this collection.</p>
     {% endif %}
     {% endif %}
 </div>

@@ -65,6 +65,22 @@ class EquipmentForm(forms.ModelForm):
             'collections': 'Collections',
         }
 
+    def clean_collections(self):
+        collections = self.cleaned_data.get('collections')
+        if not collections:
+            return collections
+
+        private_collections = collections.filter(is_public=False)
+        public_collections = collections.filter(is_public=True)
+
+        if private_collections.count() > 1:
+            raise forms.ValidationError("Equipment can only be added to one private collection.")
+        
+        if private_collections.exists() and public_collections.exists():
+            raise forms.ValidationError("Equipment cannot be added to both private and public collections simultaneously.")
+
+        return collections
+
 class CollectionAdminForm(forms.ModelForm):
     tags = forms.MultipleChoiceField(
         choices=TAG_CHOICES,
@@ -111,7 +127,7 @@ class CollectionCreateForm(forms.ModelForm):
     allowed_users = forms.ModelMultipleChoiceField(
         queryset=User.objects.filter(userprofile__role='patron'),
         required=False,
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'allowed-users-field'}),
         label='Allowed Users',
     )
 
@@ -123,12 +139,11 @@ class CollectionCreateForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'is_public': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'tags': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
-            'allowed_users': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'})
         }
         labels = {
             'title': 'Collection Title',
             'description': 'Description',
-            'is_public': 'Public Collection',
+            'is_public': 'Private Collection',
             'tags': 'Tags',
             'allowed_users': 'Allowed Users'
         }
@@ -140,6 +155,22 @@ class CollectionCreateForm(forms.ModelForm):
             self.fields.pop('is_public')
             self.fields.pop('allowed_users')
             self.instance.is_public = True
+        else:
+            if 'is_public' in self.initial and not self.initial['is_public']:
+                self.fields['allowed_users'].widget.attrs['style'] = 'display: block;'
+            else:
+                self.fields['allowed_users'].widget.attrs['style'] = 'display: none;'
+
+    def clean(self):
+        cleaned_data = super().clean()
+        is_public = cleaned_data.get('is_public')
+        allowed_users = cleaned_data.get('allowed_users')
+
+        if is_public and allowed_users:
+            cleaned_data['allowed_users'] = None
+            self.instance.allowed_users.clear()
+
+        return cleaned_data
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -147,7 +178,7 @@ class CollectionCreateForm(forms.ModelForm):
             instance.tags = ','.join(self.cleaned_data['tags'])
         if commit:
             instance.save()
-            if 'allowed_users' in self.cleaned_data:
+            if 'allowed_users' in self.cleaned_data and self.cleaned_data['allowed_users']:
                 instance.allowed_users.set(self.cleaned_data['allowed_users'])
         return instance
 
@@ -189,4 +220,6 @@ class PutItemInPublicCollectionForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         label='Public Collections',
     )
-
+    
+# class RatingForm(forms.ModelForm):
+    # def __init__(self):

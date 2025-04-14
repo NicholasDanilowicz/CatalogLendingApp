@@ -1,7 +1,4 @@
-/* This css is typically very similar to collection_detail.css */
-
 .grid-container {
-    z-index: -1000;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 20px;
@@ -22,6 +19,8 @@
   background: white;
   text-decoration: none;
   color: black;
+  position: relative;
+  z-index: -1000;
 }
 
 .grid-item:hover {
@@ -34,6 +33,9 @@
   height: 200px;
   object-fit: cover;
   border-radius: 10px;
+  position: relative;
+  z-index: -1000;
+
 }
 
 .pagination {
