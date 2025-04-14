@@ -135,6 +135,9 @@
   cursor: not-allowed;
 }
 
+.text-muted {
+    font-size: 2em;
+}
 
 
 
