@@ -3,8 +3,6 @@ from django.test import TestCase
 from django.db import models
 from django.contrib.auth.models import User
 from .models import UserProfile
-from .models import Equipment
-from .models import Collection
 
 class TestUserProfile(TestCase):
     def test_str(self):

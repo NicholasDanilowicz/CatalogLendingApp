@@ -27,8 +27,6 @@
 
 
 from django import forms
-
-from .context_processors import user_profile
 from .models import Collection, TAG_CHOICES, Equipment, EquipmentImage, UserProfile, User
 from django.contrib.auth.models import User
 from .auth_utils import is_librarian
@@ -184,7 +182,6 @@ class PutItemInPublicCollectionForm(forms.ModelForm):
             self.fields['collections'].queryset = Collection.objects.filter(is_public=True)
 
     public_collections = forms.MultipleChoiceField(
-        queryset=Meta.fields['collections'].queryset,
         required=False,
         widget=forms.CheckboxSelectMultiple,
         label='Public Collections',

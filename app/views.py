@@ -17,7 +17,7 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 
 from .forms import SearchForm, EquipmentForm, ProfileEditForm, CollectionCreateForm, CollectionEditForm, \
-    AddItemToPublicCollectionForm, PutItemInPublicCollectionForm
+    PutItemInPublicCollectionForm
 from .models import UserProfile
 from .models import Equipment
 from .models import Collection
