@@ -88,7 +88,7 @@
                 </form>
             </div>
 
-            {% if not user.is_authenticated %}
+            {% if user.is_authenticated %}
             {% if not has_rented %}
             <p class="review info">
                 You must rent this item before submitting a review.
