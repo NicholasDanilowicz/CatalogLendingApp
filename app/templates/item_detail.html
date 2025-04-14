@@ -55,7 +55,7 @@
             <h5 class="card-title">Description</h5>
             <p class="card-text">{{ item.description|default:"No description available." }}</p>
 
-            <div class="average-rating" style="--avg-width: 80%;">
+            <div class="average-rating" data-rating="{{ average_rating }}">
                 <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
             </div>
             <p>{{ average_rating|floatformat:1 }} / 5.0</p>
@@ -82,6 +82,15 @@
                     <button type="submit" class="btn btn-sm btn-primary ms-2">Rate</button>
                 </form>
             </div>
+            <script>
+                const avg = document.querySelector('.average-rating');
+                if (avg) {
+                    const rating = parseFloat(avg.dataset.rating);
+                    const percent = (rating / 5) * 100;
+                    avg.style.setProperty('--avg-width', `${percent}%`);
+                }
+            </script>
+
         </div>
     </div>
     {% if rental %}
@@ -105,14 +114,7 @@
 </div>
 {% endblock %}
 
-<script>
-  const avg = document.querySelector('.average-rating');
-  if (avg) {
-    const rating = parseFloat(avg.dataset.rating);
-    const percent = (rating / 5) * 100;
-    avg.style.setProperty('--avg-width', `${percent}%`);
-  }
-</script>
+
 
 
 
