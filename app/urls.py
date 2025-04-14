@@ -3,6 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from . import views
+from .views import put_item_in_public_collection
 
 urlpatterns = [
     path('login/', views.custom_login, name='login'),
@@ -13,6 +14,7 @@ urlpatterns = [
     path("item/create/", views.create_equipment, name='create_equipment'),
     path("item/<int:item_id>/edit/", views.edit_equipment, name='edit_equipment'),
     path("item/<int:item_id>/delete/", views.delete_equipment, name='delete_equipment'),
+    path("item/<int:item_id>/put_in_public/", views.put_item_in_public_collection, name='put_in_public'),
     path("collection/<int:collection_id>/", views.collection_detail, name='collection_detail'),
     path("collection/create/", views.create_collection, name='create_collection'),
     path("collection/<int:collection_id>/edit/", views.edit_collection, name='edit_collection'),

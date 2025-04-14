@@ -57,6 +57,13 @@ class Equipment(models.Model):
             return [{'url': 'https://upload.wikimedia.org/wikipedia/commons/7/7a/Basketball.png', 'is_default': False}]
         return [{'url': img.image_url, 'is_default': False} for img in images]
 
+    @property
+    def is_public(self):
+        for c in list(self.collections.all()):
+            if not c.is_public:
+                return False
+        return True
+
 class EquipmentImage(models.Model):
     equipment = models.ForeignKey(Equipment, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='equipment/')

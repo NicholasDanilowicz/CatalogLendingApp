@@ -199,5 +199,24 @@ class CollectionEditForm(CollectionCreateForm):
             raise forms.ValidationError("You don't have permission to edit this collection.")
         return cleaned_data
 
+class PutItemInPublicCollectionForm(forms.ModelForm):
+    class Meta:
+        model = Equipment
+        fields = ['collections']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.get('user', None)
+        super().__init__(*args, **kwargs)
+        if user.role == 'patron':
+            self.fields['collections'].queryset = Collection.objects.filter(is_public=True, userprofile__user=user)
+        else:
+            self.fields['collections'].queryset = Collection.objects.filter(is_public=True)
+
+    public_collections = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        label='Public Collections',
+    )
+    
 # class RatingForm(forms.ModelForm):
     # def __init__(self):
