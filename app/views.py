@@ -98,7 +98,7 @@ def item_detail(request, item_id):
     # Average rating calculations
     user_rating = Rating.objects.filter(equipment=equipment, user=request.user).first()
     average_rating = Rating.objects.filter(equipment=equipment).aggregate(Avg('rating'))['rating__avg'] or 0
-
+    has_rented = Rental.objects.filter(equipment=equipment, user=request.user).exists()
 
     return render(request, 'item_detail.html', {
         'item': equipment,
@@ -107,6 +107,7 @@ def item_detail(request, item_id):
         'pending_request': pending_request,
         'user_rating': user_rating,
         'average_rating': average_rating,
+        'has_rented': has_rented,
     })
 
 
