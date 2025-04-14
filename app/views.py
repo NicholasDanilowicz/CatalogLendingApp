@@ -385,7 +385,7 @@ def request_access(request, collection_id):
 def put_item_in_public_collection(request, item_id):
     equipment = get_object_or_404(Equipment, id=item_id)
 
-    form = PutItemInPublicCollectionForm()
+    form = None
     if request.method == 'POST':
         form = PutItemInPublicCollectionForm(request.POST, request.FILES, instance=equipment)
         if form.is_valid():
