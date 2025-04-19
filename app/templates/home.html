@@ -50,4 +50,25 @@ Home
     </div>
   </section>
   {% endif %}
+  <section class="featured-collections py-5">
+      <div class="container">
+        <h2 class="text-center mb-4">Featured Collections</h2>
+        <div class="row justify-content-center">
+          {% for collection in featured_collections %}
+            <div class="col-md-4 mb-4">
+              <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-title">{{ collection.title }}</h5>
+                  <p class="card-text">{{ collection.description|truncatechars:120 }}</p>
+                  <a href="{% url 'collection_detail' collection.id %}" class="mt-auto btn btn-outline-success">View Collection</a>
+                </div>
+              </div>
+            </div>
+          {% empty %}
+            <p class="text-muted text-center">No featured collections available right now.</p>
+          {% endfor %}
+        </div>
+      </div>
+  </section>
+
 {% endblock %}

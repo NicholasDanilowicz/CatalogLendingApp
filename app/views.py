@@ -515,3 +515,10 @@ def rental_requests_view(request):
 
     requests = RentalRequest.objects.filter(status='pending').select_related('equipment', 'patron')
     return render(request, 'rental_requests.html', {'requests': requests})
+
+
+def home(request):
+    featured_collections = Collection.objects.filter(is_public=True).order_by('-created_at')[:6]
+    return render(request, 'home.html', {
+        'featured_collections': featured_collections,
+    })
