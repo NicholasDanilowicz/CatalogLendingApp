@@ -57,6 +57,14 @@
             <div class="mb-3">
                 <p><strong>ISBN:</strong> <span class="badge bg-info">{{ item.isbn }}</span></p>
                 <p><strong>Location:</strong> <span class="badge bg-secondary">{{ item.location }}</span></p>
+
+                <p class="d-flex align-items-center gap-2"> <strong>Average Rating:</strong>
+                <div class="average-rating star-set d-inline" data-rating="{{ average_rating }}">
+                    <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                </div>
+                <small class="text-muted">({{ average_rating|floatformat:1 }} / 5.0)</small>
+                </p>
+
             </div>
             <div class="description-section mb-4">
                 <h5 class="card-title border-bottom pb-2">Description</h5>
@@ -68,11 +76,6 @@
                     {% endif %}
                 </div>
             </div>
-
-            <div class="average-rating star-set" data-rating="{{ average_rating }}">
-                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-            </div>
-            <p class="average-rating-text"> Average Rating: {{ average_rating|floatformat:1 }} / 5.0</p>
 
             <div class="reviews">
                 <form method="post" action="{% url 'rate_equipment' item.id %}" class="star-rating star-set">
