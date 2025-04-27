@@ -7,6 +7,9 @@ from django.db import models
 from .auth_utils import is_librarian
 import string
 import secrets
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.models import User
 
 TAG_CHOICES = [
     ('sports', 'Sports'),
@@ -212,3 +215,8 @@ class RentalRequest(models.Model):
 
     def __str__(self):
         return f"{self.patron.username} requests {self.equipment.name} - {self.status}"
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
