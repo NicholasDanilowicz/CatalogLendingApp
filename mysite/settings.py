@@ -52,10 +52,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'social_django',  # for google auth
     'whitenoise.runserver_nostatic',  # for db
+    'app',  # our app name
     'django_bootstrap5',  # bootstrap
     'storages',
-    'app.apps.AppConfig',
-]
+    ]
 
 # for google auth
 AUTHENTICATION_BACKENDS = [
