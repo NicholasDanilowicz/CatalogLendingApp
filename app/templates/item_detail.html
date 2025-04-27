@@ -111,7 +111,7 @@
             {% endif %}
             {% endif %}
 
-            <div class="reviews border-top border-bottom">
+            <div class="reviews border-bottom">
                 <form method="post" action="{% url 'rate_equipment' item.id %}" class="star-rating star-set">
                     {% csrf_token %}
                     {% with user_rating_value=user_rating.rating %}
