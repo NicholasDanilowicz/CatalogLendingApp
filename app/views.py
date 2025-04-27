@@ -17,7 +17,7 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 
 from .forms import SearchForm, EquipmentForm, ProfileEditForm, CollectionCreateForm, CollectionEditForm, \
-    PutItemInPublicCollectionForm
+    PutItemInPublicCollectionForm, CommentForm
 from .models import UserProfile
 from .models import Equipment
 from .models import Collection
@@ -26,6 +26,7 @@ from django.contrib import messages
 from .models import Rental
 from .models import RentalRequest
 from .models import Rating
+from .models import Comment
 from .utils import handle_equipment_images
 from .auth_utils import is_librarian
 
@@ -89,30 +90,46 @@ def item_detail(request, item_id):
         user = None
         public_collections_by_user = None
 
+
     if request.method == 'POST':
-        if rental:
-            rental.returned_on = timezone.now()
-            rental.save()
-            equipment.available = True
-            equipment.save()
-            messages.success(request, f"Thank you for returning {equipment.name}.")
+        if 'rating' in request.POST:
+            if rental:
+                rental.returned_on = timezone.now()
+                rental.save()
+                equipment.available = True
+                equipment.save()
+                messages.success(request, f"Thank you for returning {equipment.name}.")
+                return redirect('item_detail', item_id=item_id)
+
+            if pending_request:
+                pending_request.delete()
+                messages.info(request, "Your request has been canceled.")
+                return redirect('item_detail', item_id=item_id)
+
+            if not equipment.available:
+                messages.error(request, "This item is currently unavailable.")
+                return redirect('item_detail', item_id=item_id)
+
+            RentalRequest.objects.create(equipment=equipment, patron=request.user)
+            messages.success(request, f"You have requested {equipment.name}. Await librarian approval.")
             return redirect('item_detail', item_id=item_id)
 
-        if pending_request:
-            pending_request.delete()
-            messages.info(request, "Your request has been canceled.")
-            return redirect('item_detail', item_id=item_id)
+        else:
+            comment_form = CommentForm(request.POST)
+            if comment_form.is_valid():
+                comment = comment_form.save(commit=False)
+                comment.user = request.user
+                comment.item = equipment
+                comment.save()
+                messages.success(request, "Your comment has been posted.")
+                return redirect('item_detail', item_id=item_id)
 
-        if not equipment.available:
-            messages.error(request, "This item is currently unavailable.")
-            return redirect('item_detail', item_id=item_id)
+    else:
+        comment_form = CommentForm()
 
-        RentalRequest.objects.create(equipment=equipment, patron=request.user)
-        messages.success(request, f"You have requested {equipment.name}. Await librarian approval.")
-        return redirect('item_detail', item_id=item_id)
-
-    # Average rating calculations
+    # Average rating calculations and comments
     average_rating = Rating.objects.filter(equipment=equipment).aggregate(Avg('rating'))['rating__avg'] or 0
+    comments = Comment.objects.filter(item=equipment).order_by('-created_at')
 
     return render(request, 'item_detail.html', {
         'item': equipment,
@@ -124,6 +141,8 @@ def item_detail(request, item_id):
         'user_rating': user_rating,
         'average_rating': average_rating,
         'has_rented': has_rented,
+        'comments': comments,
+        'comment_form': comment_form,
     })
 
 

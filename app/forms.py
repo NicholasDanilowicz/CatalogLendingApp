@@ -27,7 +27,7 @@
 
 
 from django import forms
-from .models import Collection, TAG_CHOICES, Equipment, EquipmentImage, UserProfile, User
+from .models import Collection, TAG_CHOICES, Equipment, EquipmentImage, UserProfile, User, Comment
 from django.contrib.auth.models import User
 from .auth_utils import is_librarian
 
@@ -221,6 +221,15 @@ class PutItemInPublicCollectionForm(forms.ModelForm):
                 widget=forms.CheckboxSelectMultiple,
                 label='Public Collections'
             )
-    
-# class RatingForm(forms.ModelForm):
-    # def __init__(self):
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Write your comment here...',
+                'rows': 3,
+            }),
+        }
