@@ -68,7 +68,7 @@
             </div>
             <div class="description-section mb-4">
                 <h5 class="card-title border-bottom pb-2">Description</h5>
-                <div class="card-text description-content mt-3">
+                <div class="card-text border-bottom description-content mt-3">
                     {% if item.description %}
                         {{ item.description|linebreaks }}
                     {% else %}
@@ -77,21 +77,6 @@
                 </div>
             </div>
 
-            <div class="reviews">
-                <form method="post" action="{% url 'rate_equipment' item.id %}" class="star-rating star-set">
-                    {% csrf_token %}
-                    {% with user_rating_value=user_rating.rating %}
-                    <input type="radio" id="star5" name="rating" value="5" {% if user_rating_value == 5 %}checked{% endif %} {% if not has_rented %}disabled{% endif %}><label for="star5" title="5 stars"></label>
-                    <input type="radio" id="star4" name="rating" value="4" {% if user_rating_value == 4 %}checked{% endif %} {% if not has_rented %}disabled{% endif %}><label for="star4" title="4 stars"></label>
-                    <input type="radio" id="star3" name="rating" value="3" {% if user_rating_value == 3 %}checked{% endif %} {% if not has_rented %}disabled{% endif %}><label for="star3" title="3 stars"></label>
-                    <input type="radio" id="star2" name="rating" value="2" {% if user_rating_value == 2 %}checked{% endif %} {% if not has_rented %}disabled{% endif %}><label for="star2" title="2 stars"></label>
-                    <input type="radio" id="star1" name="rating" value="1" {% if user_rating_value == 1 %}checked{% endif %} {% if not has_rented %}disabled{% endif %}><label for="star1" title="1 star"></label>
-                    {% endwith %}
-                    <button type="submit" class="btn btn-sm btn-primary" {% if not has_rented %}disabled{% endif %}>
-                        Rate
-                    </button>
-                </form>
-            </div>
 
             {% if user.is_authenticated %}
             {% if not has_rented %}
@@ -126,9 +111,22 @@
             {% endif %}
             {% endif %}
 
-            <hr>
+            <div class="reviews border-top border-bottom">
+                <form method="post" action="{% url 'rate_equipment' item.id %}" class="star-rating star-set">
+                    {% csrf_token %}
+                    {% with user_rating_value=user_rating.rating %}
+                    <input type="radio" id="star5" name="rating" value="5" {% if user_rating_value == 5 %}checked{% endif %} {% if not has_rented %}disabled{% endif %}><label for="star5" title="5 stars"></label>
+                    <input type="radio" id="star4" name="rating" value="4" {% if user_rating_value == 4 %}checked{% endif %} {% if not has_rented %}disabled{% endif %}><label for="star4" title="4 stars"></label>
+                    <input type="radio" id="star3" name="rating" value="3" {% if user_rating_value == 3 %}checked{% endif %} {% if not has_rented %}disabled{% endif %}><label for="star3" title="3 stars"></label>
+                    <input type="radio" id="star2" name="rating" value="2" {% if user_rating_value == 2 %}checked{% endif %} {% if not has_rented %}disabled{% endif %}><label for="star2" title="2 stars"></label>
+                    <input type="radio" id="star1" name="rating" value="1" {% if user_rating_value == 1 %}checked{% endif %} {% if not has_rented %}disabled{% endif %}><label for="star1" title="1 star"></label>
+                    {% endwith %}
+                    <button type="submit" class="btn btn-sm btn-primary" {% if not has_rented %}disabled{% endif %}>
+                        Rate
+                    </button>
+                </form>
 
-            {% if user.is_authenticated %}
+                            {% if user.is_authenticated %}
             <div class="comment-form mt-5">
                 <h6>Leave a Comment:</h6>
                 <form method="post">
@@ -143,6 +141,9 @@
             {% else %}
             <p class="mt-3"><a href="{% url 'login' %}">Log in</a> to leave a comment.</p>
             {% endif %}
+
+            </div>
+
 
             <div class="comments-section mt-4">
                 <h5 class="mb-3">Comments</h5>
