@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'app',  # our app name
     'django_bootstrap5',  # bootstrap
     'storages',
+    'app.apps.AppConfig',
 ]
 
 # for google auth

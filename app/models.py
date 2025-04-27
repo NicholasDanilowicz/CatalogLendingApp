@@ -215,8 +215,3 @@ class RentalRequest(models.Model):
 
     def __str__(self):
         return f"{self.patron.username} requests {self.equipment.name} - {self.status}"
-
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance)
