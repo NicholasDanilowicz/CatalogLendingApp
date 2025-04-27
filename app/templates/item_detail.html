@@ -105,12 +105,12 @@
                 </div>
             </div>
 
-            <div class="reviews border-bottom mt-3">
+            <div class="reviews border-bottom mt-5">
 
                 {% if user.is_authenticated %}
                 {% if not has_rented %}
                 <p class="review info">
-                    You must rent this item before rating it.
+                    You must rent this item before reviewing it.
                 </p>
                 {% endif %}
                 {% endif %}
