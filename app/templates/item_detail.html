@@ -59,9 +59,9 @@
                 <p><strong>Location:</strong> <span class="badge bg-secondary">{{ item.location }}</span></p>
 
                 <p class="d-flex align-items-center gap-2"> <strong>Average Rating:</strong>
-                <div class="average-rating star-set d-inline" data-rating="{{ average_rating }}">
+                <span class="average-rating star-set d-inline" data-rating="{{ average_rating }}">
                     <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-                </div>
+                </span>
                 <small class="text-muted">({{ average_rating|floatformat:1 }} / 5.0)</small>
                 </p>
 
