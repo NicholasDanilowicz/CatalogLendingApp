@@ -537,6 +537,8 @@ def rental_requests_view(request):
 
 
 def home(request):
+    if not request.user.is_authenticated:
+        return render(request, 'home.html')
     featured_collections = Collection.objects.filter(is_public=True).order_by('-created_at')[:6]
     return render(request, 'home.html', {
         'featured_collections': featured_collections,
