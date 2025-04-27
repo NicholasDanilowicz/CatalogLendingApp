@@ -129,16 +129,19 @@
                     </button>
                 </form>
 
-                            {% if user.is_authenticated %}
+                {% if user.is_authenticated %}
             <div class="comment-form mt-5">
                 <h6>Leave a Comment:</h6>
+
                 <form method="post">
                     {% csrf_token %}
                     <div class="mb-3">
                         {{ comment_form.content }}
                         {{ comment_form.content.errors }}
                     </div>
-                    <button type="submit" class="btn btn-primary">Post Comment</button>
+                    <button type="submit" class="btn btn-primary" {% if not has_rented %}disabled{% endif %}>
+                        Post Comment
+                    </button>
                 </form>
             </div>
             {% else %}
