@@ -318,7 +318,7 @@
     border: 1.5px solid #bdbdbd;
     transition: background-color 0.2s ease, color 0.2s, border-color 0.2s;
 }
-.pagination a:hover, .pagination-btn:not(.disabled):hover {
+.pagination a:hover {
     background: #f7f7f7;
     color: #555;
     border-color: #bdbdbd;
