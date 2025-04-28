@@ -15,8 +15,8 @@ from django.contrib.auth.decorators import login_required
 
 from django.core.paginator import Paginator
 from django.utils import timezone
-from django.db.models import Avg
-from django.db.models.functions import Lower
+from django.db.models import Avg, F, Value, FloatField
+from django.db.models.functions import Lower, Coalesce, NullIf
 
 from .forms import SearchForm, EquipmentForm, ProfileEditForm, CollectionCreateForm, CollectionEditForm, \
     PutItemInPublicCollectionForm, CommentForm, UserPromoteForm
@@ -186,7 +186,13 @@ def search_results(req):
     elif sort == 'availability':
         base_queryset = base_queryset.order_by('-available', 'name')
     elif sort == 'rating':
-        base_queryset = base_queryset.annotate(avg_rating=Avg('rating__rating')).order_by('-avg_rating', 'name')
+        base_queryset = base_queryset.annotate(
+            avg_rating=Coalesce(
+                Avg(NullIf('rating__rating', Value(-1))),
+                Value(-1),
+                output_field=FloatField()
+            )
+        ).order_by('-avg_rating', 'name')
 
     paginator = Paginator(base_queryset, 15)
     page_number = req.GET.get('page')
@@ -431,7 +437,13 @@ def collection_detail(request, collection_id):
         elif sort == 'availability':
             equipment_items = equipment_items.order_by('-available', 'name')
         elif sort == 'rating':
-            equipment_items = equipment_items.annotate(avg_rating=Avg('rating__rating')).order_by('-avg_rating', 'name')
+            equipment_items = equipment_items.annotate(
+                avg_rating=Coalesce(
+                    Avg(NullIf('rating__rating', Value(-1))),
+                    Value(-1),
+                    output_field=FloatField()
+                )
+            ).order_by('-avg_rating', 'name')
         else:
             equipment_items = equipment_items.order_by('id')
             
