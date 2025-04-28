@@ -84,13 +84,13 @@ class Equipment(models.Model):
         first_image = self.images.first()
         if first_image and first_image.image:
             return first_image.image_url
-        return 'https://upload.wikimedia.org/wikipedia/commons/7/7a/Basketball.png'
+        return 'https://upload.wikimedia.org/wikipedia/en/d/d1/Virginia_Cavaliers_sabre.svg'
     
     @property
     def all_images(self):
         images = list(self.images.all())
         if not images:
-            return [{'url': 'https://upload.wikimedia.org/wikipedia/commons/7/7a/Basketball.png', 'is_default': False}]
+            return [{'url': 'https://upload.wikimedia.org/wikipedia/en/d/d1/Virginia_Cavaliers_sabre.svg', 'is_default': False}]
         return [{'url': img.image_url, 'is_default': False} for img in images]
 
     @property

@@ -163,7 +163,8 @@ def search_results(req):
     collection_id = req.GET.get('collection_id')
     tag = req.GET.get('tag')
     
-    base_queryset = Equipment.objects.all()
+    public_collections = Collection.objects.filter(is_public=True)
+    base_queryset = Equipment.objects.filter(collections__in=public_collections).distinct().order_by('id')
 
     if collection_id:
         try:
@@ -178,7 +179,7 @@ def search_results(req):
     if query:
         base_queryset = base_queryset.filter(name__icontains=query)
 
-    paginator = Paginator(base_queryset, 5)
+    paginator = Paginator(base_queryset, 15)
     page_number = req.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
@@ -411,8 +412,11 @@ def collection_detail(request, collection_id):
     }
     
     if has_access:
-        equipment_items = collection.equipment_items.all()
-        context['equipment_items'] = equipment_items
+        equipment_items = collection.equipment_items.all().order_by('id')
+        paginator = Paginator(equipment_items, 15)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context['page_obj'] = page_obj
     
     return render(request, 'collection_detail.html', context)
 from django.views.decorators.csrf import csrf_exempt

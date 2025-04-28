@@ -53,21 +53,24 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const isPublicCheckbox = document.querySelector('input[name="is_public"]');
+    const visibilityRadios = document.querySelectorAll('input[name="visibility"]');
     const allowedUsersField = document.querySelector('.allowed-users-field');
 
     function toggleAllowedUsers() {
-        if (isPublicCheckbox.checked) {
+        const isPrivate = document.querySelector('input[name="visibility"]:checked').value === 'private';
+        if (isPrivate) {
+            allowedUsersField.style.display = 'block';
+        } else {
             allowedUsersField.style.display = 'none';
             const userCheckboxes = allowedUsersField.querySelectorAll('input[type="checkbox"]');
             userCheckboxes.forEach(checkbox => checkbox.checked = false);
-        } else {
-            allowedUsersField.style.display = 'block';
         }
     }
 
-    if (isPublicCheckbox) {
-        isPublicCheckbox.addEventListener('change', toggleAllowedUsers);
+    if (visibilityRadios.length > 0) {
+        visibilityRadios.forEach(radio => {
+            radio.addEventListener('change', toggleAllowedUsers);
+        });
         toggleAllowedUsers();
     }
 });

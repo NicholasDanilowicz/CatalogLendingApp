@@ -65,6 +65,13 @@ class EquipmentForm(forms.ModelForm):
             'collections': 'Collections',
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['collections'].choices = [
+            (collection.id, f"{collection.title} ({', '.join(collection.get_tags_list())})")
+            for collection in Collection.objects.all()
+        ]
+
     def clean_collections(self):
         collections = self.cleaned_data.get('collections')
         if not collections:
@@ -142,49 +149,59 @@ class CollectionCreateForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple(attrs={'class': 'allowed-users-field'}),
         label='Allowed Users',
     )
+    visibility = forms.ChoiceField(
+        choices=[('public', 'Public Collection'), ('private', 'Private Collection')],
+        widget=forms.RadioSelect,
+        initial='public',
+        label='Collection Visibility'
+    )
 
     class Meta:
         model = Collection
-        fields = ['title', 'description', 'is_public', 'tags', 'allowed_users']
+        fields = ['title', 'description', 'tags', 'visibility', 'allowed_users']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'is_public': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'tags': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
             'allowed_users': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'})
         }
         labels = {
             'title': 'Collection Title',
             'description': 'Description',
-            'is_public': 'Public Collection',
             'tags': 'Tags',
             'allowed_users': 'Allowed Users'
         }
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         if self.user and not is_librarian(self.user):
-            self.fields.pop('is_public', None)
+            self.fields.pop('visibility', None)
             self.fields.pop('allowed_users', None)
             if self.instance:
                 self.instance.is_public = True
         else:
-            if 'is_public' in self.initial and not self.initial['is_public']:
+            if 'visibility' in self.initial and self.initial['visibility'] == 'private':
                 self.fields['allowed_users'].widget.attrs['style'] = 'display: block;'
             else:
                 self.fields['allowed_users'].widget.attrs['style'] = 'display: none;'
 
     def clean(self):
         cleaned_data = super().clean()
-        is_public = cleaned_data.get('is_public')
+        visibility = cleaned_data.get('visibility')
         
-        if is_public:
+        if visibility == 'public':
+            cleaned_data['is_public'] = True
             cleaned_data['allowed_users'] = []
+        else:
+            cleaned_data['is_public'] = False
         
         return cleaned_data
 
     def save(self, commit=True):
         instance = super().save(commit=False)
+        visibility = self.cleaned_data.get('visibility')
+        instance.is_public = (visibility == 'public')
         if 'tags' in self.cleaned_data:
             tags = self.cleaned_data['tags']
             if not tags:
@@ -193,7 +210,7 @@ class CollectionCreateForm(forms.ModelForm):
                 instance.tags = ','.join(tags)
         if commit:
             instance.save()
-            if not self.cleaned_data.get('is_public') and self.cleaned_data.get('allowed_users'):
+            if not instance.is_public and self.cleaned_data.get('allowed_users'):
                 instance.allowed_users.set(self.cleaned_data['allowed_users'])
             else:
                 instance.allowed_users.clear()
@@ -205,12 +222,18 @@ class CollectionEditForm(CollectionCreateForm):
         super().__init__(*args, **kwargs)
         self.user = user
         
+        if self.instance and self.instance.pk and self.instance.tags:
+            self.initial['tags'] = self.instance.get_tags_list()
+        
         if self.user and not is_librarian(self.user):
-            if 'is_public' in self.fields:
-                self.fields.pop('is_public')
+            if 'visibility' in self.fields:
+                self.fields.pop('visibility')
             if 'allowed_users' in self.fields:
                 self.fields.pop('allowed_users')
             self.instance.is_public = True
+        else:
+            if self.instance and hasattr(self.instance, 'is_public'):
+                self.initial['visibility'] = 'private' if not self.instance.is_public else 'public'
 
     def clean(self):
         cleaned_data = super().clean()
