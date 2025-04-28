@@ -21,15 +21,16 @@ Home
                 <i class="fas fa-plus"></i> Create New Collection
               </a>
               {% if user.userprofile.role == 'librarian' %}
-                <a href="{% url 'create_equipment' %}" class="btn btn-success">
+                <a href="{% url 'create_equipment' %}" class="btn btn-success me-2">
                   <i class="fas fa-plus"></i> Add New Equipment
                 </a>
-                
+              {% endif %}
+            </div>
+              {% if user.userprofile.role == 'librarian' %}
                 <a href="{% url 'promote_patron' %}" class="btn btn-success me-2">
                   <i class="fas fa-plus"></i> Promote Patron
                 </a>
               {% endif %}
-            </div>
           </div>
         {% endif %}
       </div>
