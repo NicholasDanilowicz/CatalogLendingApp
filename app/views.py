@@ -17,7 +17,7 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 
 from .forms import SearchForm, EquipmentForm, ProfileEditForm, CollectionCreateForm, CollectionEditForm, \
-    PutItemInPublicCollectionForm, CommentForm
+    PutItemInPublicCollectionForm, CommentForm, UserPromoteForm
 from .models import UserProfile
 from .models import Equipment
 from .models import Collection
@@ -100,6 +100,7 @@ def item_detail(request, item_id):
 # *  Software License: OpenAI Terms of Use
 # *  Description: Used to debug Django form errors while developing functionality for rental requests.
 # ***************************************************************************************
+
 
     if request.method == 'POST':
         if 'content' in request.POST:
@@ -214,6 +215,27 @@ def profile_detail(request):
         'google_account': request.user.email
     })
 
+@login_required
+def promote_patron(request):
+    if request.method == "POST":
+        form = UserPromoteForm(request.POST)
+        if form.is_valid():
+            selected_users = form.cleaned_data['allowed_users']
+            promoted_usernames = []
+            for user in selected_users:
+                if user.userprofile.role != 'librarian':
+                    user.userprofile.role = 'librarian'
+                    user.userprofile.save()
+                    promoted_usernames.append(user.username)
+            if promoted_usernames:
+                promoted_list = ', '.join(promoted_usernames)
+                messages.success(request, f"You promoted these users to librarian: {promoted_list}")
+            return redirect('home')
+    else:
+        form = UserPromoteForm()
+    return render(request, 'promote_user.html', {
+        'form': form
+    })
 @login_required
 def create_collection(request):
     if request.method == 'POST':
