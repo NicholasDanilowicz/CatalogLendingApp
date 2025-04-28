@@ -15,13 +15,14 @@ from django.contrib.auth.decorators import login_required
 
 from django.core.paginator import Paginator
 from django.utils import timezone
+from django.db.models import Avg, F, Value, FloatField
+from django.db.models.functions import Lower, Coalesce, NullIf
 
 from .forms import SearchForm, EquipmentForm, ProfileEditForm, CollectionCreateForm, CollectionEditForm, \
     PutItemInPublicCollectionForm, CommentForm, UserPromoteForm
 from .models import UserProfile
 from .models import Equipment
 from .models import Collection
-from django.db.models import Avg
 from django.contrib import messages
 from .models import Rental
 from .models import RentalRequest
@@ -163,9 +164,10 @@ def search_results(req):
     query = req.GET.get('query', '')
     collection_id = req.GET.get('collection_id')
     tag = req.GET.get('tag')
+    sort = req.GET.get('sort', 'name')
     
     public_collections = Collection.objects.filter(is_public=True)
-    base_queryset = Equipment.objects.filter(collections__in=public_collections).distinct().order_by('id')
+    base_queryset = Equipment.objects.filter(collections__in=public_collections).distinct()
 
     if collection_id:
         try:
@@ -180,6 +182,19 @@ def search_results(req):
     if query:
         base_queryset = base_queryset.filter(name__icontains=query)
 
+    if sort == 'name':
+        base_queryset = base_queryset.order_by(Lower('name'))
+    elif sort == 'availability':
+        base_queryset = base_queryset.order_by('-available', 'name')
+    elif sort == 'rating':
+        base_queryset = base_queryset.annotate(
+            avg_rating=Coalesce(
+                Avg(NullIf('rating__rating', Value(-1))),
+                Value(-1),
+                output_field=FloatField()
+            )
+        ).order_by('-avg_rating', 'name')
+
     paginator = Paginator(base_queryset, 15)
     page_number = req.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -189,7 +204,8 @@ def search_results(req):
         'query': query,
         'page_obj': page_obj,
         'collection_id': collection_id,
-        'tag': tag
+        'tag': tag,
+        'sort': sort
     }
     
     return render(req, 'search_results.html', context)
@@ -413,11 +429,30 @@ def collection_detail(request, collection_id):
     }
     
     if has_access:
-        equipment_items = collection.equipment_items.all().order_by('id')
+        sort = request.GET.get('sort', 'name')
+        
+        equipment_items = collection.equipment_items.all()
+        
+        if sort == 'name':
+            equipment_items = equipment_items.order_by(Lower('name'))
+        elif sort == 'availability':
+            equipment_items = equipment_items.order_by('-available', 'name')
+        elif sort == 'rating':
+            equipment_items = equipment_items.annotate(
+                avg_rating=Coalesce(
+                    Avg(NullIf('rating__rating', Value(-1))),
+                    Value(-1),
+                    output_field=FloatField()
+                )
+            ).order_by('-avg_rating', 'name')
+        else:
+            equipment_items = equipment_items.order_by('id')
+            
         paginator = Paginator(equipment_items, 15)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         context['page_obj'] = page_obj
+        context['sort'] = sort
     
     return render(request, 'collection_detail.html', context)
 from django.views.decorators.csrf import csrf_exempt

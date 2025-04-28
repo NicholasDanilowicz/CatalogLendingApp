@@ -37,6 +37,39 @@
     font-weight: 600;
 }
 
+/* Collection Controls */
+.collection-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 200px;
+}
+
+/* Sort Dropdown Styles */
+.sort-dropdown {
+    display: flex;
+    align-items: center;
+}
+
+.sort-dropdown form {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.sort-dropdown label {
+    margin-right: 0.5rem;
+    white-space: nowrap;
+}
+
+.sort-dropdown select {
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.25rem;
+    background-color: white;
+    cursor: pointer;
+    width: 100%;
+}
+
 /* Tag Styles */
 .search-filters, .collection-tags {
     display: flex;
@@ -77,18 +110,12 @@
 /* Collection Actions */
 .collection-actions {
     display: flex;
-    gap: 1rem;
-    align-items: center;
+    gap: 0.5rem;
+    justify-content: flex-end;
 }
 
 .collection-actions .btn {
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    font-weight: 500;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
+    white-space: nowrap;
 }
 
 .btn-edit {

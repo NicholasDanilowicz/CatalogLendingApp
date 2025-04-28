@@ -185,7 +185,7 @@ class CollectionAccessRequest(models.Model):
 class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_ratings')
     equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
-    rating = models.PositiveSmallIntegerField(default=0)
+    rating = models.PositiveSmallIntegerField(default=-1)
 
     class Meta:
         unique_together = ('user', 'equipment')
