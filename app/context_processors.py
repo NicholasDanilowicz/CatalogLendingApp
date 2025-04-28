@@ -1,5 +1,6 @@
 from .forms import SearchForm
 from .models import Collection
+from .models import UserProfile
 
 def search_form(request):
     if request.user.is_authenticated:
@@ -13,5 +14,9 @@ def search_form(request):
 
 def user_profile(request):
     if request.user.is_authenticated:
-        return {'profile': request.user.userprofile}
+        try:
+            return {'profile': request.user.userprofile}
+        except UserProfile.DoesNotExist:
+            profile = UserProfile.objects.create(user=request.user, role='patron')
+            return {'profile': profile}
     return {}
