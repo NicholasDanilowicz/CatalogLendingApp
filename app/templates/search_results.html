@@ -43,20 +43,19 @@ Search Results
     <div class="tab-content">
         <div class="row">
             {% for item in page_obj %}
-                {% if item.is_public %}
-                    <div class="col-md-4 mb-4">
+                <div class="col-md-4 mb-4">
+                    <a href="{% url 'item_detail' item_id=item.id %}" class="text-decoration-none">
                         <div class="card h-100">
-                            <img src="{{ item.display_image_url }}" class="card-img-top" alt="{{ item.name }}" style="height: 200px; object-fit: contain;">
+                            <img src="{{ item.display_image_url }}" class="card-img-top" alt="{{ item.name }}">
                             <div class="card-body">
                                 <h5 class="card-title">{{ item.name }}</h5>
                                 <p class="availability-tag {% if item.available %}available{% else %}unavailable{% endif %}">
                                     {% if item.available %}Available{% else %}Not Available{% endif %}
                                 </p>
-                                <a href="{% url 'item_detail' item_id=item.id %}" class="btn btn-primary">View Details</a>
                             </div>
                         </div>
-                    </div>
-                {% endif %}
+                    </a>
+                </div>
             {% empty %}
                 <div class="empty-state">
                     <i class="fas fa-search"></i>
@@ -68,18 +67,65 @@ Search Results
             {% endfor %}
         </div>
 
+<!-- ***************************************************************************************
+*  REFERENCES
+*  Title: Pagination design help
+*  Author: OpenAI (ChatGPT)
+*  Date: 2025
+*  Code version: GPT-4o
+*  URL: https://chat.openai.com/
+*  Software License: OpenAI Terms of Use
+*  Description: Used ChatGPT to help improve pagination design.
+*************************************************************************************** -->
+
         <!-- Pagination -->
         {% if page_obj.paginator.num_pages > 1 %}
         <div class="pagination">
-            {% if page_obj.has_previous %}
-                <a href="?{% if query %}query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page=1">First</a>
-                <a href="?{% if query %}query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page={{ page_obj.previous_page_number }}">Previous</a>
-            {% endif %}
-            <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-            {% if page_obj.has_next %}
-                <a href="?{% if query %}query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page={{ page_obj.next_page_number }}">Next</a>
-                <a href="?{% if query %}query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page={{ page_obj.paginator.num_pages }}">Last</a>
-            {% endif %}
+            <a
+                class="pagination-btn{% if not page_obj.has_previous %} disabled pagination-disabled{% endif %}"
+                {% if page_obj.has_previous %}
+                    href="?{% if query %}query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page=1"
+                {% else %}
+                    tabindex="-1" aria-disabled="true"
+                {% endif %}
+                title="First"
+            >
+                <i class="fas fa-angle-double-left"></i>
+            </a>
+            <a
+                class="pagination-btn{% if not page_obj.has_previous %} disabled pagination-disabled{% endif %}"
+                {% if page_obj.has_previous %}
+                    href="?{% if query %}query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page={{ page_obj.previous_page_number }}"
+                {% else %}
+                    tabindex="-1" aria-disabled="true"
+                {% endif %}
+                title="Previous"
+            >
+                <i class="fas fa-angle-left"></i>
+            </a>
+            <span class="pagination-btn current-page">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            <a
+                class="pagination-btn{% if not page_obj.has_next %} disabled pagination-disabled{% endif %}"
+                {% if page_obj.has_next %}
+                    href="?{% if query %}query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page={{ page_obj.next_page_number }}"
+                {% else %}
+                    tabindex="-1" aria-disabled="true"
+                {% endif %}
+                title="Next"
+            >
+                <i class="fas fa-angle-right"></i>
+            </a>
+            <a
+                class="pagination-btn{% if not page_obj.has_next %} disabled pagination-disabled{% endif %}"
+                {% if page_obj.has_next %}
+                    href="?{% if query %}query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page={{ page_obj.paginator.num_pages }}"
+                {% else %}
+                    tabindex="-1" aria-disabled="true"
+                {% endif %}
+                title="Last"
+            >
+                <i class="fas fa-angle-double-right"></i>
+            </a>
         </div>
         {% endif %}
     </div>
