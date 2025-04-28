@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -167,6 +169,13 @@ class Rental(models.Model):
     def is_overdue(self):
         if self.returned_on is None and self.return_by and timezone.now() > self.return_by:
             return True
+        return False
+
+    @property
+    def is_due_soon(self):
+        if self.returned_on is None and self.return_by:
+            now = timezone.now()
+            return now <= self.return_by <= now + timedelta(days=3)
         return False
 
 class CollectionAccessRequest(models.Model):

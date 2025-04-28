@@ -14,11 +14,25 @@
     <div class="access-requests-container">
         {% if rentals %}
             {% for rental in rentals %}
-            <div class="access-request-item">
+            <div class="access-request-item {% if rental.is_due_soon %}border border-warning rounded p-2{% endif %}">
                 <div class="access-request-info">
-                    <strong><a href="{% url 'item_detail' rental.equipment.id %}" class="text-decoration-none">{{ rental.equipment.name }}</a></strong>
-                    <small class="text-muted d-block">Return by: {{ rental.return_by|date:"M d, Y" }}</small>
+                    <strong>
+                        <a href="{% url 'item_detail' rental.equipment.id %}" class="text-decoration-none">
+                            {{ rental.equipment.name }}
+                        </a>
+                    </strong>
+                    <small class="text-muted d-block">
+                        Return by: {{ rental.return_by|date:"M d, Y" }}
+                    </small>
+
+                    {% if rental.is_due_soon %}
+                    <div class="alert alert-warning mt-2 p-2">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Due Soon!</strong> Please return this item by {{ rental.return_by|date:"M d, Y" }}.
+                    </div>
+                    {% endif %}
                 </div>
+
                 <div class="access-request-actions">
                     <form method="post" action="{% url 'item_detail' rental.equipment.id %}" style="display: inline;">
                         {% csrf_token %}
