@@ -36,10 +36,10 @@
         </div>
         {% if user.is_authenticated and user.userprofile.role == 'librarian' or collection.creator == user %}
             <div class="collection-actions">
-                <a href="{% url 'edit_collection' collection_id=collection.id %}" class="btn btn-edit">
+                <a href="{% url 'edit_collection' collection_id=collection.id %}" class="btn btn-success me-2">
                     <i class="fas fa-edit"></i> Edit Collection
                 </a>
-                <a href="{% url 'delete_collection' collection_id=collection.id %}" class="btn btn-delete">
+                <a href="{% url 'delete_collection' collection_id=collection.id %}" class="btn btn-danger">
                     <i class="fas fa-trash"></i> Delete Collection
                 </a>
             </div>
