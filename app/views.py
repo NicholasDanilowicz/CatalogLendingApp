@@ -29,6 +29,7 @@ from .models import Rating
 from .models import Comment
 from .utils import handle_equipment_images
 from .auth_utils import is_librarian
+from .models import Notification
 
 
 
@@ -576,4 +577,18 @@ def home(request):
     featured_collections = Collection.objects.filter(is_public=True).order_by('-created_at')[:6]
     return render(request, 'home.html', {
         'featured_collections': featured_collections,
+    })
+
+
+@login_required
+def user_notifications(request):
+    notification_count = Notification.objects.filter(user=request.user, read=False).count()
+
+    rental_requests = RentalRequest.objects.filter(patron=request.user).order_by('-created_at')
+    collection_access_requests = CollectionAccessRequest.objects.filter(patron=request.user).order_by('-created_at')
+
+    return render(request, 'notifications.html', {
+        'rental_requests': rental_requests,
+        'collection_access_requests': collection_access_requests,
+        'notification_count': notification_count,
     })

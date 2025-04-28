@@ -215,3 +215,13 @@ class RentalRequest(models.Model):
 
     def __str__(self):
         return f"{self.patron.username} requests {self.equipment.name} - {self.status}"
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='notifications')
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Notification for {self.user.username}: {self.message[:20]}..."
