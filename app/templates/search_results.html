@@ -38,6 +38,25 @@ Search Results
                 </div>
             {% endif %}
         </div>
+        <div class="sort-dropdown">
+            <form method="GET">
+                <label for="sort">Sort by:</label>
+                <select name="sort" id="sort" onchange="this.form.submit()">
+                    <option value="name" {% if sort == 'name' %}selected{% endif %}>Name</option>
+                    <option value="availability" {% if sort == 'availability' %}selected{% endif %}>Availability</option>
+                    <option value="rating" {% if sort == 'rating' %}selected{% endif %}>Rating</option>
+                </select>
+                {% if query %}
+                    <input type="hidden" name="query" value="{{ query }}">
+                {% endif %}
+                {% if collection_id %}
+                    <input type="hidden" name="collection_id" value="{{ collection_id }}">
+                {% endif %}
+                {% if tag %}
+                    <input type="hidden" name="tag" value="{{ tag }}">
+                {% endif %}
+            </form>
+        </div>
     </div>
 
     <div class="tab-content">
