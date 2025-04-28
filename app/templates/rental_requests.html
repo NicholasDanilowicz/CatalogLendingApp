@@ -1,41 +1,43 @@
 {% extends 'base.html' %}
- {% load django_bootstrap5 %}
+{% load static %}
+{% load django_bootstrap5 %}
 
- {% block title %} Rental Requests {% endblock %}
- {% block content %}
- <div class="container mt-4">
-     <h2 class="mb-4">Pending Rental Requests</h2>
+{% block title %}Rental Requests{% endblock %}
 
-     {% if requests %}
-         <table class="table table-striped">
-             <thead>
-                 <tr>
-                     <th>Item</th>
-                     <th>Requested By</th>
-                     <th>Requested On</th>
-                     <th>Actions</th>
-                 </tr>
-             </thead>
-             <tbody>
-                 {% for request in requests %}
-                 <tr>
-                     <td>{{ request.equipment.name }}</td>
-                     <td>{{ request.patron.username }}</td>
-                     <td>{{ request.created_at|date:"M d, Y H:i" }}</td>
-                     <td>
-                         <form method="post" style="display:inline;">
-                             {% csrf_token %}
-                             <input type="hidden" name="request_id" value="{{ request.id }}">
-                             <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
-                             <button type="submit" name="action" value="deny" class="btn btn-danger btn-sm">Deny</button>
-                         </form>
-                     </td>
-                 </tr>
-                 {% endfor %}
-             </tbody>
-         </table>
-     {% else %}
-         <p>No pending rental requests at the moment.</p>
-     {% endif %}
- </div>
- {% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/unified_styles.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Pending Rental Requests</h2>
+    <div class="access-requests-container">
+        {% if requests %}
+            {% for request in requests %}
+            <div class="access-request-item">
+                <div class="access-request-info">
+                    <strong><a href="{% url 'item_detail' request.equipment.id %}" class="text-decoration-none">{{ request.equipment.name }}</a></strong>
+                    <small class="text-muted d-block">Requested by {{ request.patron.username }} on {{ request.created_at|date:"M d, Y" }}</small>
+                </div>
+                <div class="access-request-actions">
+                    <form method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="request_id" value="{{ request.id }}">
+                        <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">
+                            <i class="fas fa-check"></i> Approve
+                        </button>
+                        <button type="submit" name="action" value="deny" class="btn btn-danger btn-sm">
+                            <i class="fas fa-times"></i> Deny
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <p>No pending rental requests at this time.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

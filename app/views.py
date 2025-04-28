@@ -90,31 +90,19 @@ def item_detail(request, item_id):
         user = None
         public_collections_by_user = None
 
+# ***************************************************************************************
+# *  REFERENCES
+# *  Title: Debugging Django Code Errors with ChatGPT
+# *  Author: OpenAI (ChatGPT)
+# *  Date: 2025
+# *  Code version: GPT-4o
+# *  URL: https://chat.openai.com/
+# *  Software License: OpenAI Terms of Use
+# *  Description: Used to debug Django form errors while developing functionality for rental requests.
+# ***************************************************************************************
 
     if request.method == 'POST':
-        if 'rating' in request.POST:
-            if rental:
-                rental.returned_on = timezone.now()
-                rental.save()
-                equipment.available = True
-                equipment.save()
-                messages.success(request, f"Thank you for returning {equipment.name}.")
-                return redirect('item_detail', item_id=item_id)
-
-            if pending_request:
-                pending_request.delete()
-                messages.info(request, "Your request has been canceled.")
-                return redirect('item_detail', item_id=item_id)
-
-            if not equipment.available:
-                messages.error(request, "This item is currently unavailable.")
-                return redirect('item_detail', item_id=item_id)
-
-            RentalRequest.objects.create(equipment=equipment, patron=request.user)
-            messages.success(request, f"You have requested {equipment.name}. Await librarian approval.")
-            return redirect('item_detail', item_id=item_id)
-
-        else:
+        if 'content' in request.POST:
             comment_form = CommentForm(request.POST)
             if comment_form.is_valid():
                 comment = comment_form.save(commit=False)
@@ -123,7 +111,29 @@ def item_detail(request, item_id):
                 comment.save()
                 messages.success(request, "Your comment has been posted.")
                 return redirect('item_detail', item_id=item_id)
+        else:
+            comment_form = CommentForm()
 
+        if rental:
+            rental.returned_on = timezone.now()
+            rental.save()
+            equipment.available = True
+            equipment.save()
+            messages.success(request, f"Thank you for returning {equipment.name}.")
+            return redirect('item_detail', item_id=item_id)
+
+        if pending_request:
+            pending_request.delete()
+            messages.info(request, "Your request has been canceled.")
+            return redirect('item_detail', item_id=item_id)
+
+        if not equipment.available:
+            messages.error(request, "This item is currently unavailable.")
+            return redirect('item_detail', item_id=item_id)
+
+        RentalRequest.objects.create(equipment=equipment, patron=request.user)
+        messages.success(request, f"You have requested {equipment.name}. Await librarian approval.")
+        return redirect('item_detail', item_id=item_id)
     else:
         comment_form = CommentForm()
 

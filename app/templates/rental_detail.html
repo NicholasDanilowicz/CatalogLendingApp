@@ -1,22 +1,39 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
 {% block title %}Your Rentals{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/unified_styles.css' %}">
+{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <h2>Your Current Rentals</h2>
-    {% if rentals %}
-        <ul class="list-group mt-3">
+    <h2 class="mb-4">Your Current Rentals</h2>
+    <div class="access-requests-container">
+        {% if rentals %}
             {% for rental in rentals %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <a href="{% url 'item_detail' rental.equipment.id %}">
-                        {{ rental.equipment.name }}
-                    </a>
-                    <span class="text-muted small">Return by: {{ rental.return_by|date:"M d, Y" }}</span>
-                </li>
+            <div class="access-request-item">
+                <div class="access-request-info">
+                    <strong><a href="{% url 'item_detail' rental.equipment.id %}" class="text-decoration-none">{{ rental.equipment.name }}</a></strong>
+                    <small class="text-muted d-block">Return by: {{ rental.return_by|date:"M d, Y" }}</small>
+                </div>
+                <div class="access-request-actions">
+                    <form method="post" action="{% url 'item_detail' rental.equipment.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            <i class="fas fa-undo"></i> Return Item
+                        </button>
+                    </form>
+                </div>
+            </div>
             {% endfor %}
-        </ul>
-    {% else %}
-        <p class="mt-3">You are not currently renting any equipment.</p>
-    {% endif %}
+        {% else %}
+            <div class="empty-state">
+                <p>You are not currently renting any equipment.</p>
+            </div>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}
