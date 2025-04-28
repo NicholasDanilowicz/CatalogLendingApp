@@ -65,6 +65,13 @@ class EquipmentForm(forms.ModelForm):
             'collections': 'Collections',
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['collections'].choices = [
+            (collection.id, f"{collection.title} ({', '.join(collection.get_tags_list())})")
+            for collection in Collection.objects.all()
+        ]
+
     def clean_collections(self):
         collections = self.cleaned_data.get('collections')
         if not collections:
