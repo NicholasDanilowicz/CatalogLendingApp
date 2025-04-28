@@ -123,7 +123,19 @@ class ProfileEditForm(forms.ModelForm):
             'real_name': 'Full Name',
             'profile_picture': 'Profile Picture'
         }
-
+class UserPromoteForm(forms.ModelForm):
+    allowed_users = forms.ModelMultipleChoiceField(
+        queryset=User.objects.filter(userprofile__role='patron'),
+        required=False,
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'allowed-users-field'}),
+        label='Promote Users',
+    )
+    class Meta:
+        model = UserProfile
+        fields = ['allowed_users']
+        widgets = {
+            'allowed_users': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'})
+        }
 class CollectionCreateForm(forms.ModelForm):
     tags = forms.MultipleChoiceField(
         choices=TAG_CHOICES,

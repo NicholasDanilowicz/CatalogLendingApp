@@ -195,6 +195,13 @@
 <main>
     {% block content %}
     {% endblock %}
+    {% if messages %}
+        <div class="alert alert-success" role="alert">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
 </main>
 
 <!-- Footer -->

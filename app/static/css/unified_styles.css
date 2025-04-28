@@ -318,7 +318,11 @@
     border: 1.5px solid #bdbdbd;
     transition: background-color 0.2s ease, color 0.2s, border-color 0.2s;
 }
+<<<<<<< HEAD
+.pagination a:hover, .pagination-btn:not(.disabled):hover {
+=======
 .pagination a:hover {
+>>>>>>> 8f58188fa234a129a7c242f389c8fb27eb95dbe9
     background: #f7f7f7;
     color: #555;
     border-color: #bdbdbd;
