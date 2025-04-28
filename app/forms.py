@@ -210,6 +210,9 @@ class CollectionEditForm(CollectionCreateForm):
         super().__init__(*args, **kwargs)
         self.user = user
         
+        if self.instance and self.instance.pk and self.instance.tags:
+            self.initial['tags'] = self.instance.get_tags_list()
+        
         if self.user and not is_librarian(self.user):
             if 'visibility' in self.fields:
                 self.fields.pop('visibility')
