@@ -261,6 +261,13 @@ class PutItemInPublicCollectionForm(forms.ModelForm):
                 label='Public Collections'
             )
 
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if commit:
+            new_collections = self.cleaned_data.get('collections', [])
+            instance.collections.add(*new_collections)
+        return instance
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
