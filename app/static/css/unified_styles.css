@@ -214,6 +214,7 @@
 
 .access-request-info {
     flex-grow: 1;
+    color: #007bff;
 }
 
 .access-request-actions {
