@@ -385,9 +385,10 @@ def collection_detail(request, collection_id):
         return redirect('login')
     
     has_access = collection.can_user_access(request.user)
-    
+    has_requested = False
     if not has_access and request.user.is_authenticated and request.user.userprofile.role == 'patron':
         existing_request = CollectionAccessRequest.objects.filter(collection=collection, patron=request.user, status='pending').exists()
+        has_requested = existing_request
         if request.method == 'POST' and 'request_access' in request.POST:
             if existing_request:
                 messages.info(request, "You have already requested access to this collection.")
@@ -409,6 +410,7 @@ def collection_detail(request, collection_id):
         'has_access': has_access,
         'collection_id': collection_id,
         'access_requests': access_requests,
+        'has_requested': has_requested
     }
     
     if has_access:
@@ -469,6 +471,7 @@ def put_item_in_public_collection(request, item_id):
         'item': equipment,
         'form': form,
     })
+    
 # def request_access(request, collection_id):
 #     if request.method == 'POST':
 #         collection = get_object_or_404(Collection, id=collection_id)
