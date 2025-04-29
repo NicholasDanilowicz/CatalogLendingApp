@@ -577,7 +577,6 @@ def rental_requests_view(request):
                 messages.error(request, "This equipment is no longer available.")
                 rental_request.status = 'denied'
                 rental_request.save()
-                return redirect('rental_requests')
 
             rental_request.status = 'approved'
             rental_request.save()
@@ -617,13 +616,10 @@ def home(request):
 
 @login_required
 def user_notifications(request):
-    notification_count = Notification.objects.filter(user=request.user, read=False).count()
-
     rental_requests = RentalRequest.objects.filter(patron=request.user).order_by('-created_at')
     collection_access_requests = CollectionAccessRequest.objects.filter(patron=request.user).order_by('-created_at')
 
     return render(request, 'notifications.html', {
         'rental_requests': rental_requests,
         'collection_access_requests': collection_access_requests,
-        'notification_count': notification_count,
     })
