@@ -191,7 +191,10 @@ class CollectionCreateForm(forms.ModelForm):
         cleaned_data = super().clean()
         visibility = cleaned_data.get('visibility')
         
-        if visibility == 'public':
+        if visibility is None:
+            cleaned_data['is_public'] = True
+            cleaned_data['allowed_users'] = []
+        elif visibility == 'public':
             cleaned_data['is_public'] = True
             cleaned_data['allowed_users'] = []
         else:
