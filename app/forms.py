@@ -36,6 +36,7 @@ class SearchForm(forms.Form):
         label='',
         max_length=100,
         required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'Search for equipment...', 'class': 'search-input'})
     )
 
 
