@@ -169,19 +169,19 @@ def search_results(req):
     public_collections = Collection.objects.filter(is_public=True)
     public_items = Equipment.objects.filter(collections__in=public_collections)
     items_without_collections = Equipment.objects.filter(collections__isnull=True)
-    base_queryset = public_items | items_without_collections
+    base_queryset = (public_items | items_without_collections).distinct()
 
     collection = None
     if collection_id:
         try:
             collection = Collection.objects.get(id=collection_id)
             if collection.is_public or (req.user.is_authenticated and collection.can_user_access(req.user)):
-                base_queryset = base_queryset | Equipment.objects.filter(collections=collection)
+                base_queryset = Equipment.objects.filter(collections=collection)
         except Collection.DoesNotExist:
             pass
     elif tag:
         collections = Collection.objects.filter(tags__contains=tag, is_public=True)
-        base_queryset = base_queryset.filter(collections__in=collections).distinct()
+        base_queryset = Equipment.objects.filter(collections__in=collections).distinct()
 
     if query:
         base_queryset = base_queryset.filter(name__icontains=query)

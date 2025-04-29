@@ -124,7 +124,7 @@ Search Results
             <a
                 class="pagination-btn{% if not page_obj.has_previous %} disabled pagination-disabled{% endif %}"
                 {% if page_obj.has_previous %}
-                    href="?{% if query %}query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page=1"
+                    href="?page=1{% if sort %}&sort={{ sort }}{% endif %}{% if query %}&query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}"
                 {% else %}
                     tabindex="-1" aria-disabled="true"
                 {% endif %}
@@ -135,7 +135,7 @@ Search Results
             <a
                 class="pagination-btn{% if not page_obj.has_previous %} disabled pagination-disabled{% endif %}"
                 {% if page_obj.has_previous %}
-                    href="?{% if query %}query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page={{ page_obj.previous_page_number }}"
+                    href="?page={{ page_obj.previous_page_number }}{% if sort %}&sort={{ sort }}{% endif %}{% if query %}&query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}"
                 {% else %}
                     tabindex="-1" aria-disabled="true"
                 {% endif %}
@@ -147,7 +147,7 @@ Search Results
             <a
                 class="pagination-btn{% if not page_obj.has_next %} disabled pagination-disabled{% endif %}"
                 {% if page_obj.has_next %}
-                    href="?{% if query %}query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page={{ page_obj.next_page_number }}"
+                    href="?page={{ page_obj.next_page_number }}{% if sort %}&sort={{ sort }}{% endif %}{% if query %}&query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}"
                 {% else %}
                     tabindex="-1" aria-disabled="true"
                 {% endif %}
@@ -158,7 +158,7 @@ Search Results
             <a
                 class="pagination-btn{% if not page_obj.has_next %} disabled pagination-disabled{% endif %}"
                 {% if page_obj.has_next %}
-                    href="?{% if query %}query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}&page={{ page_obj.paginator.num_pages }}"
+                    href="?page={{ page_obj.paginator.num_pages }}{% if sort %}&sort={{ sort }}{% endif %}{% if query %}&query={{ query }}{% endif %}{% if collection_id %}&collection_id={{ collection_id }}{% endif %}{% if tag %}&tag={{ tag }}{% endif %}"
                 {% else %}
                     tabindex="-1" aria-disabled="true"
                 {% endif %}
