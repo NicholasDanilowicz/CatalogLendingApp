@@ -27,7 +27,7 @@ Search Results
         <div class="search-info">
             <h1 class="search-title">
                 {% if query and collection_id %}
-                    Search Results for "{{ query }}" in {{ collection.title }}
+                    Search Results for "{{ query }}" in collection "{{ collection.title }}"
                 {% elif query and tag %}
                     Search Results for "{{ query }}" in tag "{{ tag }}"
                 {% elif query %}
