@@ -239,7 +239,7 @@
         const userRequested = "{{ has_requested }}"
         if (userRequested === "True") {
             const button = document.getElementById("requestButton");
-            button.innerHTML = '<i class="fas fa-check-circle"></i> Successfully requested item';
+            button.innerHTML = '<i class="fas fa-check-circle"></i> Successfully requested permission';
             button.classList.remove('btn-primary');
             button.classList.add('btn-success');
             button.disabled = true;  // Disable the button to prevent multiple requests
