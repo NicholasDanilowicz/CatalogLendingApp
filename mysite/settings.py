@@ -37,7 +37,7 @@ if 'HEROKU' in os.environ:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1',"sports-cataloging-lending-app-bd1891024175.herokuapp.com"]
+ALLOWED_HOSTS = ['localhost','127.0.0.1',"sportify-app-506cb8957ec4.herokuapp.com"]
 
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
