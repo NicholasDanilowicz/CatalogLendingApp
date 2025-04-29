@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -169,6 +171,13 @@ class Rental(models.Model):
             return True
         return False
 
+    @property
+    def is_due_soon(self):
+        if self.returned_on is None and self.return_by:
+            now = timezone.now()
+            return now <= self.return_by <= now + timedelta(days=3)
+        return False
+
 class CollectionAccessRequest(models.Model):
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE, related_name='access_requests')
     patron = models.ForeignKey(User, on_delete=models.CASCADE, related_name='collection_access_requests')
@@ -185,7 +194,7 @@ class CollectionAccessRequest(models.Model):
 class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_ratings')
     equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
-    rating = models.PositiveSmallIntegerField(default=0)
+    rating = models.PositiveSmallIntegerField(default=-1)
 
     class Meta:
         unique_together = ('user', 'equipment')
@@ -215,3 +224,13 @@ class RentalRequest(models.Model):
 
     def __str__(self):
         return f"{self.patron.username} requests {self.equipment.name} - {self.status}"
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='notifications')
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Notification for {self.user.username}: {self.message[:20]}..."

@@ -15,13 +15,14 @@ from django.contrib.auth.decorators import login_required
 
 from django.core.paginator import Paginator
 from django.utils import timezone
+from django.db.models import Avg, F, Value, FloatField
+from django.db.models.functions import Lower, Coalesce, NullIf
 
 from .forms import SearchForm, EquipmentForm, ProfileEditForm, CollectionCreateForm, CollectionEditForm, \
     PutItemInPublicCollectionForm, CommentForm, UserPromoteForm
 from .models import UserProfile
 from .models import Equipment
 from .models import Collection
-from django.db.models import Avg
 from django.contrib import messages
 from .models import Rental
 from .models import RentalRequest
@@ -29,6 +30,7 @@ from .models import Rating
 from .models import Comment
 from .utils import handle_equipment_images
 from .auth_utils import is_librarian
+from .models import Notification
 
 
 
@@ -162,14 +164,18 @@ def search_results(req):
     query = req.GET.get('query', '')
     collection_id = req.GET.get('collection_id')
     tag = req.GET.get('tag')
+    sort = req.GET.get('sort', 'name')
     
     public_collections = Collection.objects.filter(is_public=True)
-    base_queryset = Equipment.objects.filter(collections__in=public_collections).distinct().order_by('id')
+    public_items = Equipment.objects.filter(collections__in=public_collections)
+    items_without_collections = Equipment.objects.filter(collections__isnull=True)
+    base_queryset = public_items | items_without_collections
 
     if collection_id:
         try:
             collection = Collection.objects.get(id=collection_id)
-            base_queryset = base_queryset.filter(collections=collection)
+            if collection.is_public or (req.user.is_authenticated and collection.can_user_access(req.user)):
+                base_queryset = base_queryset | Equipment.objects.filter(collections=collection)
         except Collection.DoesNotExist:
             pass
     elif tag:
@@ -178,6 +184,19 @@ def search_results(req):
 
     if query:
         base_queryset = base_queryset.filter(name__icontains=query)
+
+    if sort == 'name':
+        base_queryset = base_queryset.order_by(Lower('name'))
+    elif sort == 'availability':
+        base_queryset = base_queryset.order_by('-available', 'name')
+    elif sort == 'rating':
+        base_queryset = base_queryset.annotate(
+            avg_rating=Coalesce(
+                Avg(NullIf('rating__rating', Value(-1))),
+                Value(-1),
+                output_field=FloatField()
+            )
+        ).order_by('-avg_rating', 'name')
 
     paginator = Paginator(base_queryset, 15)
     page_number = req.GET.get('page')
@@ -188,7 +207,8 @@ def search_results(req):
         'query': query,
         'page_obj': page_obj,
         'collection_id': collection_id,
-        'tag': tag
+        'tag': tag,
+        'sort': sort
     }
     
     return render(req, 'search_results.html', context)
@@ -414,11 +434,30 @@ def collection_detail(request, collection_id):
     }
     
     if has_access:
-        equipment_items = collection.equipment_items.all().order_by('id')
+        sort = request.GET.get('sort', 'name')
+        
+        equipment_items = collection.equipment_items.all()
+        
+        if sort == 'name':
+            equipment_items = equipment_items.order_by(Lower('name'))
+        elif sort == 'availability':
+            equipment_items = equipment_items.order_by('-available', 'name')
+        elif sort == 'rating':
+            equipment_items = equipment_items.annotate(
+                avg_rating=Coalesce(
+                    Avg(NullIf('rating__rating', Value(-1))),
+                    Value(-1),
+                    output_field=FloatField()
+                )
+            ).order_by('-avg_rating', 'name')
+        else:
+            equipment_items = equipment_items.order_by('id')
+            
         paginator = Paginator(equipment_items, 15)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         context['page_obj'] = page_obj
+        context['sort'] = sort
     
     return render(request, 'collection_detail.html', context)
 from django.views.decorators.csrf import csrf_exempt
@@ -544,7 +583,6 @@ def rental_requests_view(request):
                 messages.error(request, "This equipment is no longer available.")
                 rental_request.status = 'denied'
                 rental_request.save()
-                return redirect('rental_requests')
 
             rental_request.status = 'approved'
             rental_request.save()
@@ -579,4 +617,15 @@ def home(request):
     featured_collections = Collection.objects.filter(is_public=True).order_by('-created_at')[:6]
     return render(request, 'home.html', {
         'featured_collections': featured_collections,
+    })
+
+
+@login_required
+def user_notifications(request):
+    rental_requests = RentalRequest.objects.filter(patron=request.user).order_by('-created_at')
+    collection_access_requests = CollectionAccessRequest.objects.filter(patron=request.user).order_by('-created_at')
+
+    return render(request, 'notifications.html', {
+        'rental_requests': rental_requests,
+        'collection_access_requests': collection_access_requests,
     })

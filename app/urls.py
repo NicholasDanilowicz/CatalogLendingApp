@@ -4,6 +4,8 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from . import views
 from .views import put_item_in_public_collection
+from .views import user_notifications
+
 
 urlpatterns = [
     path('login/', views.custom_login, name='login'),
@@ -27,6 +29,7 @@ urlpatterns = [
     path("rate/<int:item_id>/", views.rate_equipment, name='rate_equipment'),
     path('request-rental/<int:equipment_id>/', views.request_rental, name='request_rental'),
     path('rental-requests/', views.rental_requests_view, name='rental_requests'),
+    path('notifications/', user_notifications, name='user_notifications'),
 ]
 
 # if settings.DEBUG:

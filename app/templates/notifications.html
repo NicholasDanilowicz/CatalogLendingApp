@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/unified_styles.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Your Notifications</h2>
+
+    <div class="access-requests-container">
+        <h4>Rental Requests</h4>
+        {% if rental_requests %}
+            {% for request in rental_requests %}
+            <div class="access-request-item">
+                <div class="access-request-info">
+                    <strong><a href="{% url 'item_detail' request.equipment.id %}" class="text-decoration-none">{{ request.equipment.name }}</a></strong>
+                    <small class="text-muted d-block">
+                        Requested on {{ request.created_at|date:"M d, Y" }} -
+                        Status:
+                        {% if request.status == 'pending' %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% elif request.status == 'approved' %}
+                            <span class="badge bg-success">Approved</span>
+                        {% elif request.status == 'denied' %}
+                            <span class="badge bg-danger">Denied</span>
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <p>No rental requests found.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="access-requests-container mt-5">
+        <h4>Collection Access Requests</h4>
+        {% if collection_access_requests %}
+            {% for request in collection_access_requests %}
+            <div class="access-request-item">
+                <div class="access-request-info">
+                    <strong><a href="{% url 'collection_detail' request.collection.id %}" class="text-decoration-none">{{ request.collection.title }}</a></strong>
+                    <small class="text-muted d-block">
+                        Requested on {{ request.created_at|date:"M d, Y" }} -
+                        Status:
+                        {% if request.status == 'pending' %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% elif request.status == 'accepted' %}
+                            <span class="badge bg-success">Accepted</span>
+                        {% elif request.status == 'denied' %}
+                            <span class="badge bg-danger">Denied</span>
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <p>No collection access requests found.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
