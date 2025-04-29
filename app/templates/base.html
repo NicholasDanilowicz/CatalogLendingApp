@@ -30,7 +30,7 @@
         <div class="search-wrapper">
             <form action="{% url 'search_results' %}" method="GET">
                 <div id="searchBar" class="search-container">
-                    {{form.as_p}}
+                    {{search_form.as_p}}
                     {% if collection_id %}
                     <input type="hidden" name="collection_id" value="{{ collection_id }}">
                     {% elif tag %}

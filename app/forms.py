@@ -38,13 +38,6 @@ class SearchForm(forms.Form):
         required=False,
     )
 
-    def __init__(self, *args, collection_name=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        placeholder = f"Search for equipment in {collection_name}..." if collection_name else "Search for equipment..."
-        self.fields['query'].widget.attrs.update({
-            'placeholder': placeholder,
-            'class': 'search-input'
-        })
 
 class EquipmentForm(forms.ModelForm):
     collections = forms.ModelMultipleChoiceField(

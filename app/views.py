@@ -425,7 +425,6 @@ def collection_detail(request, collection_id):
     if request.user.is_authenticated and request.user.userprofile.role == 'librarian':
         access_requests = collection.access_requests.filter(status='pending')
 
-    form = SearchForm(request.GET or None, collection_name=collection.title)
 
     context = {
         'collection': collection,
@@ -433,7 +432,6 @@ def collection_detail(request, collection_id):
         'collection_id': collection_id,
         'access_requests': access_requests,
         'has_requested': has_requested,
-        'form': form,
     }
     
     if has_access:
