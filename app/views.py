@@ -171,6 +171,7 @@ def search_results(req):
     items_without_collections = Equipment.objects.filter(collections__isnull=True)
     base_queryset = public_items | items_without_collections
 
+    collection = None
     if collection_id:
         try:
             collection = Collection.objects.get(id=collection_id)
@@ -207,6 +208,7 @@ def search_results(req):
         'query': query,
         'page_obj': page_obj,
         'collection_id': collection_id,
+        'collection': collection,
         'tag': tag,
         'sort': sort
     }

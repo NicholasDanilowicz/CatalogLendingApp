@@ -26,8 +26,16 @@ Search Results
     <div class="search-header">
         <div class="search-info">
             <h1 class="search-title">
-                {% if query %}
+                {% if query and collection_id %}
+                    Search Results for "{{ query }}" in {{ collection.title }}
+                {% elif query and tag %}
+                    Search Results for "{{ query }}" in tag "{{ tag }}"
+                {% elif query %}
                     Search Results for "{{ query }}"
+                {% elif collection_id %}
+                    {{ collection.title }}
+                {% elif tag %}
+                    Items tagged with "{{ tag }}"
                 {% else %}
                     Search Results
                 {% endif %}
