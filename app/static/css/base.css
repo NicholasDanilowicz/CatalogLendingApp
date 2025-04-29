@@ -93,11 +93,11 @@ main {
 
 .menu-item {
   position: relative;
-  margin: 0 15px;
+  margin: 0;
   text-align: center;
-  flex-grow: 1;
+  flex: 1;
   transition: background-color 0.3s ease;
-  border-radius: 10px;
+  border-radius: 5px;
   z-index: 9999;
 }
 
