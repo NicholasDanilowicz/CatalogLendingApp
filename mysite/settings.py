@@ -73,6 +73,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',   # for db
     'social_django.middleware.SocialAuthExceptionMiddleware',  # for google auth
+    'mysite.middleware.BlockAdminMiddleware',  # Block admin users from accessing the website
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
