@@ -167,12 +167,15 @@ def search_results(req):
     sort = req.GET.get('sort', 'name')
     
     public_collections = Collection.objects.filter(is_public=True)
-    base_queryset = Equipment.objects.filter(collections__in=public_collections).distinct()
+    public_items = Equipment.objects.filter(collections__in=public_collections)
+    items_without_collections = Equipment.objects.filter(collections__isnull=True)
+    base_queryset = public_items | items_without_collections
 
     if collection_id:
         try:
             collection = Collection.objects.get(id=collection_id)
-            base_queryset = base_queryset.filter(collections=collection)
+            if collection.is_public or (req.user.is_authenticated and collection.can_user_access(req.user)):
+                base_queryset = base_queryset | Equipment.objects.filter(collections=collection)
         except Collection.DoesNotExist:
             pass
     elif tag:

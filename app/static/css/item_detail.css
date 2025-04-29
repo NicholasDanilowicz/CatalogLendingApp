@@ -141,6 +141,18 @@
     margin-top: .5rem;
 }
 
+.btn-warning {
+    margin-left: 0;
+    margin-right: .5rem;
+    margin-top: .5rem;
+}
+
+.btn-danger {
+    margin-left: 0;
+    margin-right: .5rem;
+    margin-top: .5rem;
+}
+
 .reviews {
     margin-bottom: 0;
     padding-bottom: 0;
