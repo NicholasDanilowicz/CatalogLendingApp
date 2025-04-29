@@ -191,10 +191,7 @@ class CollectionCreateForm(forms.ModelForm):
         cleaned_data = super().clean()
         visibility = cleaned_data.get('visibility')
         
-        if visibility is None:
-            cleaned_data['is_public'] = True
-            cleaned_data['allowed_users'] = []
-        elif visibility == 'public':
+        if visibility == 'public':
             cleaned_data['is_public'] = True
             cleaned_data['allowed_users'] = []
         else:
@@ -204,8 +201,11 @@ class CollectionCreateForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        visibility = self.cleaned_data.get('visibility')
-        instance.is_public = (visibility == 'public')
+        if self.user and not is_librarian(self.user):
+            instance.is_public = True
+        else:
+            visibility = self.cleaned_data.get('visibility')
+            instance.is_public = (visibility == 'public')
         if 'tags' in self.cleaned_data:
             tags = self.cleaned_data['tags']
             if not tags:
