@@ -106,7 +106,9 @@
                     {% elif item.available %}
                     <form method="post">
                         {% csrf_token %}
+                        {% if user.is_authenticated %}
                         <button type="submit" class="btn btn-primary user-action-btn">Request this item</button>
+                        {% endif %}
                     </form>
                     {% else %}
                     <button class="btn btn-secondary user-action-btn" disabled>Item Unavailable</button>
