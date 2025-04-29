@@ -65,12 +65,16 @@
                 <span class="average-rating star-set d-inline" data-rating="{{ average_rating }}">
                     <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
                 </span>
+                {% if average_rating > 0 %}
                 <small class="text-muted">({{ average_rating|floatformat:1 }} / 5.0)</small>
 
                 {% if average_rating > 4.5 %}
                     <span class="badge bg-success">Highly Rated</span>
                 {% elif average_rating < 3 %}
                     <span class="badge bg-danger">Low Rated</span>
+                {% endif %}
+                {% else %}
+                <small class="text-muted">(No ratings yet)</small>
                 {% endif %}
                 </p>
 
