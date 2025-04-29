@@ -75,19 +75,19 @@ Search Results
     <div class="tab-content">
         <div class="row">
             {% for item in page_obj %}
-                <div class="col-md-4 mb-4">
-                    <a href="{% url 'item_detail' item_id=item.id %}" class="text-decoration-none">
-                        <div class="card h-100">
-                            <img src="{{ item.display_image_url }}" class="card-img-top" alt="{{ item.name }}">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ item.name }}</h5>
-                                <p class="availability-tag {% if item.available %}available{% else %}unavailable{% endif %}">
-                                    {% if item.available %}Available{% else %}Not Available{% endif %}
-                                </p>
+                    <div class="col-md-4 mb-4">
+                        <a href="{% url 'item_detail' item_id=item.id %}" class="text-decoration-none">
+                            <div class="card h-100" style="border: 1px solid black;">
+                                <img src="{{ item.display_image_url }}" class="card-img-top" alt="{{ item.name }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ item.name }}</h5>
+                                    <p class="availability-tag {% if item.available %}available{% else %}unavailable{% endif %}">
+                                        {% if item.available %}Available{% else %}Not Available{% endif %}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                    </a>
-                </div>
+                        </a>
+                    </div>
             {% empty %}
                 <div class="empty-state">
                     <i class="fas fa-search"></i>
