@@ -23,8 +23,8 @@
             <p><span class="badge {% if item.available %}bg-success{% else %}bg-danger{% endif %}">{% if item.available %}Available{% else %}Not Available{% endif %}</span></p>
         </div>
         {% if is_librarian %}
-        <div>
-            <a href="{% url 'edit_equipment' item_id=item.id %}" class="btn btn-success me-2">
+        <div class="d-flex align-items-center gap-2 librarian-actions">
+            <a href="{% url 'edit_equipment' item_id=item.id %}" class="btn btn-success">
                 <i class="fas fa-edit"></i> Edit Equipment
             </a>
             <a href="{% url 'delete_equipment' item_id=item.id %}" class="btn btn-danger">
@@ -88,28 +88,28 @@
 
             <div class="action_buttons border-bottom">
                 {% if public_collections_by_user or is_librarian %}
-                <a href="{% url 'put_in_public' item_id=item.id %}" class="btn btn-primary">Put in a Public Collection</a>
+                <a href="{% url 'put_in_public' item_id=item.id %}" class="btn btn-primary user-action-btn">Put in a Public Collection</a>
                 {% else %}
-                <button class="btn btn-secondary" disabled>Create a Public Collection to add this item to it.</button>
+                <button class="btn btn-secondary user-action-btn" disabled>Create a Public Collection to add this item to it.</button>
                 {% endif %}
                 <div class="d-flex flex-wrap gap-2">
                     {% if rental %}
                     <form method="post">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Return this item</button>
+                        <button type="submit" class="btn btn-danger user-action-btn">Return this item</button>
                     </form>
                     {% elif pending_request %}
                     <form method="post">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-warning">Cancel Request</button>
+                        <button type="submit" class="btn btn-warning user-action-btn">Cancel Request</button>
                     </form>
                     {% elif item.available %}
                     <form method="post">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-primary">Request this item</button>
+                        <button type="submit" class="btn btn-primary user-action-btn">Request this item</button>
                     </form>
                     {% else %}
-                    <button class="btn btn-secondary" disabled>Item Unavailable</button>
+                    <button class="btn btn-secondary user-action-btn" disabled>Item Unavailable</button>
                     {% endif %}
                 </div>
             </div>

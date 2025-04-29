@@ -135,22 +135,8 @@
   cursor: not-allowed;
 }
 
-.btn-primary {
-    margin-left: 0;
-    margin-right: .5rem;
-    margin-top: .5rem;
-}
-
-.btn-warning {
-    margin-left: 0;
-    margin-right: .5rem;
-    margin-top: .5rem;
-}
-
-.btn-danger {
-    margin-left: 0;
-    margin-right: .5rem;
-    margin-top: .5rem;
+.btn-primary, .btn-warning, .btn-danger {
+    margin: 0;
 }
 
 .reviews {
@@ -162,4 +148,16 @@
     font-size: 2rem;
     letter-spacing: 0.1rem;
     line-height: 1;
+}
+
+/* Librarian action buttons (Edit/Delete) */
+.librarian-actions .btn {
+    margin: 0;
+}
+
+/* User action buttons (Request/Return/etc) */
+.user-action-btn {
+    margin-left: 0;
+    margin-right: .5rem;
+    margin-top: .5rem;
 }
