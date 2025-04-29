@@ -116,7 +116,8 @@ main {
 .dropdown {
   position: absolute;
   top: 100%;
-  left: 25%;
+  left: 50%;
+  transform: translateX(-50%);
   background: white;
   list-style: none;
   padding: 0;
