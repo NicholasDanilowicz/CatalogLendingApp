@@ -1,6 +1,6 @@
 # Catalog Lending App for Sports Equipment
 
-## A Heroku web application where users can upload sports equipment; other users can then request these equipment to be lent to them and give ratings after use!
+## A Heroku web application designed using the Django framework where users can upload sports equipment; other users can then request these equipment to be lent to them and give ratings after use!
 
 ## Overview:
 Seeing that there are few sources available for lending sports equipment online, this Catalog Lending App was created to help serve that purpose! This was designed with an audience of college students in mind, where people may have conflicting schedules and a lower budget to justify buying sports equipment of their own to buy and use when they please.
