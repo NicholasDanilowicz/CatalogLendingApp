@@ -1,1 +1,6 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/hLqvXyMi)
+# Catalog Lending App for Sports Equipment
+
+## A Heroku web application where users can upload sports equipment; other users can then request these equipment to be lent to them and give ratings after use!
+
+## Overview:
+On this web application, users can register as patrons or as 
